@@ -1,0 +1,52 @@
+{
+  "name": "rest",
+  "version": "1.0.0",
+  "main": "app.js",
+  "author": "hung",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rimraf dist",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run clean && webpack -w && cross-env NODE_ENV=development nodemon dist/index.bundle.js",
+    "dev": "cross-env NODE_ENV=development nodemon dist/index.bundle.js",
+    "start": "concurrently --kill-others \"nodemon webpack -w\" \"cross-env NODE_ENV=development nodemon dist/index.bundle.js\""
+  },
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.18.3",
+    "compression": "^1.7.3",
+    "cross-env": "^5.2.0",
+    "express": "^4.16.4",
+    "express-validation": "^1.0.2",
+    "helmet": "^3.16.0",
+    "http-status": "^1.3.1",
+    "joi": "^14.3.1",
+    "jsonwebtoken": "^8.5.0",
+    "mongoose": "^5.4.19",
+    "mongoose-paginate": "^5.0.3",
+    "mongoose-unique-validator": "^2.0.2",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
+    "rimraf": "^2.6.3",
+    "slug": "^1.0.0",
+    "validator": "^10.11.0"
+  },
+  "devDependencies": {
+    "babel": "^6.23.0",
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^7.0.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "concurrently": "^4.1.0",
+    "eslint": "^5.15.2",
+    "eslint-config-equimper": "^2.0.5",
+    "eslint-plugin-prettier": "^3.0.1",
+    "morgan": "^1.9.1",
+    "nodemon": "^1.11.0",
+    "prettier": "1.16.4",
+    "webpack": "^2.5.1",
+    "webpack-node-externals": "^1.7.2"
+  }
+}
