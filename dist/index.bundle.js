@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 17);
+/******/ 	return __webpack_require__(__webpack_require__.s = 16);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -77,23 +77,27 @@ module.exports =
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+/* eslint-disable indent */
 /* eslint-disable no-undef */
 const devConfig = {
-	MONGO_URL: 'mongodb://localhost:27017/mongoose-dev'
+	MONGO_URL: 'mongodb://hungdm:30c15b7800213b2844e224a1f5fbdfb0@43.239.223.206:27017/gr2019'
 };
 
 const testConfig = {
-	MONGO_URL: 'mongodb://localhost:27017/mongoose-test'
+	MONGO_URL: 'mongodb://hungdm:30c15b7800213b2844e224a1f5fbdfb0@43.239.223.206:27017/gr2019'
 };
 
 const prodConfig = {
-	MONGO_URL: 'mongodb://localhost:27017/mongoose-prod'
+	MONGO_URL: 'mongodb://hungdm:30c15b7800213b2844e224a1f5fbdfb0@43.239.223.206:27017/gr2019'
 };
 
 const defaultConfig = {
+	HOST: process.env.HOST || 'localhost',
 	PORT: process.env.PORT || 3000,
 	API_PREFIX: '/api',
-	JWT_SECRET: 'hihihihihihihi'
+	JWT_SECRET: 'hihihihihihihi',
+	FACEBOOK_APP_ID: '329324544364004',
+	FACEBOOK_APP_SECRET: '6521fe7adaa99b2038e728dccfcb0885'
 };
 
 function envConfig(env) {
@@ -113,10 +117,22 @@ exports.default = Object.assign({}, defaultConfig, envConfig(process.env.NODE_EN
 /* 1 */
 /***/ (function(module, exports) {
 
-module.exports = require("express");
+module.exports = require("http-status");
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports) {
+
+module.exports = require("express");
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+module.exports = require("mongoose");
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -125,21 +141,34 @@ module.exports = require("express");
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.authJwt = exports.authLocal = undefined;
 
-var _passport = __webpack_require__(12);
+var _validator = __webpack_require__(37);
 
-var _passport2 = _interopRequireDefault(_passport);
+var _validator2 = _interopRequireDefault(_validator);
 
-var _passportLocal = __webpack_require__(32);
+var _mongoose = __webpack_require__(3);
 
-var _passportLocal2 = _interopRequireDefault(_passportLocal);
+var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _passportJwt = __webpack_require__(31);
+var _mongoosePaginate = __webpack_require__(9);
 
-var _userModel = __webpack_require__(5);
+var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
 
-var _userModel2 = _interopRequireDefault(_userModel);
+var _bcryptNodejs = __webpack_require__(26);
+
+var _mongooseUniqueValidator = __webpack_require__(10);
+
+var _mongooseUniqueValidator2 = _interopRequireDefault(_mongooseUniqueValidator);
+
+var _jsonwebtoken = __webpack_require__(30);
+
+var _jsonwebtoken2 = _interopRequireDefault(_jsonwebtoken);
+
+var _lodash = __webpack_require__(31);
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _userValidation = __webpack_require__(5);
 
 var _constants = __webpack_require__(0);
 
@@ -147,11 +176,194 @@ var _constants2 = _interopRequireDefault(_constants);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/**
+ * @typedef users
+ * @property {string} _id
+ * @property {string} email
+ * @property {string} name
+ * @property {string} email
+ * @property {string} name
+ * @property {string} email
+ * @property {string} name
+ * @property {string} password
+ */
+
+let userSchema = new _mongoose.Schema({
+	email: {
+		type: String,
+		unique: true,
+		required: [true, 'Email is required!'],
+		trim: true,
+		validate: {
+			validator(email) {
+				return _validator2.default.isEmail(email);
+			},
+			message: '{VALUE} is not a valid email!'
+		}
+	},
+	password: {
+		type: String,
+		// required: [true, 'Password is required!'],
+		trim: true,
+		minlength: [6, 'Password need to be longer!'],
+		validate: {
+			validator(password) {
+				return _userValidation.passwordReg.test(password);
+			},
+			message: '{VALUE} is not a valid password!'
+		}
+	},
+	name: {
+		type: String,
+		trim: true
+	},
+	provider: {
+		type: String,
+		trim: true
+	},
+	socials: {
+		type: Object,
+		trim: true
+	},
+	gender: {
+		type: Number,
+		trim: true,
+		default: 0
+	},
+	role: {
+		type: String,
+		trim: true,
+		default: 'user'
+	},
+	avatarUrl: {
+		type: String,
+		trim: true,
+		default: 'https://png.pngtree.com/svg/20161212/f93e57629c.svg'
+	},
+	token: {
+		type: String,
+		trim: true
+	},
+	uploadedCount: {
+		type: Number,
+		trim: true
+	},
+	friendsRequest: {
+		type: Array, // ObjectId User
+		trim: true
+	}
+}, {
+	timestamps: true
+});
+
+userSchema.plugin(_mongooseUniqueValidator2.default, {
+	message: '{VALUE} already taken!'
+});
+
+userSchema.pre('save', function (next) {
+	if (this.isModified('password')) {
+		this.password = this._hashPassword(this.password);
+	}
+
+	return next();
+});
+
+userSchema.methods = {
+	_hashPassword(password) {
+		return (0, _bcryptNodejs.hashSync)(password);
+	},
+	authenticateUser(password) {
+		return (0, _bcryptNodejs.compareSync)(password, this.password);
+	},
+	createToken() {
+		return _jsonwebtoken2.default.sign({
+			_id: this._id
+		}, _constants2.default.JWT_SECRET);
+	},
+	toJSON() {
+		return _lodash2.default.pick(this, ['_id', 'email', 'name', 'role', 'avatarUrl', 'fbId', 'ggId']);
+	},
+	toAuthJSON() {
+		return Object.assign({}, this.toJSON(), {
+			role: this.role,
+			provider: this.provider,
+			providerUrl: this.providerUrl,
+			token: `JWT ${this.createToken()}`
+		});
+	}
+};
+
+userSchema.plugin(_mongoosePaginate2.default);
+
+exports.default = _mongoose2.default.model('User', userSchema);
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.passwordReg = undefined;
+
+var _joi = __webpack_require__(8);
+
+var _joi2 = _interopRequireDefault(_joi);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const passwordReg = exports.passwordReg = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/; // eslint-disable-next-line no-unused-vars
+exports.default = {
+	stats: {},
+	index: {},
+	show: {},
+	create: {},
+	update: {},
+	delete: {}
+};
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.authFacebook = exports.authJwt = exports.authLocal = undefined;
+
+var _passport = __webpack_require__(11);
+
+var _passport2 = _interopRequireDefault(_passport);
+
+var _passportLocal = __webpack_require__(35);
+
+var _passportFacebook = __webpack_require__(33);
+
+var _passportJwt = __webpack_require__(34);
+
+var _userModel = __webpack_require__(4);
+
+var _userModel2 = _interopRequireDefault(_userModel);
+
+var _constants = __webpack_require__(0);
+
+var _constants2 = _interopRequireDefault(_constants);
+
+var _helperService = __webpack_require__(25);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 const localOpts = {
 	usernameField: 'email'
 };
 
-const localStrategy = new _passportLocal2.default(localOpts, async (email, password, done) => {
+const localStrategy = new _passportLocal.Strategy(localOpts, async (email, password, done) => {
 	try {
 		const user = await _userModel2.default.findOne({
 			email
@@ -187,209 +399,53 @@ const jwtStrategy = new _passportJwt.Strategy(jwtOpts, async (payload, done) => 
 	}
 });
 
+// Facebook
+const fbOpts = {
+	clientID: _constants2.default.FACEBOOK_APP_ID,
+	clientSecret: _constants2.default.FACEBOOK_APP_SECRET,
+	callbackURL: 'http://localhost:3000/api/users/auth/facebook/callback',
+	enableProof: true,
+	profileFields: ['id', 'displayName', 'email', 'photos', 'gender', 'profileUrl']
+};
+
+const facebookStrategy = new _passportFacebook.Strategy(fbOpts, async (accessToken, refreshToken, profile, done) => {
+	try {
+		const user = await _userModel2.default.findOne({
+			email: profile._json.email
+		});
+
+		if (user) {
+			return done(null, user);
+		} else {
+			let newUser = new _userModel2.default();
+			newUser.fbId = profile.id;
+			newUser.name = profile._json.name;
+			newUser.gender = (0, _helperService.genderToNumber)(profile.gender);
+			newUser.email = profile._json.email || profile.id + '@facebook.com';
+			newUser.provier = 'facebook';
+			if (profile.photos && profile.photos.length && profile.photos[0].value) {
+				newUser.avatarUrl = profile.photos[0].value;
+			}
+			newUser.token = accessToken;
+
+			await newUser.save();
+			return done(null, newUser);
+		}
+	} catch (e) {
+		return done(e, false);
+	}
+});
+
 _passport2.default.use(localStrategy);
 _passport2.default.use(jwtStrategy);
+_passport2.default.use(facebookStrategy);
 
-const authLocal = exports.authLocal = _passport2.default.authenticate('local', {
-	session: false
+const authLocal = exports.authLocal = _passport2.default.authenticate('local', { session: false });
+const authJwt = exports.authJwt = _passport2.default.authenticate('jwt', { session: false });
+const authFacebook = exports.authFacebook = _passport2.default.authenticate('facebook', {
+	session: false,
+	display: 'popup'
 });
-const authJwt = exports.authJwt = _passport2.default.authenticate('jwt', {
-	session: false
-});
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports) {
-
-module.exports = require("mongoose");
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.passwordReg = undefined;
-
-var _joi = __webpack_require__(9);
-
-var _joi2 = _interopRequireDefault(_joi);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const passwordReg = exports.passwordReg = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
-
-exports.default = {
-	stats: {},
-	index: {},
-	show: {},
-	create: {},
-	update: {},
-	remove: {}
-};
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _validator = __webpack_require__(13);
-
-var _validator2 = _interopRequireDefault(_validator);
-
-var _mongoose = __webpack_require__(3);
-
-var _mongoose2 = _interopRequireDefault(_mongoose);
-
-var _mongoosePaginate = __webpack_require__(10);
-
-var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
-
-var _bcryptNodejs = __webpack_require__(25);
-
-var _mongooseUniqueValidator = __webpack_require__(11);
-
-var _mongooseUniqueValidator2 = _interopRequireDefault(_mongooseUniqueValidator);
-
-var _jsonwebtoken = __webpack_require__(29);
-
-var _jsonwebtoken2 = _interopRequireDefault(_jsonwebtoken);
-
-var _userValidation = __webpack_require__(6);
-
-var _constants = __webpack_require__(0);
-
-var _constants2 = _interopRequireDefault(_constants);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * @typedef users
- * @property {string} _id
- * @property {string} email
- * @property {string} firstName
- * @property {string} lastName
- * @property {string} password
- */
-
-let userSchema = new _mongoose.Schema({
-	email: {
-		type: String,
-		unique: true,
-		required: [true, 'Email is required!'],
-		trim: true,
-		validate: {
-			validator(email) {
-				return _validator2.default.isEmail(email);
-			},
-			message: '{VALUE} is not a valid email!'
-		}
-	},
-	firstName: {
-		type: String,
-		trim: true
-	},
-	lastName: {
-		type: String,
-		trim: true
-	},
-	password: {
-		type: String,
-		required: [true, 'Password is required!'],
-		trim: true,
-		minlength: [6, 'Password need to be longer!'],
-		validate: {
-			validator(password) {
-				return _userValidation.passwordReg.test(password);
-			},
-			message: '{VALUE} is not a valid password!'
-		}
-	}
-}, {
-	timestamps: true
-});
-
-userSchema.plugin(_mongooseUniqueValidator2.default, {
-	message: '{VALUE} already taken!'
-});
-
-userSchema.pre('save', function (next) {
-	if (this.isModified('password')) {
-		this.password = this._hashPassword(this.password);
-	}
-
-	return next();
-});
-
-userSchema.methods = {
-	_hashPassword(password) {
-		return (0, _bcryptNodejs.hashSync)(password);
-	},
-	authenticateUser(password) {
-		return (0, _bcryptNodejs.compareSync)(password, this.password);
-	},
-	createToken() {
-		return _jsonwebtoken2.default.sign({
-			_id: this._id
-		}, _constants2.default.JWT_SECRET);
-	},
-	toAuthJSON() {
-		return {
-			_id: this._id,
-			email: this.email,
-			token: `JWT ${this.createToken()}`
-		};
-	},
-	toJSON() {
-		return {
-			_id: this._id,
-			email: this.email
-		};
-	}
-};
-
-userSchema.plugin(_mongoosePaginate2.default);
-
-exports.default = _mongoose2.default.model('User', userSchema);
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.passwordReg = undefined;
-
-var _joi = __webpack_require__(9);
-
-var _joi2 = _interopRequireDefault(_joi);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const passwordReg = exports.passwordReg = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
-
-exports.default = {
-	stats: {},
-	index: {},
-	show: {},
-	create: {},
-	update: {},
-	remove: {}
-};
 
 /***/ }),
 /* 7 */
@@ -401,40 +457,28 @@ module.exports = require("express-validation");
 /* 8 */
 /***/ (function(module, exports) {
 
-module.exports = require("http-status");
+module.exports = require("joi");
 
 /***/ }),
 /* 9 */
 /***/ (function(module, exports) {
 
-module.exports = require("joi");
+module.exports = require("mongoose-paginate");
 
 /***/ }),
 /* 10 */
 /***/ (function(module, exports) {
 
-module.exports = require("mongoose-paginate");
+module.exports = require("mongoose-unique-validator");
 
 /***/ }),
 /* 11 */
 /***/ (function(module, exports) {
 
-module.exports = require("mongoose-unique-validator");
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports) {
-
 module.exports = require("passport");
 
 /***/ }),
-/* 13 */
-/***/ (function(module, exports) {
-
-module.exports = require("validator");
-
-/***/ }),
-/* 14 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -466,7 +510,7 @@ _mongoose2.default.connection.once('open', () => console.log('MongoDB Running'))
 });
 
 /***/ }),
-/* 15 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -476,23 +520,23 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _morgan = __webpack_require__(30);
+var _morgan = __webpack_require__(32);
 
 var _morgan2 = _interopRequireDefault(_morgan);
 
-var _bodyParser = __webpack_require__(26);
+var _bodyParser = __webpack_require__(27);
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
-var _compression = __webpack_require__(27);
+var _compression = __webpack_require__(28);
 
 var _compression2 = _interopRequireDefault(_compression);
 
-var _helmet = __webpack_require__(28);
+var _helmet = __webpack_require__(29);
 
 var _helmet2 = _interopRequireDefault(_helmet);
 
-var _passport = __webpack_require__(12);
+var _passport = __webpack_require__(11);
 
 var _passport2 = _interopRequireDefault(_passport);
 
@@ -520,7 +564,7 @@ exports.default = app => {
 };
 
 /***/ }),
-/* 16 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -538,28 +582,31 @@ var _userRoute = __webpack_require__(23);
 
 var _userRoute2 = _interopRequireDefault(_userRoute);
 
-var _postRoute = __webpack_require__(20);
+var _movieRoute = __webpack_require__(19);
 
-var _postRoute2 = _interopRequireDefault(_postRoute);
-
-var _authService = __webpack_require__(2);
+var _movieRoute2 = _interopRequireDefault(_movieRoute);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/* eslint-disable no-console */
 exports.default = app => {
 	app.use(_constants2.default.API_PREFIX + '/users', _userRoute2.default);
-	app.use(_constants2.default.API_PREFIX + '/posts', _postRoute2.default);
-};
+	app.use(_constants2.default.API_PREFIX + '/movies', _movieRoute2.default);
+}; /* eslint-disable no-console */
 
 /***/ }),
-/* 17 */
+/* 15 */
+/***/ (function(module, exports) {
+
+module.exports = require("express-list-endpoints");
+
+/***/ }),
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _express = __webpack_require__(1);
+var _express = __webpack_require__(2);
 
 var _express2 = _interopRequireDefault(_express);
 
@@ -567,19 +614,21 @@ var _constants = __webpack_require__(0);
 
 var _constants2 = _interopRequireDefault(_constants);
 
-__webpack_require__(14);
+__webpack_require__(12);
 
-var _middleware = __webpack_require__(15);
+var _middleware = __webpack_require__(13);
 
 var _middleware2 = _interopRequireDefault(_middleware);
 
-var _modules = __webpack_require__(16);
+var _modules = __webpack_require__(14);
 
 var _modules2 = _interopRequireDefault(_modules);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _expressListEndpoints = __webpack_require__(15);
 
-// import userRoute from './modules/user/userRoute'
+var _expressListEndpoints2 = _interopRequireDefault(_expressListEndpoints);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const app = (0, _express2.default)();
 (0, _middleware2.default)(app);
@@ -588,6 +637,9 @@ app.get('/', (req, res) => {
 	res.send('Hello hihi!');
 });
 
+app.get('/api', (req, res) => {
+	res.send((0, _expressListEndpoints2.default)(app));
+});
 (0, _modules2.default)(app);
 
 app.listen(_constants2.default.PORT, err => {
@@ -596,12 +648,128 @@ app.listen(_constants2.default.PORT, err => {
 	} else {
 		// eslint-disable-next-line no-console
 		console.log(`
-      Server running on port: ${_constants2.default.PORT}
-      Running on ${_constants2.default.HOST}
-      Make something great!
+      Running on ${_constants2.default.HOST}:${_constants2.default.PORT}
     `);
 	}
 });
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.getMoviesStats = getMoviesStats;
+exports.getMovies = getMovies;
+exports.getMovieById = getMovieById;
+exports.createMovie = createMovie;
+exports.updateMovie = updateMovie;
+exports.deleteMovie = deleteMovie;
+
+var _movieModel = __webpack_require__(18);
+
+var _movieModel2 = _interopRequireDefault(_movieModel);
+
+var _httpStatus = __webpack_require__(1);
+
+var _httpStatus2 = _interopRequireDefault(_httpStatus);
+
+var _movieUtil = __webpack_require__(20);
+
+var util = _interopRequireWildcard(_movieUtil);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * @group movies - Operations about movies
+ *
+ */
+
+async function getMoviesStats(req, res, next) {
+	try {
+		res.moviesStats = {
+			count: await _movieModel2.default.estimatedDocumentCount()
+		};
+
+		next();
+	} catch (e) {
+		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
+	}
+}
+// eslint-disable-next-line no-unused-vars
+/* eslint-disable no-unused-vars */
+async function getMovies(req, res, next) {
+	// const limit = parseInt(req.query.limit, 0)
+	// const skip = parseInt(req.query.skip, 0)
+
+	try {
+		res.movies = await _movieModel2.default.find(Object.assign({}, req.query));
+
+		next();
+	} catch (e) {
+		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
+	}
+}
+
+async function getMovieById(req, res, next) {
+	try {
+		res.movie = await _movieModel2.default.findById(req.params.id).populate('uploader');
+
+		next();
+	} catch (e) {
+		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
+	}
+}
+
+async function createMovie(req, res, next) {
+	try {
+		res.movie = await _movieModel2.default.create(Object.assign({}, req.body, {
+			uploader: req.user._id || ''
+		}));
+		console.log(req.body);
+
+		next();
+	} catch (e) {
+		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
+	}
+}
+
+async function updateMovie(req, res, next) {
+	try {
+		let movie = await _movieModel2.default.findById(req.params.id);
+		// util.isOwn(movie, req, res, next)
+
+		Object.keys(req.body).forEach(key => {
+			movie[key] = req.body[key];
+		});
+		await movie.save();
+		res.movie = movie;
+
+		next();
+	} catch (e) {
+		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
+	}
+}
+
+async function deleteMovie(req, res, next) {
+	try {
+		const movie = await _movieModel2.default.findById(req.params.id);
+
+		// util.isOwn(movie, req, res, next)
+
+		await movie.remove();
+
+		next();
+	} catch (e) {
+		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
+	}
+}
 
 /***/ }),
 /* 18 */
@@ -613,110 +781,166 @@ app.listen(_constants2.default.PORT, err => {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.stats = stats;
-exports.index = index;
-exports.show = show;
-exports.create = create;
-exports.update = update;
-exports.remove = remove;
 
-var _postModel = __webpack_require__(19);
+var _mongoose = __webpack_require__(3);
 
-var _postModel2 = _interopRequireDefault(_postModel);
+var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _httpStatus = __webpack_require__(8);
+var _mongoosePaginate = __webpack_require__(9);
 
-var _httpStatus2 = _interopRequireDefault(_httpStatus);
+var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
 
-var _postUtil = __webpack_require__(21);
+var _mongooseUniqueValidator = __webpack_require__(10);
 
-var util = _interopRequireWildcard(_postUtil);
+var _mongooseUniqueValidator2 = _interopRequireDefault(_mongooseUniqueValidator);
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+var _slugify = __webpack_require__(36);
+
+var _slugify2 = _interopRequireDefault(_slugify);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/**
- * @group posts - Operations about posts
- *
- */
+const ObjectId = _mongoose2.default.Schema.Types.ObjectId; /**
+                                                            * @typedef movies
+                                                            * @property {string} _id
+                                                            * @property {string} movieName
+                                                            */
 
-async function stats(req, res) {
-	try {
-		let result = {
-			count: _postModel2.default.count()
-		};
+// import validator from 'validator'
+// import * as myValid from './movieValidation'
 
-		return res.status(_httpStatus2.default.OK).json(result);
-	} catch (e) {
-		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
+
+let movieSchema = new _mongoose.Schema({
+	name: {
+		type: String,
+		unique: true,
+		required: [true, 'Movie name is required!'],
+		trim: true
+	},
+	nameOrigin: {
+		type: String,
+		trim: true
+	},
+	desc: {
+		type: String,
+		trim: true
+	},
+	uploader: {
+		type: ObjectId,
+		ref: 'User',
+		required: [true, 'Uploader is required!'],
+		trim: true
+	},
+	embedUrl: {
+		type: String,
+		trim: true
+	},
+	url: {
+		type: String,
+		trim: true
+	},
+	trailerUrl: {
+		type: String,
+		trim: true
+	},
+	thumbnailUrl: {
+		type: String,
+		trim: true
+	},
+	slug: {
+		type: String,
+		unique: true,
+		trim: true
+	},
+	slugOrigin: {
+		type: String,
+		unique: true,
+		trim: true
+	},
+	genres: {
+		type: Array,
+		trim: true
+	},
+	status: {
+		type: String,
+		trim: true
+	},
+	premiere: {
+		type: Number,
+		trim: true
+	},
+	subtitleUrl: {
+		type: String,
+		trim: true
+	},
+	voiceoverUrl: {
+		type: String,
+		trim: true
+	},
+	actors: {
+		type: Array,
+		trim: true
+	},
+	tags: {
+		type: Array,
+		trim: true
+	},
+	directorName: {
+		type: String,
+		trim: true
+	},
+	// 240 360 480 720 1080 2048 4096
+	quality: {
+		type: Number,
+		trim: true
+	},
+	viewsCount: {
+		type: Number,
+		trim: true
+	},
+	likedCount: {
+		type: Number,
+		trim: true
+	},
+	favoritesCount: {
+		type: Number,
+		trim: true
+	},
+	ratingAvg: {
+		type: Number,
+		trim: true
+	},
+	ratingCount: {
+		type: Number,
+		trim: true
 	}
-}
+}, {
+	timestamps: true
+});
 
-async function index(req, res) {
-	const limit = parseInt(req.query.limit, 0);
-	const skip = parseInt(req.query.skip, 0);
-	try {
-		const users = await _postModel2.default.find(Object.assign({
-			limit,
-			skip
-		}, req.query));
+movieSchema.pre('save', function (next) {
+	this.slug = (0, _slugify2.default)(this.name, {
+		lower: true
+	});
 
-		return res.status(_httpStatus2.default.OK).json(posts);
-	} catch (e) {
-		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
-	}
-}
+	this.slugOrigin = (0, _slugify2.default)(this.nameOrigin || this.name, {
+		lower: true
+	});
 
-async function show(req, res) {
-	try {
-		const post = await _postModel2.default.findById(req.params.id).populate('user');
+	this.url = (0, _slugify2.default)(this.name, {
+		lower: true
+	}) + '_' + this._id;
 
-		return res.status(_httpStatus2.default.OK).json(post);
-	} catch (e) {
-		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
-	}
-}
+	return next();
+});
 
-async function create(req, res) {
-	try {
-		const post = await _postModel2.default.create(Object.assign({}, req.body));
+movieSchema.plugin(_mongooseUniqueValidator2.default, {
+	message: '{VALUE} already taken!'
+});
 
-		return res.status(_httpStatus2.default.CREATED).json(post);
-	} catch (e) {
-		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
-	}
-}
+movieSchema.plugin(_mongoosePaginate2.default);
 
-async function update(req, res) {
-	try {
-		const post = await _postModel2.default.findById(req.params.id);
-
-		// util.isOwn(post, req, res)
-
-		Object.keys(req.body).forEach(key => {
-			post[key] = req.body[key];
-		});
-
-		return res.status(_httpStatus2.default.OK).json((await post.save()));
-	} catch (e) {
-		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
-	}
-}
-
-async function remove(req, res) {
-	try {
-		const post = await _postModel2.default.findById(req.params.id);
-
-		// util.isOwn(post, req, res)
-
-		await post.remove();
-
-		return res.sendStatus(_httpStatus2.default.OK);
-	} catch (e) {
-		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
-	}
-}
+exports.default = _mongoose2.default.model('movie', movieSchema);
 
 /***/ }),
 /* 19 */
@@ -729,121 +953,31 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _validator = __webpack_require__(13);
-
-var _validator2 = _interopRequireDefault(_validator);
-
-var _slug = __webpack_require__(33);
-
-var _slug2 = _interopRequireDefault(_slug);
-
-var _mongoose = __webpack_require__(3);
-
-var _mongoose2 = _interopRequireDefault(_mongoose);
-
-var _mongooseUniqueValidator = __webpack_require__(11);
-
-var _mongooseUniqueValidator2 = _interopRequireDefault(_mongooseUniqueValidator);
-
-var _mongoosePaginate = __webpack_require__(10);
-
-var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
-
-var _postValidation = __webpack_require__(4);
-
-var myValid = _interopRequireWildcard(_postValidation);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-let Schema = _mongoose2.default.Schema; /**
-                                         * @typedef posts
-                                         * @property {string} _id
-                                         * @property {string} postName
-                                         */
-
-let postSchema = new Schema({
-	title: {
-		type: String,
-		trim: true,
-		required: [true, 'Title is required!'],
-		minlength: [3, 'Title need to be longer!'],
-		unique: true
-	},
-	text: {
-		type: String,
-		trim: true,
-		required: [true, 'Text   is required!'],
-		minlength: [10, 'Text   need to be longer!']
-	},
-	slug: {
-		type: String,
-		trim: true,
-		lowercase: true
-	},
-	user: {
-		type: Schema.Types.ObjectId,
-		ref: 'User'
-	},
-	favoriteCount: {
-		type: Number,
-		default: 0
-	}
-}, {
-	timestamps: true
-});
-
-postSchema.plugin(_mongooseUniqueValidator2.default, {
-	message: '{VALUE} already taken!'
-});
-
-postSchema.pre('validate', function (next) {
-	this._slugify();
-	next();
-});
-
-postSchema.methods = {
-	_slugify() {
-		this.slug = (0, _slug2.default)(this.title);
-	}
-};
-
-postSchema.plugin(_mongoosePaginate2.default);
-
-exports.default = _mongoose2.default.model('post', postSchema);
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _express = __webpack_require__(1);
+var _express = __webpack_require__(2);
 
 var _expressValidation = __webpack_require__(7);
 
 var _expressValidation2 = _interopRequireDefault(_expressValidation);
 
-var _authService = __webpack_require__(2);
+var _httpStatus = __webpack_require__(1);
 
-var _postController = __webpack_require__(18);
+var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var postController = _interopRequireWildcard(_postController);
+var _movieController = __webpack_require__(17);
 
-var _postValidation = __webpack_require__(4);
+var movieController = _interopRequireWildcard(_movieController);
 
-var _postValidation2 = _interopRequireDefault(_postValidation);
+var _movieValidation = __webpack_require__(21);
+
+var _movieValidation2 = _interopRequireDefault(_movieValidation);
+
+var _authService = __webpack_require__(6);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/* eslint-disable no-unused-vars */
 const router = new _express.Router();
 
 /**
@@ -856,11 +990,64 @@ const router = new _express.Router();
  */
 
 //  Default router
-router.get('/stats', (0, _expressValidation2.default)(_postValidation2.default.stats), postController.stats).get('/', (0, _expressValidation2.default)(_postValidation2.default.index), postController.index).get('/:id', (0, _expressValidation2.default)(_postValidation2.default.show), postController.show).post('/', (0, _expressValidation2.default)(_postValidation2.default.create), _authService.authJwt, postController.create).put('/:id', (0, _expressValidation2.default)(_postValidation2.default.update), _authService.authJwt, postController.update).delete('/:id', (0, _expressValidation2.default)(_postValidation2.default.remove), _authService.authJwt, postController.remove);
+router.get('/stats', (0, _expressValidation2.default)(_movieValidation2.default.stats), movieController.getMoviesStats, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK).json({
+		moviesStats: res.moviesStats
+	});
+}).get('/', (0, _expressValidation2.default)(_movieValidation2.default.index), movieController.getMoviesStats, movieController.getMovies, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK).json({
+		movies: res.movies,
+		moviesStats: res.moviesStats
+	});
+}).get('/:id', (0, _expressValidation2.default)(_movieValidation2.default.show), movieController.getMovieById, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK).json({
+		movie: res.movie
+	});
+}).post('/', _authService.authJwt,
+// validate(movieValidation.create),
+movieController.createMovie, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK).json({
+		movie: res.movie
+	});
+}).put('/:id', (0, _expressValidation2.default)(_movieValidation2.default.update), movieController.updateMovie, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK).json({
+		movie: res.movie
+	});
+}).delete('/:id', (0, _expressValidation2.default)(_movieValidation2.default.delete), movieController.deleteMovie, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK);
+});
 
 // More router
 
 exports.default = router;
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.debug = debug;
+exports.isOwn = isOwn;
+
+var _httpStatus = __webpack_require__(1);
+
+var _httpStatus2 = _interopRequireDefault(_httpStatus);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function debug(obj) {
+	console.log(obj);
+} /* eslint-disable no-console */
+function isOwn(movie, req, res) {
+	if (!movie.user.equals(req.user._id)) {
+		return res.sendStatus(_httpStatus2.default.UNAUTHORIZED);
+	}
+}
 
 /***/ }),
 /* 21 */
@@ -872,17 +1059,23 @@ exports.default = router;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.debug = debug;
-exports.isOwn = isOwn;
-function debug(obj) {
-	console.log(obj);
-}
+exports.passwordReg = undefined;
 
-function isOwn(post, req, res) {
-	if (!post.user.equals(req.user._id)) {
-		return res.sendStatus(HTTPStatus.UNAUTHORIZED);
-	}
-}
+var _joi = __webpack_require__(8);
+
+var _joi2 = _interopRequireDefault(_joi);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const passwordReg = exports.passwordReg = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/; /* eslint-disable no-unused-vars */
+exports.default = {
+	stats: {},
+	index: {},
+	show: {},
+	create: {},
+	update: {},
+	delete: {}
+};
 
 /***/ }),
 /* 22 */
@@ -894,19 +1087,21 @@ function isOwn(post, req, res) {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.getStats = getStats;
-exports.index = index;
-exports.show = show;
-exports.create = create;
-exports.update = update;
-exports.remove = remove;
-exports.login = login;
+exports.getUsersStats = getUsersStats;
+exports.getProfile = getProfile;
+exports.getUsers = getUsers;
+exports.getUserById = getUserById;
+exports.createUser = createUser;
+exports.updateUser = updateUser;
+exports.deleteUser = deleteUser;
+exports.localLogin = localLogin;
+exports.facebookLogin = facebookLogin;
 
-var _userModel = __webpack_require__(5);
+var _userModel = __webpack_require__(4);
 
 var _userModel2 = _interopRequireDefault(_userModel);
 
-var _httpStatus = __webpack_require__(8);
+var _httpStatus = __webpack_require__(1);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
@@ -923,84 +1118,100 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  */
 
-async function getStats(req, res, next) {
+async function getUsersStats(req, res, next) {
 	try {
-		let stats = {
+		res.usersStats = {
 			count: await _userModel2.default.estimatedDocumentCount()
+		};
 
-			// callback(null,stats)
-		};res.stats = stats;
+		next();
+	} catch (e) {
+		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
+	}
+}
+// eslint-disable-next-line no-unused-vars
+/* eslint-disable no-unused-vars */
+async function getProfile(req, res, next) {
+	try {
+		req.authenUser = req.user.toAuthJSON();
+
 		next();
 	} catch (e) {
 		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
 	}
 }
 
-async function index(req, res) {
-	const limit = parseInt(req.query.limit, 0) || 10;
-	const skip = parseInt(req.query.skip, 0) || 0;
-	try {
-		const users = await _userModel2.default.find(Object.assign({}, req.query));
+async function getUsers(req, res, next) {
+	const limit = parseInt(req.query.limit, 0);
+	const skip = parseInt(req.query.skip, 0);
 
-		return res.status(_httpStatus2.default.OK).json(users);
+	try {
+		res.users = await _userModel2.default.find(Object.assign({}, req.query));
+
+		next();
 	} catch (e) {
 		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
 	}
 }
 
-async function show(req, res) {
+async function getUserById(req, res, next) {
 	try {
-		const user = await _userModel2.default.findById(req.params.id).populate('user');
+		res.user = await _userModel2.default.findById(req.params.id);
 
-		return res.status(_httpStatus2.default.OK).json(user);
+		next();
 	} catch (e) {
 		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
 	}
 }
 
-async function create(req, res) {
+async function createUser(req, res, next) {
 	try {
-		const user = await _userModel2.default.create(req.body);
+		const user = await _userModel2.default.create(Object.assign({}, req.body, { provider: 'local' }));
+		req.user = user.toAuthJSON();
 
-		return res.status(_httpStatus2.default.CREATED).json(user.toAuthJSON());
+		next();
 	} catch (e) {
 		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
 	}
 }
 
-async function update(req, res) {
+async function updateUser(req, res, next) {
 	try {
-		const user = await _userModel2.default.findById(req.params.id);
-
-		// util.isOwn(user, req, res)
+		let user = await _userModel2.default.findById(req.params.id);
+		// util.isOwn(user, req, res, next)
 
 		Object.keys(req.body).forEach(key => {
 			user[key] = req.body[key];
 		});
+		await user.save();
+		res.user = user;
 
-		return res.status(_httpStatus2.default.OK).json((await user.save()));
+		next();
 	} catch (e) {
 		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
 	}
 }
 
-async function remove(req, res) {
+async function deleteUser(req, res, next) {
 	try {
 		const user = await _userModel2.default.findById(req.params.id);
 
-		// util.isOwn(user, req, res)
+		// util.isOwn(user, req, res, next)
 
 		await user.remove();
 
-		return res.sendStatus(_httpStatus2.default.OK);
+		next();
 	} catch (e) {
 		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
 	}
 }
 
-async function login(req, res, next) {
-	res.status(_httpStatus2.default.OK).json(req.user.toAuthJSON());
-
+function localLogin(req, res, next) {
+	req.user = req.user.toAuthJSON();
+	return next();
+}
+function facebookLogin(req, res, next) {
+	// req.user is inited
 	return next();
 }
 
@@ -1015,13 +1226,13 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _express = __webpack_require__(1);
+var _express = __webpack_require__(2);
 
 var _expressValidation = __webpack_require__(7);
 
 var _expressValidation2 = _interopRequireDefault(_expressValidation);
 
-var _httpStatus = __webpack_require__(8);
+var _httpStatus = __webpack_require__(1);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
@@ -1029,16 +1240,17 @@ var _userController = __webpack_require__(22);
 
 var userController = _interopRequireWildcard(_userController);
 
-var _userValidation = __webpack_require__(6);
+var _userValidation = __webpack_require__(5);
 
 var _userValidation2 = _interopRequireDefault(_userValidation);
 
-var _authService = __webpack_require__(2);
+var _authService = __webpack_require__(6);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/* eslint-disable no-unused-vars */
 const router = new _express.Router();
 
 /**
@@ -1050,21 +1262,50 @@ const router = new _express.Router();
  * DELETE /items/:id => remove
  */
 
-//  Default router
-router.get('/stats', (0, _expressValidation2.default)(_userValidation2.default.stats), userController.getStats, function (req, res) {
+// More router
+router.get('/current', _authService.authJwt, userController.getProfile, function (req, res, next) {
 	return res.status(_httpStatus2.default.OK).json({
-		stats: res.stats
+		user: req.user
+	});
+}).post('/signup', (0, _expressValidation2.default)(_userValidation2.default.create), userController.createUser, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK).json({
+		user: req.user
+	});
+}).post('/login', _authService.authLocal, userController.localLogin, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK).json({
+		user: req.user
+	});
+}).get('/auth/facebook', _authService.authFacebook).get('/auth/facebook/callback', _authService.authFacebook, userController.facebookLogin, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK).json({
+		user: req.user
 	});
 });
-router.get('/', (0, _expressValidation2.default)(_userValidation2.default.index), userController.index);
-router.get('/:id', (0, _expressValidation2.default)(_userValidation2.default.show), userController.show);
-router.post('/', (0, _expressValidation2.default)(_userValidation2.default.create), userController.create);
-router.put('/:id', (0, _expressValidation2.default)(_userValidation2.default.update), userController.update);
-router.delete('/:id', (0, _expressValidation2.default)(_userValidation2.default.remove), userController.remove);
 
-// More router
-router.post('/signup', (0, _expressValidation2.default)(_userValidation2.default.create), userController.create);
-router.post('/login', _authService.authLocal, userController.login);
+//  Default router
+router.get('/stats', (0, _expressValidation2.default)(_userValidation2.default.stats), userController.getUsersStats, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK).json({
+		usersStats: res.usersStats
+	});
+}).get('/', (0, _expressValidation2.default)(_userValidation2.default.index), userController.getUsersStats, userController.getUsers, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK).json({
+		users: res.users,
+		usersStats: res.usersStats
+	});
+}).get('/:id', (0, _expressValidation2.default)(_userValidation2.default.show), userController.getUserById, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK).json({
+		user: res.user
+	});
+}).post('/', (0, _expressValidation2.default)(_userValidation2.default.create), userController.createUser, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK).json({
+		user: req.user
+	});
+}).put('/:id', (0, _expressValidation2.default)(_userValidation2.default.update), userController.updateUser, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK).json({
+		user: res.user
+	});
+}).delete('/:id', (0, _expressValidation2.default)(_userValidation2.default.delete), userController.deleteUser, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK);
+});
 
 exports.default = router;
 
@@ -1077,57 +1318,92 @@ exports.default = router;
 
 /***/ }),
 /* 25 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = require("bcrypt-nodejs");
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.genderToNumber = genderToNumber;
+function genderToNumber(gender) {
+	if (gender == 'male') return 1;
+	if (gender == 'female') return 2;
+	return 0;
+}
 
 /***/ }),
 /* 26 */
 /***/ (function(module, exports) {
 
-module.exports = require("body-parser");
+module.exports = require("bcrypt-nodejs");
 
 /***/ }),
 /* 27 */
 /***/ (function(module, exports) {
 
-module.exports = require("compression");
+module.exports = require("body-parser");
 
 /***/ }),
 /* 28 */
 /***/ (function(module, exports) {
 
-module.exports = require("helmet");
+module.exports = require("compression");
 
 /***/ }),
 /* 29 */
 /***/ (function(module, exports) {
 
-module.exports = require("jsonwebtoken");
+module.exports = require("helmet");
 
 /***/ }),
 /* 30 */
 /***/ (function(module, exports) {
 
-module.exports = require("morgan");
+module.exports = require("jsonwebtoken");
 
 /***/ }),
 /* 31 */
 /***/ (function(module, exports) {
 
-module.exports = require("passport-jwt");
+module.exports = require("lodash");
 
 /***/ }),
 /* 32 */
 /***/ (function(module, exports) {
 
-module.exports = require("passport-local");
+module.exports = require("morgan");
 
 /***/ }),
 /* 33 */
 /***/ (function(module, exports) {
 
-module.exports = require("slug");
+module.exports = require("passport-facebook");
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports) {
+
+module.exports = require("passport-jwt");
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports) {
+
+module.exports = require("passport-local");
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports) {
+
+module.exports = require("slugify");
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports) {
+
+module.exports = require("validator");
 
 /***/ })
 /******/ ]);

@@ -3,7 +3,7 @@ import con from './config/constants'
 import './config/database'
 import middlewareConfig from './config/middleware'
 import apiRoutes from './modules'
-// import userRoute from './modules/user/userRoute'
+import listEndpoints from 'express-list-endpoints'
 
 const app = express()
 middlewareConfig(app)
@@ -12,6 +12,9 @@ app.get('/', (req, res) => {
 	res.send('Hello hihi!')
 })
 
+app.get('/api', (req, res) => {
+	res.send(listEndpoints(app))
+})
 apiRoutes(app)
 
 app.listen(con.PORT, err => {
@@ -20,9 +23,7 @@ app.listen(con.PORT, err => {
 	} else {
 		// eslint-disable-next-line no-console
 		console.log(`
-      Server running on port: ${con.PORT}
-      Running on ${con.HOST}
-      Make something great!
+      Running on ${con.HOST}:${con.PORT}
     `)
 	}
 })

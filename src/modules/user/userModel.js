@@ -4,6 +4,7 @@ import mongoosePaginate from 'mongoose-paginate'
 import { hashSync, compareSync } from 'bcrypt-nodejs'
 import uniqueValidator from 'mongoose-unique-validator'
 import jwt from 'jsonwebtoken'
+import _ from 'lodash'
 
 import { passwordReg } from './userValidation'
 import con from '../../config/constants'
@@ -12,8 +13,11 @@ import con from '../../config/constants'
  * @typedef users
  * @property {string} _id
  * @property {string} email
- * @property {string} firstName
- * @property {string} lastName
+ * @property {string} name
+ * @property {string} email
+ * @property {string} name
+ * @property {string} email
+ * @property {string} name
  * @property {string} password
  */
 
@@ -31,17 +35,9 @@ let userSchema = new Schema(
 				message: '{VALUE} is not a valid email!'
 			}
 		},
-		firstName: {
-			type: String,
-			trim: true
-		},
-		lastName: {
-			type: String,
-			trim: true
-		},
 		password: {
 			type: String,
-			required: [true, 'Password is required!'],
+			// required: [true, 'Password is required!'],
 			trim: true,
 			minlength: [6, 'Password need to be longer!'],
 			validate: {
@@ -50,6 +46,45 @@ let userSchema = new Schema(
 				},
 				message: '{VALUE} is not a valid password!'
 			}
+		},
+		name: {
+			type: String,
+			trim: true
+		},
+		provider: {
+			type: String,
+			trim: true
+		},
+		socials: {
+			type: Object,
+			trim: true
+		},
+		gender: {
+			type: Number,
+			trim: true,
+			default: 0
+		},
+		role: {
+			type: String,
+			trim: true,
+			default: 'user'
+		},
+		avatarUrl: {
+			type: String,
+			trim: true,
+			default: 'https://png.pngtree.com/svg/20161212/f93e57629c.svg'
+		},
+		token: {
+			type: String,
+			trim: true
+		},
+		uploadedCount: {
+			type: Number,
+			trim: true
+		},
+		friendsRequest: {
+			type: Array, // ObjectId User
+			trim: true
 		}
 	},
 	{
@@ -84,17 +119,24 @@ userSchema.methods = {
 			con.JWT_SECRET
 		)
 	},
+	toJSON() {
+		return _.pick(this, [
+			'_id',
+			'email',
+			'name',
+			'role',
+			'avatarUrl',
+			'fbId',
+			'ggId'
+		])
+	},
 	toAuthJSON() {
 		return {
-			_id: this._id,
-			email: this.email,
+			...this.toJSON(),
+			role: this.role,
+			provider: this.provider,
+			providerUrl: this.providerUrl,
 			token: `JWT ${this.createToken()}`
-		}
-	},
-	toJSON() {
-		return {
-			_id: this._id,
-			email: this.email
 		}
 	}
 }

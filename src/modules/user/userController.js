@@ -1,5 +1,7 @@
+/* eslint-disable no-unused-vars */
 import User from './userModel.js'
 import HTTPStatus from 'http-status'
+// eslint-disable-next-line no-unused-vars
 import * as util from './userUtil'
 
 /**
@@ -7,90 +9,102 @@ import * as util from './userUtil'
  *
  */
 
-export async function getStats(req, res, next) {
+export async function getUsersStats(req, res, next) {
 	try {
-		let stats = {
+		res.usersStats = {
 			count: await User.estimatedDocumentCount()
 		}
 
-		// callback(null,stats)
-		res.stats = stats
 		next()
 	} catch (e) {
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
 
-export async function index(req, res) {
-	const limit = parseInt(req.query.limit, 0) || 10
-	const skip = parseInt(req.query.skip, 0) || 0
+export async function getProfile(req, res, next) {
 	try {
-		const users = await User.find({
+		req.authenUser = req.user.toAuthJSON()
+
+		next()
+	} catch (e) {
+		return res.status(HTTPStatus.BAD_REQUEST).json(e)
+	}
+}
+
+export async function getUsers(req, res, next) {
+	const limit = parseInt(req.query.limit, 0)
+	const skip = parseInt(req.query.skip, 0)
+
+	try {
+		res.users = await User.find({
+			// limit,
+			// skip,
 			...req.query
 		})
 
-		return res.status(HTTPStatus.OK).json(users)
+		next()
 	} catch (e) {
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
 
-export async function show(req, res) {
+export async function getUserById(req, res, next) {
 	try {
-		const user = await User.findById(
-			req.params.id
-		).populate('user')
+		res.user = await User.findById(req.params.id)
 
-		return res.status(HTTPStatus.OK).json(user)
+		next()
 	} catch (e) {
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
 
-export async function create(req, res) {
+export async function createUser(req, res, next) {
 	try {
-		const user = await User.create(req.body)
+		const user = await User.create({ ...req.body, provider: 'local' })
+		req.user = user.toAuthJSON()
 
-		return res
-			.status(HTTPStatus.CREATED)
-			.json(user.toAuthJSON())
+		next()
 	} catch (e) {
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
 
-export async function update(req, res) {
+export async function updateUser(req, res, next) {
 	try {
-		const user = await User.findById(req.params.id)
-
-		// util.isOwn(user, req, res)
+		let user = await User.findById(req.params.id)
+		// util.isOwn(user, req, res, next)
 
 		Object.keys(req.body).forEach(key => {
 			user[key] = req.body[key]
 		})
+		await user.save()
+		res.user = user
 
-		return res.status(HTTPStatus.OK).json(await user.save())
+		next()
 	} catch (e) {
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
 
-export async function remove(req, res) {
+export async function deleteUser(req, res, next) {
 	try {
 		const user = await User.findById(req.params.id)
 
-		// util.isOwn(user, req, res)
+		// util.isOwn(user, req, res, next)
 
 		await user.remove()
 
-		return res.sendStatus(HTTPStatus.OK)
+		next()
 	} catch (e) {
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
 
-export async function login(req, res, next) {
-	res.status(HTTPStatus.OK).json(req.user.toAuthJSON())
-
+export function localLogin(req, res, next) {
+	req.user = req.user.toAuthJSON()
+	return next()
+}
+export function facebookLogin(req, res, next) {
+	// req.user is inited
 	return next()
 }

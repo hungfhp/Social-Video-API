@@ -35,7 +35,7 @@
       {
         "semi": false,
         "singleQuote": true,
-        "printWidth": 60,
+        "printWidth": 80,
         "useTabs": true
       }
     ]
