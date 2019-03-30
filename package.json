@@ -9,7 +9,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run clean && webpack -w && cross-env NODE_ENV=development nodemon dist/index.bundle.js",
     "dev": "cross-env NODE_ENV=development nodemon dist/index.bundle.js",
-    "start": "concurrently --kill-others \"nodemon webpack -w\" \"cross-env NODE_ENV=development nodemon dist/index.bundle.js\""
+    "prod": "cross-env NODE_ENV=production nodemon dist/index.bundle.js",
+    "start": "nodemon dist/index.bundle.js"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
