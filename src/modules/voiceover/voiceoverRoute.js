@@ -3,11 +3,9 @@ import { Router } from 'express'
 import validate from 'express-validation'
 import HTTPStatus from 'http-status'
 
-import * as movieController from './movieController'
-import movieValidation from './movieValidation'
-import * as authService from '../../services/authService'
-import * as paramService from '../../services/paramService'
-import * as ownMiddleware from '../../middlewares/ownMiddleware'
+import * as voiceoverController from './voiceoverController'
+import voiceoverValidation from './voiceoverValidation'
+
 const router = new Router()
 
 /**
@@ -23,64 +21,62 @@ const router = new Router()
 router
 	.get(
 		'/stats',
-		validate(movieValidation.stats),
-		movieController.getMoviesStats,
+		validate(voiceoverValidation.stats),
+		voiceoverController.getVoiceoversStats,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				moviesStats: res.moviesStats
+				voiceoversStats: res.voiceoversStats
 			})
 		}
 	)
 	.get(
 		'/',
-		validate(movieValidation.index),
-		paramService.parseParam,
-		movieController.getMovies,
+		validate(voiceoverValidation.index),
+		voiceoverController.getVoiceoversStats,
+		voiceoverController.getVoiceovers,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				movies: res.movies,
-				moviesMeta: res.moviesMeta
+				voiceovers: res.voiceovers,
+				voiceoversStats: res.voiceoversStats
 			})
 		}
 	)
 	.get(
 		'/:id',
-		validate(movieValidation.show),
-		movieController.getMovieById,
+		validate(voiceoverValidation.show),
+		voiceoverController.getVoiceoverById,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				movie: res.movie
+				voiceover: res.voiceover
 			})
 		}
 	)
 	.post(
 		'/',
-		validate(movieValidation.create),
-		authService.authJwt,
-		movieController.createMovie,
+		validate(voiceoverValidation.create),
+		voiceoverController.createVoiceover,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				movie: res.movie
+				voiceover: res.voiceover
 			})
 		}
 	)
 	.put(
 		'/:id',
-		validate(movieValidation.update),
-		ownMiddleware.ownMovie,
-		movieController.updateMovie,
+		validate(voiceoverValidation.update),
+		voiceoverController.updateVoiceover,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				movie: res.movie
+				voiceover: res.voiceover
 			})
 		}
 	)
 	.delete(
 		'/:id',
-		validate(movieValidation.delete),
-		movieController.deleteMovie,
+		validate(voiceoverValidation.delete),
+		voiceoverController.deleteVoiceover,
 		function(req, res, next) {
-			return res.sendStatus(HTTPStatus.OK)
+		return res.sendStatus(HTTPStatus.OK)
 		}
 	)
 

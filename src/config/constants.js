@@ -3,15 +3,14 @@
 const devConfig = {
 	HOST: process.env.HOST || 'localhost',
 	PORT: process.env.PORT || 3000,
-	MONGO_URL:
-		'mongodb://hungdm:30c15b7800213b2844e224a1f5fbdfb0@43.239.223.206:27017/gr2019'
+	MONGO_URL: 'mongodb://localhost:27017/gr2019-dev'
 }
 
 const testConfig = {
 	HOST: process.env.HOST || 'localhost',
 	PORT: process.env.PORT || 3000,
 	MONGO_URL:
-		'mongodb://hungdm:30c15b7800213b2844e224a1f5fbdfb0@43.239.223.206:27017/gr2019'
+		'mongodb://hungdm:30c15b7800213b2844e224a1f5fbdfb0@43.239.223.206:27017/gr2019-test'
 }
 
 const prodConfig = {

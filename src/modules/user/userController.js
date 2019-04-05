@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import User from './userModel.js'
 import HTTPStatus from 'http-status'
 // eslint-disable-next-line no-unused-vars
@@ -32,15 +31,11 @@ export async function getProfile(req, res, next) {
 }
 
 export async function getUsers(req, res, next) {
-	const limit = parseInt(req.query.limit, 0)
-	const skip = parseInt(req.query.skip, 0)
-
 	try {
-		res.users = await User.find({
-			// limit,
-			// skip,
-			...req.query
-		})
+		let { docs, ...usersMeta } = await User.paginate({}, req.parsedParams)
+
+		res.users = docs
+		res.usersMeta = usersMeta
 
 		next()
 	} catch (e) {
@@ -72,7 +67,6 @@ export async function createUser(req, res, next) {
 export async function updateUser(req, res, next) {
 	try {
 		let user = await User.findById(req.params.id)
-		// util.isOwn(user, req, res, next)
 
 		Object.keys(req.body).forEach(key => {
 			user[key] = req.body[key]
@@ -89,8 +83,6 @@ export async function updateUser(req, res, next) {
 export async function deleteUser(req, res, next) {
 	try {
 		const user = await User.findById(req.params.id)
-
-		// util.isOwn(user, req, res, next)
 
 		await user.remove()
 

@@ -3,87 +3,86 @@ import { Router } from 'express'
 import validate from 'express-validation'
 import HTTPStatus from 'http-status'
 
-import * as movieController from './movieController'
-import movieValidation from './movieValidation'
+import * as followController from './followController'
+import followValidation from './followValidation'
 import * as authService from '../../services/authService'
 import * as paramService from '../../services/paramService'
-import * as ownMiddleware from '../../middlewares/ownMiddleware'
+
 const router = new Router()
 
 /**
- * GET /items/stats => stats
- * GET /items => index
- * GET /items/:id => show
- * POST /items/ => create
- * PATCH/PUT /items/:id => update
- * DELETE /items/:id => remove
+ * GET /items/stats => getFollowsStats
+ * GET /items => getFollows
+ * GET /items/:id => getFollowById
+ * POST /items/ => createFollow
+ * PATCH/PUT /items/:id => updateFollow
+ * DELETE /items/:id => deleteFollow
  */
 
-//  Default router
+// More router
+
+// Default Rest router
 router
 	.get(
 		'/stats',
-		validate(movieValidation.stats),
-		movieController.getMoviesStats,
+		validate(followValidation.stats),
+		followController.getFollowsStats,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				moviesStats: res.moviesStats
+				followsStats: res.followsStats
 			})
 		}
 	)
 	.get(
 		'/',
-		validate(movieValidation.index),
 		paramService.parseParam,
-		movieController.getMovies,
+		validate(followValidation.index),
+		followController.getFollows,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				movies: res.movies,
-				moviesMeta: res.moviesMeta
+				follows: res.follows,
+				followsMeta: res.followsMeta
 			})
 		}
 	)
 	.get(
 		'/:id',
-		validate(movieValidation.show),
-		movieController.getMovieById,
+		validate(followValidation.show),
+		followController.getFollowById,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				movie: res.movie
+				follow: res.follow
 			})
 		}
 	)
 	.post(
 		'/',
-		validate(movieValidation.create),
 		authService.authJwt,
-		movieController.createMovie,
+		validate(followValidation.create),
+		followController.createFollow,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				movie: res.movie
+				follow: res.follow
 			})
 		}
 	)
 	.put(
 		'/:id',
-		validate(movieValidation.update),
-		ownMiddleware.ownMovie,
-		movieController.updateMovie,
+		validate(followValidation.update),
+		followController.updateFollow,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				movie: res.movie
+				follow: res.follow
 			})
 		}
 	)
 	.delete(
 		'/:id',
-		validate(movieValidation.delete),
-		movieController.deleteMovie,
+		validate(followValidation.delete),
+		followController.deleteFollow,
 		function(req, res, next) {
 			return res.sendStatus(HTTPStatus.OK)
 		}
 	)
-
-// More router
 
 export default router

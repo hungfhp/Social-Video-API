@@ -10,12 +10,12 @@ import { authLocal, authFacebook, authJwt } from '../../services/authService'
 const router = new Router()
 
 /**
- * GET /items/stats => stats
- * GET /items => index
- * GET /items/:id => show
- * POST /items/:id => create
- * PATCH/PUT /items/:id => update
- * DELETE /items/:id => remove
+ * GET /items/stats => getUsersStats
+ * GET /items => getUsers
+ * GET /items/:id => getUserById
+ * POST /items/ => createUser
+ * PATCH/PUT /items/:id => updateUser
+ * DELETE /items/:id => deleteUser
  */
 
 // More router
@@ -60,7 +60,7 @@ router
 		}
 	)
 
-//  Default router
+//  Default Rest router
 router
 	.get(
 		'/stats',
@@ -72,18 +72,16 @@ router
 			})
 		}
 	)
-	.get(
-		'/',
-		validate(userValidation.index),
-		userController.getUsersStats,
-		userController.getUsers,
-		function(req, res, next) {
-			return res.status(HTTPStatus.OK).json({
-				users: res.users,
-				usersStats: res.usersStats
-			})
-		}
-	)
+	.get('/', validate(userValidation.index), userController.getUsers, function(
+		req,
+		res,
+		next
+	) {
+		return res.status(HTTPStatus.OK).json({
+			users: res.users,
+			usersMeta: res.usersMeta
+		})
+	})
 	.get(
 		'/:id',
 		validate(userValidation.show),
@@ -119,7 +117,7 @@ router
 		validate(userValidation.delete),
 		userController.deleteUser,
 		function(req, res, next) {
-			return res.status(HTTPStatus.OK)
+		return res.sendStatus(HTTPStatus.OK)
 		}
 	)
 

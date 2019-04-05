@@ -21,15 +21,11 @@ export async function getSamplesStats(req, res, next) {
 }
 
 export async function getSamples(req, res, next) {
-	const limit = parseInt(req.query.limit, 0)
-	const skip = parseInt(req.query.skip, 0)
-
 	try {
-		res.samples = await Sample.find({
-			// limit,
-			// skip,
-			...req.query
-		})
+		let { docs, ...samplesMeta } = await Sample.paginate({}, req.parsedParams)
+
+		res.samples = docs
+		res.samplesMeta = samplesMeta
 
 		next()
 	} catch (e) {
@@ -60,7 +56,6 @@ export async function createSample(req, res, next) {
 export async function updateSample(req, res, next) {
 	try {
 		let sample = await Sample.findById(req.params.id)
-		// util.isOwn(sample, req, res, next)
 
 		Object.keys(req.body).forEach(key => {
 			sample[key] = req.body[key]
@@ -77,8 +72,6 @@ export async function updateSample(req, res, next) {
 export async function deleteSample(req, res, next) {
 	try {
 		const sample = await Sample.findById(req.params.id)
-
-		// util.isOwn(sample, req, res, next)
 
 		await sample.remove()
 

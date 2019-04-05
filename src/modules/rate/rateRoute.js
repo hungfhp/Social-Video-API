@@ -3,87 +3,86 @@ import { Router } from 'express'
 import validate from 'express-validation'
 import HTTPStatus from 'http-status'
 
-import * as movieController from './movieController'
-import movieValidation from './movieValidation'
+import * as rateController from './rateController'
+import rateValidation from './rateValidation'
 import * as authService from '../../services/authService'
 import * as paramService from '../../services/paramService'
-import * as ownMiddleware from '../../middlewares/ownMiddleware'
+
 const router = new Router()
 
 /**
- * GET /items/stats => stats
- * GET /items => index
- * GET /items/:id => show
- * POST /items/ => create
- * PATCH/PUT /items/:id => update
- * DELETE /items/:id => remove
+ * GET /items/stats => getRatesStats
+ * GET /items => getRates
+ * GET /items/:id => getRateById
+ * POST /items/ => createRate
+ * PATCH/PUT /items/:id => updateRate
+ * DELETE /items/:id => deleteRate
  */
 
-//  Default router
+// More router
+
+// Default Rest router
 router
 	.get(
 		'/stats',
-		validate(movieValidation.stats),
-		movieController.getMoviesStats,
+		validate(rateValidation.stats),
+		rateController.getRatesStats,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				moviesStats: res.moviesStats
+				ratesStats: res.ratesStats
 			})
 		}
 	)
 	.get(
 		'/',
-		validate(movieValidation.index),
 		paramService.parseParam,
-		movieController.getMovies,
+		validate(rateValidation.index),
+		rateController.getRates,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				movies: res.movies,
-				moviesMeta: res.moviesMeta
+				rates: res.rates,
+				ratesMeta: res.ratesMeta
 			})
 		}
 	)
 	.get(
 		'/:id',
-		validate(movieValidation.show),
-		movieController.getMovieById,
+		validate(rateValidation.show),
+		rateController.getRateById,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				movie: res.movie
+				rate: res.rate
 			})
 		}
 	)
 	.post(
 		'/',
-		validate(movieValidation.create),
 		authService.authJwt,
-		movieController.createMovie,
+		validate(rateValidation.create),
+		rateController.createRate,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				movie: res.movie
+				rate: res.rate
 			})
 		}
 	)
 	.put(
 		'/:id',
-		validate(movieValidation.update),
-		ownMiddleware.ownMovie,
-		movieController.updateMovie,
+		validate(rateValidation.update),
+		rateController.updateRate,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				movie: res.movie
+				rate: res.rate
 			})
 		}
 	)
 	.delete(
 		'/:id',
-		validate(movieValidation.delete),
-		movieController.deleteMovie,
+		validate(rateValidation.delete),
+		rateController.deleteRate,
 		function(req, res, next) {
 			return res.sendStatus(HTTPStatus.OK)
 		}
 	)
-
-// More router
 
 export default router

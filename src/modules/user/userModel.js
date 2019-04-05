@@ -1,12 +1,15 @@
 import validator from 'validator'
 import mongoose, { Schema } from 'mongoose'
-import mongoosePaginate from 'mongoose-paginate'
+const ObjectId = mongoose.Schema.Types.ObjectId
 import { hashSync, compareSync } from 'bcrypt-nodejs'
+import mongoosePaginate from 'mongoose-paginate'
+// eslint-disable-next-line no-unused-vars
+import autopopulate from 'mongoose-autopopulate'
 import uniqueValidator from 'mongoose-unique-validator'
 import jwt from 'jsonwebtoken'
 import _ from 'lodash'
 
-import { passwordReg } from './userValidation'
+import { passwordReg } from '../../config/regex'
 import con from '../../config/constants'
 
 /**
@@ -37,7 +40,6 @@ let userSchema = new Schema(
 		},
 		password: {
 			type: String,
-			// required: [true, 'Password is required!'],
 			trim: true,
 			minlength: [6, 'Password need to be longer!'],
 			validate: {
@@ -82,10 +84,13 @@ let userSchema = new Schema(
 			type: Number,
 			trim: true
 		},
-		friendsRequest: {
-			type: Array, // ObjectId User
-			trim: true
-		}
+		friendsRequest: [
+			{
+				type: ObjectId,
+				ref: 'User',
+				trim: true
+			}
+		]
 	},
 	{
 		timestamps: true
@@ -141,6 +146,10 @@ userSchema.methods = {
 	}
 }
 
+userSchema.plugin(uniqueValidator, {
+	message: '{VALUE} already taken!'
+})
 userSchema.plugin(mongoosePaginate)
+userSchema.plugin(autopopulate)
 
 export default mongoose.model('User', userSchema)

@@ -4,7 +4,7 @@ import { Strategy as FacebookStrategy } from 'passport-facebook'
 import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt'
 import User from '../modules/user/userModel'
 import constants from '../config/constants'
-import { genderToNumber } from '../services/helperService'
+import { genderToNumber } from '../utils/helper'
 
 const localOpts = {
 	usernameField: 'email'

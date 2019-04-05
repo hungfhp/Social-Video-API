@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
 import Joi from 'joi'
-
 export default {
 	stats: {},
 	index: {},
