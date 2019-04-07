@@ -8,9 +8,13 @@
 // import * as myValid from './movieValidation'
 import mongoose, { Schema } from 'mongoose'
 const ObjectId = mongoose.Schema.Types.ObjectId
+import float from 'mongoose-float'
+const Float = float.loadType(mongoose)
 import mongoosePaginate from 'mongoose-paginate'
+import autopopulate from 'mongoose-autopopulate'
 import uniqueValidator from 'mongoose-unique-validator'
-import slugify from 'slugify'
+
+import * as pluginService from '../../services/pluginService'
 
 let movieSchema = new Schema(
 	{
@@ -28,14 +32,40 @@ let movieSchema = new Schema(
 			type: String,
 			trim: true
 		},
+		imdb: {
+			id: {
+				type: String,
+				trim: true
+			},
+			ratesAvg: {
+				type: Float,
+				trim: true
+			},
+			ratesCount: {
+				type: Number,
+				trim: true
+			}
+		},
+		duration: {
+			type: Date,
+			trim: true
+		},
+		country: {
+			type: ObjectId,
+			ref: 'Country',
+			autopopulate: true,
+			trim: true
+		},
 		uploader: {
 			type: ObjectId,
 			ref: 'User',
+			autopopulate: true,
 			required: [true, 'Uploader is required!'],
 			trim: true
 		},
 		embedUrl: {
 			type: String,
+			required: [true, 'Movie file is required!'],
 			trim: true
 		},
 		url: {
@@ -46,10 +76,26 @@ let movieSchema = new Schema(
 			type: String,
 			trim: true
 		},
-		thumbnailUrl: {
-			type: String,
-			trim: true
+		thumbnails: {
+			small: {
+				type: String,
+				trim: true
+			},
+			medium: {
+				type: String,
+				trim: true
+			},
+			large: {
+				type: String,
+				trim: true
+			}
 		},
+		photos: [
+			{
+				type: String,
+				trim: true
+			}
+		],
 		slug: {
 			type: String,
 			unique: true,
@@ -60,15 +106,25 @@ let movieSchema = new Schema(
 			unique: true,
 			trim: true
 		},
-		genres: {
-			type: Array,
-			trim: true
-		},
+		genres: [
+			{
+				type: ObjectId,
+				ref: 'Genre',
+				autopopulate: true,
+				trim: true
+			}
+		],
 		status: {
 			type: String,
+			enum: ['pending', 'updating', 'done'],
+			default: 'pending',
 			trim: true
 		},
-		premiere: {
+		releaseDate: {
+			type: Date,
+			trim: true
+		},
+		year: {
 			type: Number,
 			trim: true
 		},
@@ -80,28 +136,35 @@ let movieSchema = new Schema(
 			type: String,
 			trim: true
 		},
-		actors: {
+		voiceovers: [
+			{
+				type: ObjectId,
+				ref: 'Voiceover',
+				trim: true
+			}
+		],
+		actors: [
+			{
+				type: ObjectId,
+				ref: 'Actor',
+				trim: true
+			}
+		],
+		directors: {
 			type: Array,
 			trim: true
 		},
-		tags: {
-			type: Array,
-			trim: true
-		},
-		directorName: {
-			type: String,
-			trim: true
-		},
-		// 240 360 480 720 1080 2048 4096
 		quality: {
 			type: Number,
+			enum: ['240', '360', '480', '720', '1080', '2048', '4096'],
+			default: '720',
 			trim: true
 		},
 		viewsCount: {
 			type: Number,
 			trim: true
 		},
-		likedCount: {
+		likesCount: {
 			type: Number,
 			trim: true
 		},
@@ -109,11 +172,11 @@ let movieSchema = new Schema(
 			type: Number,
 			trim: true
 		},
-		ratingAvg: {
+		ratesAvg: {
 			type: Number,
 			trim: true
 		},
-		ratingCount: {
+		ratesCount: {
 			type: Number,
 			trim: true
 		}
@@ -124,21 +187,6 @@ let movieSchema = new Schema(
 )
 
 movieSchema.pre('save', function(next) {
-	this.slug = slugify(this.name, {
-		lower: true
-	})
-
-	this.slugOrigin = slugify(this.nameOrigin || this.name, {
-		lower: true
-	})
-
-	this.url =
-		slugify(this.name, {
-			lower: true
-		}) +
-		'_' +
-		this._id
-
 	return next()
 })
 
@@ -147,5 +195,8 @@ movieSchema.plugin(uniqueValidator, {
 })
 
 movieSchema.plugin(mongoosePaginate)
+movieSchema.plugin(autopopulate)
+movieSchema.plugin(pluginService.logPost, { schemaName: 'Movie' })
+movieSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Movie' })
 
-export default mongoose.model('movie', movieSchema)
+export default mongoose.model('Movie', movieSchema)

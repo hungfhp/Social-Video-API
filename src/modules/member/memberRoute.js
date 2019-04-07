@@ -3,87 +3,86 @@ import { Router } from 'express'
 import validate from 'express-validation'
 import HTTPStatus from 'http-status'
 
-import * as movieController from './movieController'
-import movieValidation from './movieValidation'
+import * as memberController from './memberController'
+import memberValidation from './memberValidation'
 import * as authService from '../../services/authService'
 import * as paramService from '../../services/paramService'
-import * as ownMiddleware from '../../middlewares/ownMiddleware'
+
 const router = new Router()
 
 /**
- * GET /items/stats => stats
- * GET /items => index
- * GET /items/:id => show
- * POST /items/ => create
- * PATCH/PUT /items/:id => update
- * DELETE /items/:id => remove
+ * GET /items/stats => getMembersStats
+ * GET /items => getMembers
+ * GET /items/:id => getMemberById
+ * POST /items/ => createMember
+ * PATCH/PUT /items/:id => updateMember
+ * DELETE /items/:id => deleteMember
  */
 
-//  Default router
+// More router
+
+// Default Rest router
 router
 	.get(
 		'/stats',
-		validate(movieValidation.stats),
-		movieController.getMoviesStats,
+		validate(memberValidation.stats),
+		memberController.getMembersStats,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				moviesStats: res.moviesStats
+				membersStats: res.membersStats
 			})
 		}
 	)
 	.get(
 		'/',
-		validate(movieValidation.index),
 		paramService.parseParam,
-		movieController.getMovies,
+		validate(memberValidation.index),
+		memberController.getMembers,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				movies: res.movies,
-				moviesMeta: res.moviesMeta
+				members: res.members,
+				membersMeta: res.membersMeta
 			})
 		}
 	)
 	.get(
 		'/:id',
-		validate(movieValidation.show),
-		movieController.getMovieById,
+		validate(memberValidation.show),
+		memberController.getMemberById,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				movie: res.movie
+				member: res.member
 			})
 		}
 	)
 	.post(
 		'/',
-		validate(movieValidation.create),
 		authService.authJwt,
-		movieController.createMovie,
+		validate(memberValidation.create),
+		memberController.createMember,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				movie: res.movie
+				member: res.member
 			})
 		}
 	)
 	.put(
 		'/:id',
-		validate(movieValidation.update),
-		ownMiddleware.ownMovie,
-		movieController.updateMovie,
+		validate(memberValidation.update),
+		memberController.updateMember,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				movie: res.movie
+				member: res.member
 			})
 		}
 	)
 	.delete(
 		'/:id',
-		validate(movieValidation.delete),
-		movieController.deleteMovie,
+		validate(memberValidation.delete),
+		memberController.deleteMember,
 		function(req, res, next) {
 			return res.sendStatus(HTTPStatus.OK)
 		}
 	)
-
-// More router
 
 export default router

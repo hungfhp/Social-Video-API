@@ -9,7 +9,7 @@ const app = express()
 middlewareConfig(app)
 
 app.get('/', (req, res) => {
-	res.send('Hello hihi!')
+	res.send('Welcome!')
 })
 
 app.get('/api', (req, res) => {

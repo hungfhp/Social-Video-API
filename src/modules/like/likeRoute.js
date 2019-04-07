@@ -3,87 +3,86 @@ import { Router } from 'express'
 import validate from 'express-validation'
 import HTTPStatus from 'http-status'
 
-import * as movieController from './movieController'
-import movieValidation from './movieValidation'
+import * as likeController from './likeController'
+import likeValidation from './likeValidation'
 import * as authService from '../../services/authService'
 import * as paramService from '../../services/paramService'
-import * as ownMiddleware from '../../middlewares/ownMiddleware'
+
 const router = new Router()
 
 /**
- * GET /items/stats => stats
- * GET /items => index
- * GET /items/:id => show
- * POST /items/ => create
- * PATCH/PUT /items/:id => update
- * DELETE /items/:id => remove
+ * GET /items/stats => getLikesStats
+ * GET /items => getLikes
+ * GET /items/:id => getLikeById
+ * POST /items/ => createLike
+ * PATCH/PUT /items/:id => updateLike
+ * DELETE /items/:id => deleteLike
  */
 
-//  Default router
+// More router
+
+// Default Rest router
 router
 	.get(
 		'/stats',
-		validate(movieValidation.stats),
-		movieController.getMoviesStats,
+		validate(likeValidation.stats),
+		likeController.getLikesStats,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				moviesStats: res.moviesStats
+				likesStats: res.likesStats
 			})
 		}
 	)
 	.get(
 		'/',
-		validate(movieValidation.index),
 		paramService.parseParam,
-		movieController.getMovies,
+		validate(likeValidation.index),
+		likeController.getLikes,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				movies: res.movies,
-				moviesMeta: res.moviesMeta
+				likes: res.likes,
+				likesMeta: res.likesMeta
 			})
 		}
 	)
 	.get(
 		'/:id',
-		validate(movieValidation.show),
-		movieController.getMovieById,
+		validate(likeValidation.show),
+		likeController.getLikeById,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				movie: res.movie
+				like: res.like
 			})
 		}
 	)
 	.post(
 		'/',
-		validate(movieValidation.create),
 		authService.authJwt,
-		movieController.createMovie,
+		validate(likeValidation.create),
+		likeController.createLike,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				movie: res.movie
+				like: res.like
 			})
 		}
 	)
 	.put(
 		'/:id',
-		validate(movieValidation.update),
-		ownMiddleware.ownMovie,
-		movieController.updateMovie,
+		validate(likeValidation.update),
+		likeController.updateLike,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				movie: res.movie
+				like: res.like
 			})
 		}
 	)
 	.delete(
 		'/:id',
-		validate(movieValidation.delete),
-		movieController.deleteMovie,
+		validate(likeValidation.delete),
+		likeController.deleteLike,
 		function(req, res, next) {
 			return res.sendStatus(HTTPStatus.OK)
 		}
 	)
-
-// More router
 
 export default router
