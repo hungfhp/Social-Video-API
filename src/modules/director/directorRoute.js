@@ -3,30 +3,30 @@ import { Router } from 'express'
 import validate from 'express-validation'
 import HTTPStatus from 'http-status'
 
-import * as genreController from './genreController'
-import genreValidation from './genreValidation'
+import * as directorController from './directorController'
+import directorValidation from './directorValidation'
 import * as authService from '../../services/authService'
 import * as paramService from '../../services/paramService'
 
 const router = new Router()
 
 /**
- * GET /items/stats => getGenresStats
- * GET /items => getGenres
- * GET /items/:id => getGenreById
- * POST /items/ => createGenre
- * PATCH/PUT /items/:id => updateGenre
- * DELETE /items/:id => deleteGenre
+ * GET /items/stats => getDirectorsStats
+ * GET /items => getDirectors
+ * GET /items/:id => getDirectorById
+ * POST /items/ => createDirector
+ * PATCH/PUT /items/:id => updateDirector
+ * DELETE /items/:id => deleteDirector
  */
 
 // More router
 router.get(
 	'/init',
-	// authService.authJwt,
-	genreController.initGenres,
+	authService.authJwt,
+	directorController.initDirectors,
 	function(req, res, next) {
 		return res.status(HTTPStatus.OK).json({
-			genres: res.genres
+			directors: res.directors
 		})
 	}
 )
@@ -35,60 +35,61 @@ router.get(
 router
 	.get(
 		'/stats',
-		validate(genreValidation.stats),
-		genreController.getGenresStats,
+		validate(directorValidation.stats),
+		directorController.getDirectorsStats,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				genresStats: res.genresStats
+				directorsStats: res.directorsStats
 			})
 		}
 	)
 	.get(
 		'/',
 		paramService.parseParam,
-		validate(genreValidation.index),
-		genreController.getGenres,
+		validate(directorValidation.index),
+		directorController.getDirectors,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				genres: res.genres,
-				genresMeta: res.genresMeta
+				directors: res.directors,
+				directorsMeta: res.directorsMeta
 			})
 		}
 	)
 	.get(
 		'/:id',
-		validate(genreValidation.show),
-		genreController.getGenreById,
+		validate(directorValidation.show),
+		directorController.getDirectorById,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				genre: res.genre
+				director: res.director
 			})
 		}
 	)
 	.post(
 		'/',
-		validate(genreValidation.create),
-		genreController.createGenre,
+		authService.authJwt,
+		validate(directorValidation.create),
+		directorController.createDirector,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				genre: res.genre
+				director: res.director
 			})
 		}
 	)
 	.put(
 		'/:id',
-		validate(genreValidation.update),
-		genreController.updateGenre,
+		validate(directorValidation.update),
+		directorController.updateDirector,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				genre: res.genre
+				director: res.director
 			})
 		}
 	)
 	.delete(
 		'/:id',
-		validate(genreValidation.delete),
-		genreController.deleteGenre,
+		validate(directorValidation.delete),
+		directorController.deleteDirector,
 		function(req, res, next) {
 			return res.sendStatus(HTTPStatus.OK)
 		}

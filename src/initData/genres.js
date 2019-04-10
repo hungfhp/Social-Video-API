@@ -1,0 +1,21 @@
+export default [
+	{ name: 'Phim Hài Hước' },
+	{ name: 'Phim Viễn Tưởng' },
+	{ name: 'Phim Hành Động' },
+	{ name: 'Phim Phiêu Lưu' },
+	{ name: 'Phim Tâm Lý' },
+	{ name: 'Phim Hình Sự' },
+	{ name: 'Phim Kinh Dị' },
+	{ name: 'Phim Bí Mật Điện Ảnh' },
+	{ name: 'Phim Âm Nhạc' },
+	{ name: 'Phim Khoa học Tài liệu' },
+	{ name: 'Phim Võ Thuật' },
+	{ name: 'Phim Chiến Tranh' },
+	{ name: 'Phim Hoạt Hình' },
+	{ name: 'Phim Thần Thoại' },
+	{ name: 'Phim Cổ Trang' },
+	{ name: 'Phim Thuyết Minh' },
+	{ name: 'Phim Thiếu nhi' },
+	{ name: 'Phim Hài Việt' },
+	{ name: 'Phim TV Show' }
+]

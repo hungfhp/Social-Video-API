@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import mongoose from 'mongoose'
 import constants from './constants'
 
@@ -11,7 +12,8 @@ try {
 } catch (err) {
 	mongoose.createConnection(constants.MONGO_URL)
 }
-// eslint-disable-next-line no-console
-mongoose.connection.once('open', () => console.log('MongoDB Running')).on('error', e => {
-	throw e
-})
+mongoose.connection
+	.once('open', () => console.log('MongoDB Running'))
+	.on('error', e => {
+		throw e
+	})

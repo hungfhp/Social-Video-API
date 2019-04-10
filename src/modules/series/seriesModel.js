@@ -1,11 +1,5 @@
-/**
- * @typedef movies
- * @property {string} _id
- * @property {string} movieName
- */
-
-// import validator from 'validator'
-// import * as myValid from './movieValidation'
+/* eslint-disable no-unused-vars */
+import validator from 'validator'
 import mongoose, { Schema } from 'mongoose'
 const ObjectId = mongoose.Schema.Types.ObjectId
 import float from 'mongoose-float'
@@ -13,10 +7,11 @@ const Float = float.loadType(mongoose)
 import mongoosePaginate from 'mongoose-paginate'
 import autopopulate from 'mongoose-autopopulate'
 import uniqueValidator from 'mongoose-unique-validator'
+import slugify from 'slugify'
 
 import * as pluginService from '../../services/pluginService'
 
-let movieSchema = new Schema(
+let seriesSchema = new Schema(
 	{
 		name: {
 			type: String,
@@ -26,6 +21,10 @@ let movieSchema = new Schema(
 		},
 		nameOrigin: {
 			type: String,
+			trim: true
+		},
+		part: {
+			type: Number,
 			trim: true
 		},
 		desc: {
@@ -46,10 +45,6 @@ let movieSchema = new Schema(
 				trim: true
 			}
 		},
-		duration: {
-			type: Date,
-			trim: true
-		},
 		country: {
 			type: ObjectId,
 			ref: 'Country',
@@ -61,15 +56,6 @@ let movieSchema = new Schema(
 			ref: 'User',
 			autopopulate: true,
 			required: [true, 'Uploader is required!'],
-			trim: true
-		},
-		embeds: {
-			type: Array,
-			required: [true, 'Movie file is required!'],
-			trim: true
-		},
-		backups: {
-			type: Array,
 			trim: true
 		},
 		url: {
@@ -134,6 +120,13 @@ let movieSchema = new Schema(
 			type: Date,
 			trim: true
 		},
+		episodes: [
+			{
+				type: ObjectId,
+				ref: 'Movie',
+				trim: true
+			}
+		],
 		year: {
 			type: Number,
 			trim: true
@@ -147,21 +140,6 @@ let movieSchema = new Schema(
 			type: Boolean,
 			default: false
 		},
-		subUrl: {
-			type: String,
-			trim: true
-		},
-		voiceoverUrl: {
-			type: String,
-			trim: true
-		},
-		voiceovers: [
-			{
-				type: ObjectId,
-				ref: 'Voiceover',
-				trim: true
-			}
-		],
 		actors: [
 			{
 				type: ObjectId,
@@ -205,17 +183,18 @@ let movieSchema = new Schema(
 	}
 )
 
-movieSchema.pre('save', function(next) {
+seriesSchema.statics = {}
+
+seriesSchema.pre('save', function(next) {
 	return next()
 })
 
-movieSchema.plugin(uniqueValidator, {
+seriesSchema.plugin(uniqueValidator, {
 	message: '{VALUE} already taken!'
 })
+seriesSchema.plugin(mongoosePaginate)
+seriesSchema.plugin(autopopulate)
+seriesSchema.plugin(pluginService.logPost, { schemaName: 'Series' })
+seriesSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Series' })
 
-movieSchema.plugin(mongoosePaginate)
-movieSchema.plugin(autopopulate)
-movieSchema.plugin(pluginService.logPost, { schemaName: 'Movie' })
-movieSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Movie' })
-
-export default mongoose.model('Movie', movieSchema)
+export default mongoose.model('Series', seriesSchema)

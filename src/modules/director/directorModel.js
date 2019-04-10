@@ -5,24 +5,25 @@ const ObjectId = mongoose.Schema.Types.ObjectId
 import mongoosePaginate from 'mongoose-paginate'
 import autopopulate from 'mongoose-autopopulate'
 import uniqueValidator from 'mongoose-unique-validator'
+import slugify from 'slugify'
 
 import * as pluginService from '../../services/pluginService'
-import * as myValid from './actorValidation'
-let actorSchema = new Schema(
+
+let directorSchema = new Schema(
 	{
 		name: {
 			type: String,
-			required: [true, 'Actor name is required!'],
+			required: [true, 'Director name is required!'],
 			trim: true
 		},
 		slug: {
 			type: String,
-			required: [true, 'Actor slug is required!'],
+			required: [true, 'Director slug is required!'],
 			trim: true
 		},
 		url: {
 			type: String,
-			required: [true, 'Actor url is required!'],
+			required: [true, 'Director url is required!'],
 			trim: true,
 			unique: true
 		},
@@ -41,12 +42,18 @@ let actorSchema = new Schema(
 	}
 )
 
-actorSchema.plugin(uniqueValidator, {
+directorSchema.statics = {}
+
+directorSchema.pre('save', function(next) {
+	return next()
+})
+
+directorSchema.plugin(uniqueValidator, {
 	message: '{VALUE} already taken!'
 })
-actorSchema.plugin(mongoosePaginate)
-actorSchema.plugin(autopopulate)
-actorSchema.plugin(pluginService.logPost, { schemaName: 'Actor' })
-actorSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Actor' })
+directorSchema.plugin(mongoosePaginate)
+directorSchema.plugin(autopopulate)
+directorSchema.plugin(pluginService.logPost, { schemaName: 'Director' })
+directorSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Director' })
 
-export default mongoose.model('Actor', actorSchema)
+export default mongoose.model('Director', directorSchema)

@@ -5,6 +5,8 @@ import HTTPStatus from 'http-status'
 
 import * as actorController from './actorController'
 import actorValidation from './actorValidation'
+import * as authService from '../../services/authService'
+import * as paramService from '../../services/paramService'
 
 const router = new Router()
 
@@ -18,6 +20,15 @@ const router = new Router()
  */
 
 // More router
+router.get('/init', authService.authJwt, actorController.default, function(
+	req,
+	res,
+	next
+) {
+	return res.status(HTTPStatus.OK).json({
+		actors: res.actors
+	})
+})
 
 // Default Rest router
 router
@@ -33,6 +44,7 @@ router
 	)
 	.get(
 		'/',
+		paramService.parseParam,
 		validate(actorValidation.index),
 		actorController.getActors,
 		function(req, res, next) {
@@ -77,7 +89,7 @@ router
 		validate(actorValidation.delete),
 		actorController.deleteActor,
 		function(req, res, next) {
-      return res.sendStatus(HTTPStatus.OK)
+			return res.sendStatus(HTTPStatus.OK)
 		}
 	)
 
