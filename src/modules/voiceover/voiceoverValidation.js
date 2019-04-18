@@ -2,6 +2,12 @@
 import Joi from 'joi'
 
 export default {
+	checkSynthesis: {
+		query: {
+			requestId: Joi.string().required()
+		}
+	},
+	callbackSynthesis: {},
 	stats: {},
 	index: {},
 	show: {},

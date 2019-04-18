@@ -26,7 +26,8 @@ const defaultConfig = {
 	API_PREFIX: '/api',
 	JWT_SECRET: 'hihihihihihihi',
 	FACEBOOK_APP_ID: '329324544364004',
-	FACEBOOK_APP_SECRET: '6521fe7adaa99b2038e728dccfcb0885'
+	FACEBOOK_APP_SECRET: '6521fe7adaa99b2038e728dccfcb0885',
+	UPLOAD_VBEE_TOKEN: '30065a2c-cdf1-4316-8827-488557133f54'
 }
 
 function envConfig(env) {

@@ -20,16 +20,15 @@ const router = new Router()
  */
 
 // More router
-router.get(
-	'/init',
-	// authService.authJwt,
-	genreController.initGenres,
-	function(req, res, next) {
-		return res.status(HTTPStatus.OK).json({
-			genres: res.genres
-		})
-	}
-)
+router.get('/init', authService.authJwt, genreController.initGenres, function(
+	req,
+	res,
+	next
+) {
+	return res.status(HTTPStatus.OK).json({
+		genres: res.genres
+	})
+})
 
 // Default Rest router
 router

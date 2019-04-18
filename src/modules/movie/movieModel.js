@@ -13,8 +13,25 @@ const Float = float.loadType(mongoose)
 import mongoosePaginate from 'mongoose-paginate'
 import autopopulate from 'mongoose-autopopulate'
 import uniqueValidator from 'mongoose-unique-validator'
+// import Actor from '../actor/actorModel'
+// import Director from '../director/directorModel'
+// import Genre from '../genre/genreModel'
 
 import * as pluginService from '../../services/pluginService'
+
+var embedSchema = new Schema({
+	resolution: {
+		type: Number,
+		default: 720
+	},
+	embedUrl: {
+		type: String,
+		required: [true, 'Movie file is required!']
+	},
+	default: {
+		type: Boolean
+	}
+})
 
 let movieSchema = new Schema(
 	{
@@ -50,10 +67,16 @@ let movieSchema = new Schema(
 			type: Date,
 			trim: true
 		},
-		country: {
-			type: ObjectId,
-			ref: 'Country',
-			autopopulate: true,
+		category: {
+			type: String,
+			enum: ['single', 'series'],
+			default: 'single',
+			trim: true
+		},
+		countries: {
+			type: Array,
+			// ref: 'Country',
+			// autopopulate: true,
 			trim: true
 		},
 		uploader: {
@@ -61,19 +84,14 @@ let movieSchema = new Schema(
 			ref: 'User',
 			autopopulate: true,
 			required: [true, 'Uploader is required!'],
+			// hung-dev
+			default: '5ca016de421fa21ea0524815',
 			trim: true
 		},
-		embeds: {
-			type: Array,
-			required: [true, 'Movie file is required!'],
-			trim: true
-		},
-		backups: {
-			type: Array,
-			trim: true
-		},
+		embeds: [embedSchema],
 		url: {
 			type: String,
+			unique: true,
 			trim: true
 		},
 		trailerUrl: {
@@ -112,9 +130,7 @@ let movieSchema = new Schema(
 		},
 		genres: [
 			{
-				type: ObjectId,
-				ref: 'Genre',
-				autopopulate: true,
+				type: String,
 				trim: true
 			}
 		],
@@ -138,11 +154,11 @@ let movieSchema = new Schema(
 			type: Number,
 			trim: true
 		},
-		series: {
-			type: ObjectId,
-			ref: 'Series',
-			trim: true
-		},
+		// series: {
+		// 	type: ObjectId,
+		// 	ref: 'Series',
+		// 	trim: true
+		// },
 		isAdult: {
 			type: Boolean,
 			default: false
@@ -151,10 +167,11 @@ let movieSchema = new Schema(
 			type: String,
 			trim: true
 		},
-		voiceoverUrl: {
+		enSubUrl: {
 			type: String,
 			trim: true
 		},
+		// voiceoverUrl is lastest in voiceovers[]
 		voiceovers: [
 			{
 				type: ObjectId,
@@ -164,15 +181,16 @@ let movieSchema = new Schema(
 		],
 		actors: [
 			{
-				type: ObjectId,
-				ref: 'Actor',
+				type: String,
 				trim: true
 			}
 		],
-		directors: {
-			type: Array,
-			trim: true
-		},
+		directors: [
+			{
+				type: String,
+				trim: true
+			}
+		],
 		quality: {
 			type: String,
 			enum: ['CAM', 'HD', 'FULL HD'],
@@ -181,22 +199,27 @@ let movieSchema = new Schema(
 		},
 		viewsCount: {
 			type: Number,
+			default: 1,
 			trim: true
 		},
 		likesCount: {
 			type: Number,
+			default: 0,
 			trim: true
 		},
 		favoritesCount: {
 			type: Number,
+			default: 0,
 			trim: true
 		},
 		ratesAvg: {
 			type: Number,
+			default: 5,
 			trim: true
 		},
 		ratesCount: {
 			type: Number,
+			default: 0,
 			trim: true
 		}
 	},
@@ -206,8 +229,28 @@ let movieSchema = new Schema(
 )
 
 movieSchema.pre('save', function(next) {
+	if (this.country) {
+		this.countries.push(this.country)
+	}
 	return next()
 })
+
+movieSchema.statics = {
+	// views inc
+	incViewsCount(movieId) {
+		return this.findByIdAndUpdate(movieId, { $inc: { viewsCount: 1 } })
+	},
+
+	// favorites inc
+	incFavoritesCount(movieId) {
+		return this.findByIdAndUpdate(movieId, { $inc: { favoritesCount: 1 } })
+	},
+
+	// favorites dec
+	decFavoritesCount(movieId) {
+		return this.findByIdAndUpdate(movieId, { $inc: { favoritesCount: -1 } })
+	}
+}
 
 movieSchema.plugin(uniqueValidator, {
 	message: '{VALUE} already taken!'

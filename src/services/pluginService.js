@@ -35,6 +35,7 @@ export function logPost(schema, options) {
 	})
 }
 
+// eslint-disable-next-line no-unused-vars
 export function setSlugUrl(schema, options) {
 	schema.pre('validate', function(next) {
 		if (this.name || this.title) {
@@ -46,7 +47,7 @@ export function setSlugUrl(schema, options) {
 			if (schema.paths.url) {
 				this.url = `${slugify(this.name || this.title, {
 					lower: true
-				})}_${this._id}`
+				})}_${String(this._id).slice(-6)}` // ObjectId.valueOf
 			}
 		}
 		if (this.nameOrigin) {

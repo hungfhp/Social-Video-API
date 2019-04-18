@@ -8,6 +8,8 @@ import movieValidation from './movieValidation'
 import * as authService from '../../services/authService'
 import * as paramService from '../../services/paramService'
 import * as ownMiddleware from '../../middlewares/ownMiddleware'
+import { checkPermission } from '../../middlewares/roleMiddleware'
+import ac from '../../services/roleService'
 const router = new Router()
 
 /**
@@ -18,6 +20,34 @@ const router = new Router()
  * PATCH/PUT /items/:id => update
  * DELETE /items/:id => remove
  */
+
+// More router
+router.get(
+	'/init',
+	// authService.authJwt,
+	movieController.initMovies,
+	function(req, res, next) {
+		return res.status(HTTPStatus.OK).json({
+			movies: res.movies
+		})
+	}
+)
+
+router.get(
+	'/own',
+	function(req, res, next) {
+		req.permission = ac.can(req.user.role).updateOwn('movie')
+		next()
+	},
+	checkPermission,
+	movieController.getOwnMovies,
+	function(req, res, next) {
+		return res.status(HTTPStatus.OK).json({
+			movies: res.movies,
+			moviesMeta: res.moviesMeta
+		})
+	}
+)
 
 //  Default router
 router
@@ -83,7 +113,5 @@ router
 			return res.sendStatus(HTTPStatus.OK)
 		}
 	)
-
-// More router
 
 export default router

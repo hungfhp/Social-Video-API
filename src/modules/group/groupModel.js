@@ -7,7 +7,6 @@ import autopopulate from 'mongoose-autopopulate'
 import uniqueValidator from 'mongoose-unique-validator'
 
 import * as pluginService from '../../services/pluginService'
-import * as myValid from './groupValidation'
 
 let groupSchema = new Schema(
 	{
@@ -21,7 +20,6 @@ let groupSchema = new Schema(
 		name: {
 			type: String,
 			required: [true, 'Name is required!'],
-			unique: true,
 			trim: true
 		},
 		slug: {

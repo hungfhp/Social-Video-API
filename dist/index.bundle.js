@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 28);
+/******/ 	return __webpack_require__(__webpack_require__.s = 31);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -101,13 +101,13 @@ module.exports = require("joi");
 /* 5 */
 /***/ (function(module, exports) {
 
-module.exports = require("mongoose-paginate");
+module.exports = require("mongoose-autopopulate");
 
 /***/ }),
 /* 6 */
 /***/ (function(module, exports) {
 
-module.exports = require("mongoose-autopopulate");
+module.exports = require("mongoose-paginate");
 
 /***/ }),
 /* 7 */
@@ -117,12 +117,6 @@ module.exports = require("mongoose-unique-validator");
 
 /***/ }),
 /* 8 */
-/***/ (function(module, exports) {
-
-module.exports = require("validator");
-
-/***/ }),
-/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -133,25 +127,25 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.authFacebook = exports.authJwt = exports.authLocal = undefined;
 
-var _passport = __webpack_require__(23);
+var _passport = __webpack_require__(26);
 
 var _passport2 = _interopRequireDefault(_passport);
 
-var _passportLocal = __webpack_require__(105);
+var _passportLocal = __webpack_require__(110);
 
-var _passportFacebook = __webpack_require__(103);
+var _passportFacebook = __webpack_require__(108);
 
-var _passportJwt = __webpack_require__(104);
+var _passportJwt = __webpack_require__(109);
 
-var _userModel = __webpack_require__(20);
+var _userModel = __webpack_require__(14);
 
 var _userModel2 = _interopRequireDefault(_userModel);
 
-var _constants = __webpack_require__(13);
+var _constants = __webpack_require__(12);
 
 var _constants2 = _interopRequireDefault(_constants);
 
-var _helper = __webpack_require__(94);
+var _helper = __webpack_require__(24);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -244,6 +238,12 @@ const authFacebook = exports.authFacebook = _passport2.default.authenticate('fac
 });
 
 /***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+module.exports = require("validator");
+
+/***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -283,7 +283,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.logPost = logPost;
 exports.setSlugUrl = setSlugUrl;
 
-var _slugify = __webpack_require__(12);
+var _slugify = __webpack_require__(13);
 
 var _slugify2 = _interopRequireDefault(_slugify);
 
@@ -305,7 +305,10 @@ function logPost(schema, options) {
 	schema.post('remove', function (doc) {
 		console.log(`${options.schemaName || 'Model'}: ${doc.name || doc.title || doc._id} has been removed`);
 	});
-} /* eslint-disable no-console */
+}
+
+// eslint-disable-next-line no-unused-vars
+/* eslint-disable no-console */
 function setSlugUrl(schema, options) {
 	schema.pre('validate', function (next) {
 		if (this.name || this.title) {
@@ -317,7 +320,7 @@ function setSlugUrl(schema, options) {
 			if (schema.paths.url) {
 				this.url = `${(0, _slugify2.default)(this.name || this.title, {
 					lower: true
-				})}_${this._id}`;
+				})}_${String(this._id).slice(-6)}`; // ObjectId.valueOf
 			}
 		}
 		if (this.nameOrigin) {
@@ -331,12 +334,6 @@ function setSlugUrl(schema, options) {
 
 /***/ }),
 /* 12 */
-/***/ (function(module, exports) {
-
-module.exports = require("slugify");
-
-/***/ }),
-/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -370,7 +367,8 @@ const defaultConfig = {
 	API_PREFIX: '/api',
 	JWT_SECRET: 'hihihihihihihi',
 	FACEBOOK_APP_ID: '329324544364004',
-	FACEBOOK_APP_SECRET: '6521fe7adaa99b2038e728dccfcb0885'
+	FACEBOOK_APP_SECRET: '6521fe7adaa99b2038e728dccfcb0885',
+	UPLOAD_VBEE_TOKEN: '30065a2c-cdf1-4316-8827-488557133f54'
 };
 
 function envConfig(env) {
@@ -387,6 +385,12 @@ function envConfig(env) {
 exports.default = Object.assign({}, defaultConfig, envConfig(process.env.NODE_ENV));
 
 /***/ }),
+/* 13 */
+/***/ (function(module, exports) {
+
+module.exports = require("slugify");
+
+/***/ }),
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -394,372 +398,10 @@ exports.default = Object.assign({}, defaultConfig, envConfig(process.env.NODE_EN
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-const passwordReg = exports.passwordReg = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
-
-const countryCodeReg = exports.countryCodeReg = /^\w{2}$/;
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _joi = __webpack_require__(4);
-
-var _joi2 = _interopRequireDefault(_joi);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-	stats: {},
-	index: {},
-	show: {},
-	create: {},
-	update: {},
-	delete: {}
-}; /* eslint-disable no-unused-vars */
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _joi = __webpack_require__(4);
-
-var _joi2 = _interopRequireDefault(_joi);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-	stats: {},
-	index: {},
-	show: {},
-	create: {},
-	update: {},
-	delete: {}
-}; /* eslint-disable no-unused-vars */
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _joi = __webpack_require__(4);
-
-var _joi2 = _interopRequireDefault(_joi);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-	stats: {},
-	index: {},
-	show: {},
-	create: {},
-	update: {},
-	delete: {}
-}; /* eslint-disable no-unused-vars */
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _mongoose = __webpack_require__(2);
-
-var _mongoose2 = _interopRequireDefault(_mongoose);
-
-var _mongooseFloat = __webpack_require__(22);
-
-var _mongooseFloat2 = _interopRequireDefault(_mongooseFloat);
-
-var _mongoosePaginate = __webpack_require__(5);
-
-var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
-
-var _mongooseAutopopulate = __webpack_require__(6);
-
-var _mongooseAutopopulate2 = _interopRequireDefault(_mongooseAutopopulate);
-
-var _mongooseUniqueValidator = __webpack_require__(7);
-
-var _mongooseUniqueValidator2 = _interopRequireDefault(_mongooseUniqueValidator);
-
-var _pluginService = __webpack_require__(11);
-
-var pluginService = _interopRequireWildcard(_pluginService);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const ObjectId = _mongoose2.default.Schema.Types.ObjectId; /**
-                                                            * @typedef movies
-                                                            * @property {string} _id
-                                                            * @property {string} movieName
-                                                            */
-
-// import validator from 'validator'
-// import * as myValid from './movieValidation'
-
-const Float = _mongooseFloat2.default.loadType(_mongoose2.default);
-
-
-let movieSchema = new _mongoose.Schema({
-	name: {
-		type: String,
-		unique: true,
-		required: [true, 'Movie name is required!'],
-		trim: true
-	},
-	nameOrigin: {
-		type: String,
-		trim: true
-	},
-	desc: {
-		type: String,
-		trim: true
-	},
-	imdb: {
-		id: {
-			type: String,
-			trim: true
-		},
-		ratesAvg: {
-			type: Float,
-			trim: true
-		},
-		ratesCount: {
-			type: Number,
-			trim: true
-		}
-	},
-	duration: {
-		type: Date,
-		trim: true
-	},
-	country: {
-		type: ObjectId,
-		ref: 'Country',
-		autopopulate: true,
-		trim: true
-	},
-	uploader: {
-		type: ObjectId,
-		ref: 'User',
-		autopopulate: true,
-		required: [true, 'Uploader is required!'],
-		trim: true
-	},
-	embeds: {
-		type: Array,
-		required: [true, 'Movie file is required!'],
-		trim: true
-	},
-	backups: {
-		type: Array,
-		trim: true
-	},
-	url: {
-		type: String,
-		trim: true
-	},
-	trailerUrl: {
-		type: String,
-		trim: true
-	},
-	thumbnails: {
-		small: {
-			type: String,
-			trim: true
-		},
-		medium: {
-			type: String,
-			trim: true
-		},
-		large: {
-			type: String,
-			trim: true
-		}
-	},
-	photos: [{
-		type: String,
-		trim: true
-	}],
-	slug: {
-		type: String,
-		unique: true,
-		trim: true
-	},
-	slugOrigin: {
-		type: String,
-		unique: true,
-		trim: true
-	},
-	genres: [{
-		type: ObjectId,
-		ref: 'Genre',
-		autopopulate: true,
-		trim: true
-	}],
-	status: {
-		type: String,
-		enum: ['pending', 'updating', 'done'],
-		default: 'pending',
-		trim: true
-	},
-	share: {
-		type: String,
-		enum: ['private', 'friend', 'public'],
-		default: 'public',
-		trim: true
-	},
-	releaseDate: {
-		type: Date,
-		trim: true
-	},
-	year: {
-		type: Number,
-		trim: true
-	},
-	series: {
-		type: ObjectId,
-		ref: 'Series',
-		trim: true
-	},
-	isAdult: {
-		type: Boolean,
-		default: false
-	},
-	subUrl: {
-		type: String,
-		trim: true
-	},
-	voiceoverUrl: {
-		type: String,
-		trim: true
-	},
-	voiceovers: [{
-		type: ObjectId,
-		ref: 'Voiceover',
-		trim: true
-	}],
-	actors: [{
-		type: ObjectId,
-		ref: 'Actor',
-		trim: true
-	}],
-	directors: {
-		type: Array,
-		trim: true
-	},
-	quality: {
-		type: String,
-		enum: ['CAM', 'HD', 'FULL HD'],
-		default: 'HD',
-		trim: true
-	},
-	viewsCount: {
-		type: Number,
-		trim: true
-	},
-	likesCount: {
-		type: Number,
-		trim: true
-	},
-	favoritesCount: {
-		type: Number,
-		trim: true
-	},
-	ratesAvg: {
-		type: Number,
-		trim: true
-	},
-	ratesCount: {
-		type: Number,
-		trim: true
-	}
-}, {
-	timestamps: true
-});
-
-movieSchema.pre('save', function (next) {
-	return next();
-});
-
-movieSchema.plugin(_mongooseUniqueValidator2.default, {
-	message: '{VALUE} already taken!'
-});
-
-movieSchema.plugin(_mongoosePaginate2.default);
-movieSchema.plugin(_mongooseAutopopulate2.default);
-movieSchema.plugin(pluginService.logPost, { schemaName: 'Movie' });
-movieSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Movie' });
-
-exports.default = _mongoose2.default.model('Movie', movieSchema);
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _joi = __webpack_require__(4);
-
-var _joi2 = _interopRequireDefault(_joi);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-	stats: {},
-	index: {},
-	show: {},
-	create: {},
-	update: {},
-	delete: {}
-}; /* eslint-disable no-unused-vars */
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _validator = __webpack_require__(8);
+var _validator = __webpack_require__(9);
 
 var _validator2 = _interopRequireDefault(_validator);
 
@@ -767,13 +409,13 @@ var _mongoose = __webpack_require__(2);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _bcryptNodejs = __webpack_require__(96);
+var _bcryptNodejs = __webpack_require__(99);
 
-var _mongoosePaginate = __webpack_require__(5);
+var _mongoosePaginate = __webpack_require__(6);
 
 var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
 
-var _mongooseAutopopulate = __webpack_require__(6);
+var _mongooseAutopopulate = __webpack_require__(5);
 
 var _mongooseAutopopulate2 = _interopRequireDefault(_mongooseAutopopulate);
 
@@ -781,17 +423,17 @@ var _mongooseUniqueValidator = __webpack_require__(7);
 
 var _mongooseUniqueValidator2 = _interopRequireDefault(_mongooseUniqueValidator);
 
-var _jsonwebtoken = __webpack_require__(100);
+var _jsonwebtoken = __webpack_require__(25);
 
 var _jsonwebtoken2 = _interopRequireDefault(_jsonwebtoken);
 
-var _lodash = __webpack_require__(101);
+var _lodash = __webpack_require__(104);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _regex = __webpack_require__(14);
+var _regex = __webpack_require__(15);
 
-var _constants = __webpack_require__(13);
+var _constants = __webpack_require__(12);
 
 var _constants2 = _interopRequireDefault(_constants);
 
@@ -857,6 +499,7 @@ let userSchema = new _mongoose.Schema({
 	role: {
 		type: String,
 		trim: true,
+		enum: ['viewer', 'user', 'editer', 'admin', 'superadmin'],
 		default: 'user'
 	},
 	avatarUrl: {
@@ -927,7 +570,48 @@ userSchema.plugin(_mongooseAutopopulate2.default);
 exports.default = _mongoose2.default.model('User', userSchema);
 
 /***/ }),
-/* 21 */
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+const passwordReg = exports.passwordReg = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
+
+const countryCodeReg = exports.countryCodeReg = /^\w{2}$/;
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.checkPermission = checkPermission;
+
+var _httpStatus = __webpack_require__(0);
+
+var _httpStatus2 = _interopRequireDefault(_httpStatus);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+async function checkPermission(req, res, next) {
+	if (req.permission.granted) {
+		res.body = req.permission.filter(res.body);
+		next();
+	} else {
+		return res.status(_httpStatus2.default.FORBIDDEN).json('Not Permission');
+	}
+}
+
+/***/ }),
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -953,19 +637,488 @@ exports.default = {
 }; /* eslint-disable no-unused-vars */
 
 /***/ }),
-/* 22 */
-/***/ (function(module, exports) {
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = require("mongoose-float");
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _joi = __webpack_require__(4);
+
+var _joi2 = _interopRequireDefault(_joi);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+	stats: {},
+	index: {},
+	show: {},
+	create: {},
+	update: {},
+	delete: {}
+}; /* eslint-disable no-unused-vars */
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _mongoose = __webpack_require__(2);
+
+var _mongoose2 = _interopRequireDefault(_mongoose);
+
+var _mongooseFloat = __webpack_require__(106);
+
+var _mongooseFloat2 = _interopRequireDefault(_mongooseFloat);
+
+var _mongoosePaginate = __webpack_require__(6);
+
+var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
+
+var _mongooseAutopopulate = __webpack_require__(5);
+
+var _mongooseAutopopulate2 = _interopRequireDefault(_mongooseAutopopulate);
+
+var _mongooseUniqueValidator = __webpack_require__(7);
+
+var _mongooseUniqueValidator2 = _interopRequireDefault(_mongooseUniqueValidator);
+
+var _pluginService = __webpack_require__(11);
+
+var pluginService = _interopRequireWildcard(_pluginService);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const ObjectId = _mongoose2.default.Schema.Types.ObjectId; /**
+                                                            * @typedef movies
+                                                            * @property {string} _id
+                                                            * @property {string} movieName
+                                                            */
+
+// import validator from 'validator'
+// import * as myValid from './movieValidation'
+
+const Float = _mongooseFloat2.default.loadType(_mongoose2.default);
+// import Actor from '../actor/actorModel'
+// import Director from '../director/directorModel'
+// import Genre from '../genre/genreModel'
+
+var embedSchema = new _mongoose.Schema({
+	resolution: {
+		type: Number,
+		default: 720
+	},
+	embedUrl: {
+		type: String,
+		required: [true, 'Movie file is required!']
+	},
+	default: {
+		type: Boolean
+	}
+});
+
+let movieSchema = new _mongoose.Schema({
+	name: {
+		type: String,
+		unique: true,
+		required: [true, 'Movie name is required!'],
+		trim: true
+	},
+	nameOrigin: {
+		type: String,
+		trim: true
+	},
+	desc: {
+		type: String,
+		trim: true
+	},
+	imdb: {
+		id: {
+			type: String,
+			trim: true
+		},
+		ratesAvg: {
+			type: Float,
+			trim: true
+		},
+		ratesCount: {
+			type: Number,
+			trim: true
+		}
+	},
+	duration: {
+		type: Date,
+		trim: true
+	},
+	category: {
+		type: String,
+		enum: ['single', 'series'],
+		default: 'single',
+		trim: true
+	},
+	countries: {
+		type: Array,
+		// ref: 'Country',
+		// autopopulate: true,
+		trim: true
+	},
+	uploader: {
+		type: ObjectId,
+		ref: 'User',
+		autopopulate: true,
+		required: [true, 'Uploader is required!'],
+		// hung-dev
+		default: '5ca016de421fa21ea0524815',
+		trim: true
+	},
+	embeds: [embedSchema],
+	url: {
+		type: String,
+		unique: true,
+		trim: true
+	},
+	trailerUrl: {
+		type: String,
+		trim: true
+	},
+	thumbnails: {
+		small: {
+			type: String,
+			trim: true
+		},
+		medium: {
+			type: String,
+			trim: true
+		},
+		large: {
+			type: String,
+			trim: true
+		}
+	},
+	photos: [{
+		type: String,
+		trim: true
+	}],
+	slug: {
+		type: String,
+		unique: true,
+		trim: true
+	},
+	slugOrigin: {
+		type: String,
+		unique: true,
+		trim: true
+	},
+	genres: [{
+		type: String,
+		trim: true
+	}],
+	status: {
+		type: String,
+		enum: ['pending', 'updating', 'done'],
+		default: 'pending',
+		trim: true
+	},
+	share: {
+		type: String,
+		enum: ['private', 'friend', 'public'],
+		default: 'public',
+		trim: true
+	},
+	releaseDate: {
+		type: Date,
+		trim: true
+	},
+	year: {
+		type: Number,
+		trim: true
+	},
+	// series: {
+	// 	type: ObjectId,
+	// 	ref: 'Series',
+	// 	trim: true
+	// },
+	isAdult: {
+		type: Boolean,
+		default: false
+	},
+	subUrl: {
+		type: String,
+		trim: true
+	},
+	enSubUrl: {
+		type: String,
+		trim: true
+	},
+	// voiceoverUrl is lastest in voiceovers[]
+	voiceovers: [{
+		type: ObjectId,
+		ref: 'Voiceover',
+		trim: true
+	}],
+	actors: [{
+		type: String,
+		trim: true
+	}],
+	directors: [{
+		type: String,
+		trim: true
+	}],
+	quality: {
+		type: String,
+		enum: ['CAM', 'HD', 'FULL HD'],
+		default: 'HD',
+		trim: true
+	},
+	viewsCount: {
+		type: Number,
+		default: 1,
+		trim: true
+	},
+	likesCount: {
+		type: Number,
+		default: 0,
+		trim: true
+	},
+	favoritesCount: {
+		type: Number,
+		default: 0,
+		trim: true
+	},
+	ratesAvg: {
+		type: Number,
+		default: 5,
+		trim: true
+	},
+	ratesCount: {
+		type: Number,
+		default: 0,
+		trim: true
+	}
+}, {
+	timestamps: true
+});
+
+movieSchema.pre('save', function (next) {
+	if (this.country) {
+		this.countries.push(this.country);
+	}
+	return next();
+});
+
+movieSchema.statics = {
+	// views inc
+	incViewsCount(movieId) {
+		return this.findByIdAndUpdate(movieId, { $inc: { viewsCount: 1 } });
+	},
+
+	// favorites inc
+	incFavoritesCount(movieId) {
+		return this.findByIdAndUpdate(movieId, { $inc: { favoritesCount: 1 } });
+	},
+
+	// favorites dec
+	decFavoritesCount(movieId) {
+		return this.findByIdAndUpdate(movieId, { $inc: { favoritesCount: -1 } });
+	}
+};
+
+movieSchema.plugin(_mongooseUniqueValidator2.default, {
+	message: '{VALUE} already taken!'
+});
+
+movieSchema.plugin(_mongoosePaginate2.default);
+movieSchema.plugin(_mongooseAutopopulate2.default);
+movieSchema.plugin(pluginService.logPost, { schemaName: 'Movie' });
+movieSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Movie' });
+
+exports.default = _mongoose2.default.model('Movie', movieSchema);
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _joi = __webpack_require__(4);
+
+var _joi2 = _interopRequireDefault(_joi);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+	stats: {},
+	index: {},
+	show: {},
+	create: {},
+	update: {},
+	delete: {}
+}; /* eslint-disable no-unused-vars */
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _joi = __webpack_require__(4);
+
+var _joi2 = _interopRequireDefault(_joi);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+	checkSynthesis: {
+		query: {
+			requestId: _joi2.default.string().required()
+		}
+	},
+	callbackSynthesis: {},
+	stats: {},
+	index: {},
+	show: {},
+	create: {},
+	update: {},
+	delete: {}
+}; /* eslint-disable no-unused-vars */
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _accesscontrol = __webpack_require__(97);
+
+var _accesscontrol2 = _interopRequireDefault(_accesscontrol);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ac = new _accesscontrol2.default();
+
+ac.grant('viewer').readAny('user').readAny('follow').readAny('movie').readAny('post').readAny('group');
+
+ac.grant('user').create('user').updateOwn('user').deleteOwn('user').readAny('user').create('follow').updateOwn('follow').deleteOwn('follow').readAny('follow').create('movie').updateOwn('movie').deleteOwn('movie').readAny('movie').create('post').updateOwn('post').deleteOwn('post').readAny('post').create('group').updateOwn('group').deleteOwn('group').readAny('group');
+
+ac.grant('editer').extend('user');
+
+ac.grant('admin').extend('user').updateAny('movie').deleteAny('movie');
+
+ac.grant('superadmin').extend('admin');
+
+exports.default = ac;
 
 /***/ }),
 /* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.requestSynthesis = requestSynthesis;
+exports.requestResynthesis = requestResynthesis;
+exports.checkSynthesis = checkSynthesis;
+exports.doneSynthesis = doneSynthesis;
+
+var _axios = __webpack_require__(98);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import HTTPStatus from 'http-status'
+
+function requestSynthesis(movieId, subUrl) {}
+
+function requestResynthesis(movieId, subUrl) {}
+
+async function checkSynthesis(requestId) {
+	return await _axios2.default.get('http://api.thuyetminhphim.vn/check?request_id=' + requestId).then(function (response) {
+		return response.data;
+	}).catch(function (e) {
+		// eslint-disable-next-line no-console
+		console.log('error', e);
+		throw e;
+	});
+}
+
+function doneSynthesis(movieId, subUrl) {}
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.genderToNumber = genderToNumber;
+exports.log = log;
+
+var _logToFile = __webpack_require__(105);
+
+var _logToFile2 = _interopRequireDefault(_logToFile);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function genderToNumber(gender) {
+	if (gender == 'male') return 1;
+	if (gender == 'female') return 2;
+	return 0;
+}
+
+function log(message = '', fileName = '') {
+	// eslint-disable-next-line no-console
+	console.log('---------------', fileName, message);
+	(0, _logToFile2.default)(message, fileName);
+}
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports) {
+
+module.exports = require("jsonwebtoken");
+
+/***/ }),
+/* 26 */
 /***/ (function(module, exports) {
 
 module.exports = require("passport");
 
 /***/ }),
-/* 24 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -975,7 +1128,7 @@ var _mongoose = __webpack_require__(2);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _constants = __webpack_require__(13);
+var _constants = __webpack_require__(12);
 
 var _constants2 = _interopRequireDefault(_constants);
 
@@ -997,7 +1150,7 @@ _mongoose2.default.connection.once('open', () => console.log('MongoDB Running'))
 });
 
 /***/ }),
-/* 25 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1007,23 +1160,23 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _morgan = __webpack_require__(102);
+var _morgan = __webpack_require__(107);
 
 var _morgan2 = _interopRequireDefault(_morgan);
 
-var _bodyParser = __webpack_require__(97);
+var _bodyParser = __webpack_require__(100);
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
-var _compression = __webpack_require__(98);
+var _compression = __webpack_require__(101);
 
 var _compression2 = _interopRequireDefault(_compression);
 
-var _helmet = __webpack_require__(99);
+var _helmet = __webpack_require__(103);
 
 var _helmet2 = _interopRequireDefault(_helmet);
 
-var _passport = __webpack_require__(23);
+var _passport = __webpack_require__(26);
 
 var _passport2 = _interopRequireDefault(_passport);
 
@@ -1051,7 +1204,7 @@ exports.default = app => {
 };
 
 /***/ }),
-/* 26 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1061,57 +1214,55 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _constants = __webpack_require__(13);
+var _constants = __webpack_require__(12);
 
 var _constants2 = _interopRequireDefault(_constants);
 
-var _actorRoute = __webpack_require__(35);
+var _authMiddleware = __webpack_require__(35);
+
+var _actorRoute = __webpack_require__(39);
 
 var _actorRoute2 = _interopRequireDefault(_actorRoute);
 
-var _countryRoute = __webpack_require__(39);
+var _countryRoute = __webpack_require__(43);
 
 var _countryRoute2 = _interopRequireDefault(_countryRoute);
 
-var _directorRoute = __webpack_require__(44);
+var _directorRoute = __webpack_require__(48);
 
 var _directorRoute2 = _interopRequireDefault(_directorRoute);
 
-var _followRoute = __webpack_require__(49);
+var _followRoute = __webpack_require__(53);
 
 var _followRoute2 = _interopRequireDefault(_followRoute);
 
-var _genreRoute = __webpack_require__(54);
+var _genreRoute = __webpack_require__(58);
 
 var _genreRoute2 = _interopRequireDefault(_genreRoute);
 
-var _groupRoute = __webpack_require__(58);
+var _groupRoute = __webpack_require__(62);
 
 var _groupRoute2 = _interopRequireDefault(_groupRoute);
 
-var _likeRoute = __webpack_require__(62);
+var _likeRoute = __webpack_require__(67);
 
 var _likeRoute2 = _interopRequireDefault(_likeRoute);
 
-var _memberRoute = __webpack_require__(67);
+var _memberRoute = __webpack_require__(72);
 
 var _memberRoute2 = _interopRequireDefault(_memberRoute);
 
-var _movieRoute = __webpack_require__(71);
+var _movieRoute = __webpack_require__(76);
 
 var _movieRoute2 = _interopRequireDefault(_movieRoute);
 
-var _postRoute = __webpack_require__(75);
+var _postRoute = __webpack_require__(80);
 
 var _postRoute2 = _interopRequireDefault(_postRoute);
 
-var _rateRoute = __webpack_require__(79);
+var _rateRoute = __webpack_require__(84);
 
 var _rateRoute2 = _interopRequireDefault(_rateRoute);
-
-var _seriesRoute = __webpack_require__(84);
-
-var _seriesRoute2 = _interopRequireDefault(_seriesRoute);
 
 var _userRoute = __webpack_require__(88);
 
@@ -1123,7 +1274,9 @@ var _voiceoverRoute2 = _interopRequireDefault(_voiceoverRoute);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import seriesRoute from './series/seriesRoute'
 exports.default = app => {
+	app.use(_authMiddleware.getUser);
 	app.use(_constants2.default.API_PREFIX + '/actors', _actorRoute2.default);
 	app.use(_constants2.default.API_PREFIX + '/countries', _countryRoute2.default);
 	app.use(_constants2.default.API_PREFIX + '/directors', _directorRoute2.default);
@@ -1135,19 +1288,19 @@ exports.default = app => {
 	app.use(_constants2.default.API_PREFIX + '/posts', _postRoute2.default);
 	app.use(_constants2.default.API_PREFIX + '/movies', _movieRoute2.default);
 	app.use(_constants2.default.API_PREFIX + '/rates', _rateRoute2.default);
-	app.use(_constants2.default.API_PREFIX + '/serieses', _seriesRoute2.default);
+	// app.use(con.API_PREFIX + '/serieses', seriesRoute)
 	app.use(_constants2.default.API_PREFIX + '/users', _userRoute2.default);
 	app.use(_constants2.default.API_PREFIX + '/voiceovers', _voiceoverRoute2.default);
 }; /* eslint-disable no-console */
 
 /***/ }),
-/* 27 */
+/* 30 */
 /***/ (function(module, exports) {
 
 module.exports = require("express-list-endpoints");
 
 /***/ }),
-/* 28 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1157,21 +1310,21 @@ var _express = __webpack_require__(1);
 
 var _express2 = _interopRequireDefault(_express);
 
-var _constants = __webpack_require__(13);
+var _constants = __webpack_require__(12);
 
 var _constants2 = _interopRequireDefault(_constants);
 
-__webpack_require__(24);
+__webpack_require__(27);
 
-var _middleware = __webpack_require__(25);
+var _middleware = __webpack_require__(28);
 
 var _middleware2 = _interopRequireDefault(_middleware);
 
-var _modules = __webpack_require__(26);
+var _modules = __webpack_require__(29);
 
 var _modules2 = _interopRequireDefault(_modules);
 
-var _expressListEndpoints = __webpack_require__(27);
+var _expressListEndpoints = __webpack_require__(30);
 
 var _expressListEndpoints2 = _interopRequireDefault(_expressListEndpoints);
 
@@ -1187,6 +1340,7 @@ app.get('/', (req, res) => {
 app.get('/api', (req, res) => {
 	res.send((0, _expressListEndpoints2.default)(app));
 });
+
 (0, _modules2.default)(app);
 
 app.listen(_constants2.default.PORT, err => {
@@ -1201,7 +1355,7 @@ app.listen(_constants2.default.PORT, err => {
 });
 
 /***/ }),
-/* 29 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1213,7 +1367,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = [{ "name": "Hoàng Bột" }, { "name": "Matthew Morrison" }, { "name": "Ron Smoorenburg" }, { "name": "Tom Pelphrey" }, { "name": "Alexander Skarsgård" }, { "name": "Daniel Fathers" }, { "name": "Paul Rudd" }, { "name": "Robert Sheehan" }, { "name": "Louis Mandylor" }, { "name": "Scott Adkins" }, { "name": "Tony Todd" }, { "name": "Vladimir Kulich" }, { "name": "Jacob Lohmann" }, { "name": "Jakob Cedergren" }, { "name": "Jessica Dinnage" }, { "name": "Morten Suurballe" }, { "name": "Adria Arjona" }, { "name": "Ben Affleck" }, { "name": "Charlie Hunnam" }, { "name": "Oscar Isaac" }, { "name": "Israel Broussard" }, { "name": "Jessica Rothe" }, { "name": "Ruby Modine" }, { "name": "Suraj Sharma" }, { "name": "Chih Wei Tang" }, { "name": "Hang Cai" }, { "name": "Heng Yu" }, { "name": "Xuan Gu" }, { "name": "Linda Cardellini" }, { "name": "Mahershala Ali" }, { "name": "Sebastian Maniscalco" }, { "name": "Viggo Mortensen" }, { "name": "Famke Janssen" }, { "name": "Peter Facinelli" }, { "name": "Richard Dreyfuss" }, { "name": "Ron Perlman" }, { "name": "Collin Chou" }, { "name": "John Demita" }, { "name": "Kent Cheng" }, { "name": "Lý Liên Kiệt" }, { "name": "Deborah Ann Woll" }, { "name": "Logan Miller" }, { "name": "Taylor Russell" }, { "name": "Tyler Labine" }, { "name": "Iko Uwais" }, { "name": "Tiger Hu Chen" }, { "name": "Tony Jaa" }, { "name": "Isabela Moner" }, { "name": "Mark Wahlberg" }, { "name": "Octavia Spencer" }, { "name": "Rose Byrne" }, { "name": "Chi Pu" }, { "name": "Jung Chae Yeon" }, { "name": "Lee Su Ryeon" }, { "name": "San E" }, { "name": "đang cập nhập" }, { "name": "India Eisley" }, { "name": "Jason Isaacs" }, { "name": "Mira Sorvino" }, { "name": "Penelope Mitchell" }, { "name": "Crispin Freeman" }, { "name": "Daniel Dae Kim" }, { "name": "John Cho" }, { "name": "Rebecca Hall" }, { "name": "Grégoire Isvarine" }, { "name": "Lou Castel" }, { "name": "Marie Mottet" }, { "name": "Noémie Schmidt" }, { "name": "Aamir Khan" }, { "name": "Amitabh Bachchan" }, { "name": "Fatima Sana Shaikh" }, { "name": "Katrina Kaif" }, { "name": "Adriana Ugarte" }, { "name": "Albert Pérez" }, { "name": "Francesc Orella" }, { "name": "Javier Gutiérrez" }, { "name": "Arielle Tuliao" }, { "name": "Bryce Dallas Howard" }, { "name": "Chris Bauer" }, { "name": "Jennifer Gibson" }, { "name": "Bae Doo Na" }, { "name": "Cho Jung Seok" }, { "name": "Kim So Jin" }, { "name": "Song Kang Ho" }, { "name": "Alice Isaaz" }, { "name": "Cécile De France" }, { "name": "Edouard Baer" }, { "name": "Natalia Dontcheva" }, { "name": "Jerry O'connell" }, { "name": "Patrick Fabian" }, { "name": "Rainn Wilson" }, { "name": "Rebecca Romijn" }, { "name": "Ahn Sung Bong" }, { "name": "Ha Jung Woo" }, { "name": "Lee Sun Kyun" }, { "name": "Shin Hyun Bin" }, { "name": "Joey Ansah" }, { "name": "Louis Ashbourne Serkis" }, { "name": "Rebecca Ferguson" }, { "name": "Tom Taylor" }, { "name": "Jung Jae Young" }, { "name": "Kim Nam Gil" }, { "name": "Lee Soo kyung" }, { "name": "Uhm Ji Won" }, { "name": "Alessandro Roja" }, { "name": "Carolina Crescentini" }, { "name": "Claudio Camilli" }, { "name": "Euridice Axen" }, { "name": "Jang Gwang" }, { "name": "Jung Ji Hoon" }, { "name": "Lee Soon Jae" }, { "name": "Sung Byoung Sook" }, { "name": "Amyra Dastur" }, { "name": "Aparshakti Khurana" }, { "name": "Rishi Kapoor" }, { "name": "Sheeba Chaddha" }, { "name": "America Ferrera" }, { "name": "Cate Blanchett" }, { "name": "F. Murray Abraham" }, { "name": "Jay Baruchel" }, { "name": "Đang cập nhật" }, { "name": "Kelly Macdonald" }, { "name": "Ralph Fiennes" }, { "name": "Will Ferrell" }, { "name": "Charlyne Yi" }, { "name": "Jason Sudeikis" }, { "name": "John Krasinski" }, { "name": "Carolyn Chen" }, { "name": "Emerson Tsai" }, { "name": "Eugenie Liu" }, { "name": "Tống Vân Hoa" }, { "name": "Inuko Inuyama" }, { "name": "James Carter Cathcart" }, { "name": "Megumi Hayashibara" }, { "name": "Unshô Ishizuka" }, { "name": "Alain Hernández" }, { "name": "Aura Garrido" }, { "name": "Ben Temple" }, { "name": "Leticia Etala" }, { "name": "John Malkovich" }, { "name": "Sandra Bullock" }, { "name": "Sarah Paulson" }, { "name": "Trevante Rhodes" }, { "name": "Billy Howle" }, { "name": "Chris Pine" }, { "name": "Sam Spruell" }, { "name": "Stephen Dillane" }, { "name": "Kar Ying Law" }, { "name": "Sing Hom" }, { "name": "Soda Voyu" }, { "name": "Ting Hu Zhang" }, { "name": "Harumi Syuhama" }, { "name": "Kazuaki Nagaya" }, { "name": "Mao" }, { "name": "Takayuki Hamatsu" }, { "name": "Colin Woodell" }, { "name": "Joseph Lee" }, { "name": "Sara Sohn" }, { "name": "Chiwetel Ejiofor" }, { "name": "Felix Lemburo" }, { "name": "Maxwell Simba" }, { "name": "Robert Agengo" }, { "name": "Jeff Goldblum" }, { "name": "Jodie Foster" }, { "name": "Sofia Boutella" }, { "name": "Sterling K. Brown" }, { "name": "Adam Ferency" }, { "name": "Joanna Kulig" }, { "name": "Slavko Sobin" }, { "name": "Tomasz Kot" }, { "name": "Ashley Tisdale" }, { "name": "Demi Lovato" }, { "name": "Sia" }, { "name": "Wilmer Valderrama" }, { "name": "Jake Eng" }, { "name": "Mark Lee" }, { "name": "Tosh Chan" }, { "name": "Yann Yann Yeo" }, { "name": "Brittany Ashworth" }, { "name": "Grégory Fitoussi" }, { "name": "Javier Botet" }, { "name": "Jay Benedict" }, { "name": "Channing Tatum" }, { "name": "Common" }, { "name": "James Corden" }, { "name": "Zendaya" }, { "name": "Craig Conway" }, { "name": "Olga Kurylenko" }, { "name": "Rosie Fellner" }, { "name": "Alex" }, { "name": "Banita Sandhu" }, { "name": "Nikita Anand" }, { "name": "Varun Dhawan" }, { "name": "Rikiya Koyama" }, { "name": "Ryôtarô Okiayu" }, { "name": "Tôru Furuya" }, { "name": "Dong Hyun Bae" }, { "name": "Lee Chun Hee" }, { "name": "Lee Gyu Han" }, { "name": "Nam Gyu Ri" }, { "name": "Bao Bối Nhĩ" }, { "name": "Clara Lee" }, { "name": "Tiểu Tống Giai" }, { "name": "Yasuaki Kurata" }, { "name": "Clancy Brown" }, { "name": "Tim Blake Nelson" }, { "name": "Willie Watson" }, { "name": "Chloë Grace Moretz" }, { "name": "Quinn Shephard" }, { "name": "Steven Hauck" }, { "name": "Hàn Canh" }, { "name": "Rhydian Vaughan" }, { "name": "Tomohisa Yamashita" }, { "name": "Chris Hemsworth" }, { "name": "Emma Thompson" }, { "name": "Kumail Nanjiani" }, { "name": "Tessa Thompson" }, { "name": "Alyson Walker" }, { "name": "Ian Butcher" }, { "name": "Meelah Adams" }, { "name": "Tony Giroux" }, { "name": "Gal Gadot" }, { "name": "John C. Reilly" }, { "name": "Sarah Silverman" }, { "name": "Taraji P. Henson" }, { "name": "Lâm Doãn" }, { "name": "Vương Đại Lục" }, { "name": "Nhậm Đạt Hoa" }, { "name": "Từ Tranh" }, { "name": "Vương Lệ Khôn" }, { "name": "Zhu Zhu" }, { "name": "Jung Yeon Joo" }, { "name": "Song Kang" }, { "name": "Park Jun Myun" }, { "name": "Lee Yong Nyeo" }, { "name": "Gerard Butle" }, { "name": "Peter Mullan" }, { "name": "Søren Malling" }, { "name": "Han Ji Min" }, { "name": "Lee Byung hun" }, { "name": "Park Jung Min" }, { "name": "Youn Yuh Jung" }, { "name": "Brie Larson" }, { "name": "Evangeline Lilly" }, { "name": "Karen Gillan" }, { "name": "Châu Đông Vũ" }, { "name": "Cheney Chen" }, { "name": "Cổ Thiên Lạc" }, { "name": "Denzel Washington" }, { "name": "Melissa Leo" }, { "name": "Hải Nhĩ Phu" }, { "name": "Lữ Luật Lai" }, { "name": "Ngô Siêu" }, { "name": "Vương Lực Khả" }, { "name": "Wendi Mclendon Covey" }, { "name": "Madison Iseman" }, { "name": "Jeremy Ray Taylor" }, { "name": "Caleel Harris" }, { "name": "Ken Jeong" }, { "name": "Chris Parnell" }, { "name": "Bryce Cass" }, { "name": "Peyton Wich" }, { "name": "Jessi Goei" }, { "name": "Drew Scheid" }, { "name": "Jack Black" }, { "name": "Shari Headley" }, { "name": "Christian Finlayson" }, { "name": "Matthew J. Vasquez" }, { "name": "Courtney Lauren Cummings" }, { "name": "Tyler Silva" }, { "name": "Sydney Bullock" }, { "name": "Barry W. Jerald Jr." }, { "name": "Katie Douglas" }, { "name": "Kiana Madeira" }, { "name": "Peter Outerbridge" }, { "name": "Sara Canning" }, { "name": "Choi Yoo Ri" }, { "name": "Lee Yoo Young" }, { "name": "Ma Dong Seok" }, { "name": "Nguyễn Kinh Thiên" }, { "name": "Peng Lin" }, { "name": "Po Hung Lin" }, { "name": "Thành Long" }, { "name": "Alice Braga" }, { "name": "Anya Taylor Joy" }, { "name": "Charlie Heaton" }, { "name": "Maisie Williams" }, { "name": "Dustin Demri Burns" }, { "name": "Justin Theroux" }, { "name": "Kate McKinnon" }, { "name": "Mila Kunis" }, { "name": "Jake Gyllenhaal" }, { "name": "Rene Russo" }, { "name": "Tom Sturridge" }, { "name": "Toni Collette" }, { "name": "Katheryn Winnick" }, { "name": "Mads Mikkelsen" }, { "name": "Matt Lucas" }, { "name": "Vanessa Hudgens" }, { "name": "Kim Sae Ron" }, { "name": "Lee Sang Yeob" }, { "name": "Shin Se Hwi" }, { "name": "Jin Seon Kyu" }, { "name": "Oh Hee Joon" }, { "name": "Yoon Byung Hee" }, { "name": "Jung Soo Han" }, { "name": "Yoo Ha Bok" }, { "name": "Son Eun Seo" }, { "name": "Seo Jung Yeon" }, { "name": "Bae Jin Ah" }, { "name": "Son Young Soon" }, { "name": "Kim Min Che" }, { "name": "Lee Sang Hee" }, { "name": "Lee Dong Yong" }, { "name": "Lee Sang Hoon" }, { "name": "Kwon Hyuk Bum" }, { "name": "Yang Jae Young" }, { "name": "Asa Butterfield" }, { "name": "Nina Dobrev" }, { "name": "Bruce Khan" }, { "name": "Park Hee Soon" }, { "name": "Yoon Jin Seo" }, { "name": "Kim In Kwon" }, { "name": "Park Chul Min" }, { "name": "Bashir Salahuddin" }, { "name": "Charlize Theron" }, { "name": "David Oyelowo" }, { "name": "Joel Edgerton" }, { "name": "Benedict Hardie" }, { "name": "Harrison Gilbertson" }, { "name": "Logan Marshall Green" }, { "name": "Steve Danielsen" }, { "name": "Amy Manson" }, { "name": "Kevin Guthrie" }, { "name": "Paul Brannigan" }, { "name": "Sheila Hancock" }, { "name": "Brynie Furstenberg" }, { "name": "Hani Furstenberg" }, { "name": "Ishai Golan" }, { "name": "Lenny Ravich" }, { "name": "ngô minh đạt" }, { "name": "Jin Young" }, { "name": "Lee Soo Min" }, { "name": "Park Sung Woong" }, { "name": "Ra Mi Ran" }, { "name": "Adam Devine" }, { "name": "Liam Hemsworth" }, { "name": "Priyanka Chopra" }, { "name": "Rebel Wilson" }, { "name": "Bojana Novakovic" }, { "name": "Delroy Lindo" }, { "name": "Josh Stewart" }, { "name": "Melissa Bolona" }, { "name": "David Torok" }, { "name": "Jingwen E." }, { "name": "Kai Man Tin" }, { "name": "Vương Bảo Cường" }, { "name": "Guangjie Li" }, { "name": "Jing Wu" }, { "name": "Man Tat Ng" }, { "name": "Mike Kai Sui" }, { "name": "David Castañeda" }, { "name": "Elijah Rodriguez" }, { "name": "Jean Claude Van Damme" }, { "name": "Joana Metrass" }, { "name": "Lưu Diệc Phi" }, { "name": "Nghiêm Khoan" }, { "name": "Bille August" }, { "name": "Vivian Wu" }, { "name": "Shameik Moore" }, { "name": "Liev Schreiber" }, { "name": "Richard Elfyn" }, { "name": "Dan Stevens" }, { "name": "Paul Higgins" }, { "name": "Chung Tử Đơn" }, { "name": "Huỳnh Thánh Y" }, { "name": "Kim Yun Seok" }, { "name": "Ju Ji Hoon" }, { "name": "Moon Jeong Hee" }, { "name": "Lee Bong Ryun" }, { "name": "Kim Jong Soo" }, { "name": "Bae Hae Sun" }, { "name": "Joo Jin Mo" }, { "name": "Ko Chang Seok" }, { "name": "Heo Jin" }, { "name": "Kwon So Hyun" }, { "name": "Kim Joong Ki" }, { "name": "Kim Young Woong" }, { "name": "Jeong Gi Seop" }, { "name": "Jeon Kuk Hwan" }, { "name": "Lee Yoo Joon" }, { "name": "Won Hyun Joon" }, { "name": "Kim Mi Kyung" }, { "name": "Kim Mi Hwa" }, { "name": "Han Chul Woo" }, { "name": "Choi Kwang Je" }, { "name": "Châu Tấn" }, { "name": "Hồ Ca" }, { "name": "Tần Hạo" }, { "name": "Trương Tử Phong" }, { "name": "Ngô Ngạn Muội" }, { "name": "Đặng Ân Hi" }, { "name": "Margaret Qualley" }, { "name": "Anthony Mackie" }, { "name": "Danny Huston" }, { "name": "Teagan Johnson" }, { "name": "Noomi Rapace" }, { "name": "Sophie Nélisse" }, { "name": "Indira Varma" }, { "name": "Charley Palmer Rothwell" }, { "name": "Eoin Macken" }, { "name": "Akin Gazi" }, { "name": "George Georgiou" }, { "name": "Olivia Jewson" }, { "name": "Abdellatif Chaouqi" }, { "name": "Huw Parmenter" }, { "name": "Cherise Silvestri" }, { "name": "Sargon Yelda" }, { "name": "Robin Kermode" }, { "name": "Jonathan Jude" }, { "name": "Anna Marie Sullivan" }, { "name": "Nobunaga Shimazaki" }, { "name": "Marina Inoue" }, { "name": "Sora Amamiya" }, { "name": "Misuzu Togashi" }, { "name": "Ayana Taketatsu" }, { "name": "Iori Nomizu" }, { "name": "Asami Sanada" }, { "name": "Maaya Uchida" }, { "name": "Sarah Emi Bridcutt" }, { "name": "Minori Chihara" }, { "name": "Viktoriya Agalakova" }, { "name": "Efim Petrunin" }, { "name": "Sesil Plezhe" }, { "name": "Nikita Elenev" }, { "name": "Sofia Shidlovskaya" }, { "name": "Igor Khripunov" }, { "name": "Lee Mi Do" }, { "name": "Jung So Min" }, { "name": "Lee Il Hwa" }, { "name": "Yoon Je Moon" }, { "name": "Shin Goo" }, { "name": "Kang Ki Young" }, { "name": "Bành Vu Yến" }, { "name": "Wen Jiang" }, { "name": "Fan Liao" }, { "name": "Qing Xu" }, { "name": "Jiali Ding" }, { "name": "Meng Li" }, { "name": "Sam Palladio" }, { "name": "Nick Sagar" }, { "name": "Sara Stewart" }, { "name": "Robin Soans" }, { "name": "Quách Phú Thành" }, { "name": "Châu Nhuận Phát" }, { "name": "Kartik Aaryan" }, { "name": "Nushrat Bharucha" }, { "name": "Sunny Singh Nijjar" }, { "name": "Vic Mignogna" }, { "name": "Christopher Sabat" }, { "name": "Jason Douglas" }, { "name": "Sean Schemmel" }, { "name": "Monica Rial" }, { "name": "Dameon Clarke" }, { "name": "Ian Sinclair" }, { "name": "Masako Nozawa" }, { "name": "Alexis Tipton" }, { "name": "Kôichi Yamadera" }, { "name": "Sonny Strait" }, { "name": "Tomokazu Sugita" }, { "name": "Chris Ayres" }, { "name": "Ryô Horikawa" }, { "name": "Aya Hisakawa" }, { "name": "Ryûsei Nakao" }, { "name": "Bin Shimada" }, { "name": "Kara Edwards" }, { "name": "Đào Điển" }, { "name": "Thẩm Đạt Uy" }, { "name": "Tôn Diệp" }, { "name": "Hailee Steinfeld" }, { "name": "John Cena" }, { "name": "Kenneth Choi" }, { "name": "Park Bo Young" }, { "name": "Kim Young Kwang" }, { "name": "Ko Kyu Pil" }, { "name": "Chuan jun Wang" }, { "name": "Yiwei Zhou" }, { "name": "Xinming Yang" }, { "name": "Beibi Gong" }, { "name": "Stephen Lang" }, { "name": "Hugo Weaving" }, { "name": "Hera Hilmar" }, { "name": "Frankie Adams" }, { "name": "Sylvester Stallone" }, { "name": "Ryan Guzman" }, { "name": "Meadow Williams" }, { "name": "Kim Hae Sook" }, { "name": "Kim Sung Ryoung" }, { "name": "Kim Hee Ae" }, { "name": "Ye Soo Jung" }, { "name": "Moon Sook" }, { "name": "Jeff Bridges" }, { "name": "Dakota Johnson" }, { "name": "Jon Hamm" }, { "name": "Cynthia Erivo" }, { "name": "Yaya Urassaya Sperbund" }, { "name": "Sunny Suwanmethanont" }, { "name": "Nichkhun Horvejkul" }, { "name": "Thư Kỳ" }, { "name": "Trương Nghệ Hưng" }, { "name": "Hewei Yu" }, { "name": "Xun Wang" }, { "name": "Qinqin Li" }, { "name": "Hu Guan" }, { "name": "Jing Liang" }, { "name": "You Lin Lee" }, { "name": "Teddy Chan" }, { "name": "Xiaohang Fang" }, { "name": "Wenting Hao" }, { "name": "Yanqing Liu" }, { "name": "Hao Ning" }, { "name": "Dolph Lundgren" }, { "name": "Jason Momoa" }, { "name": "Amber Heard" }, { "name": "Tabu" }, { "name": "Radhika Apte" }, { "name": "Ayushmann Khurrana" }, { "name": "Shay Mitchell" }, { "name": "Louis Herthum" }, { "name": "Stana Katic" }, { "name": "Gijs Scholten Van Aschat" }, { "name": "Lexie Roth" }, { "name": "Grey Damon" }, { "name": "Kirby Johnson" }, { "name": "Nick Thune" }, { "name": "Maximillian Mcnamara" }, { "name": "Jacob Ming Trent" }, { "name": "James A. Watson Jr." }, { "name": "Marianne Bayard" }, { "name": "Adrian M. Mompoint" }, { "name": "Matt Mings" }, { "name": "Guy Clemens" }, { "name": "Sean Burns" }, { "name": "J.p. Valenti" }, { "name": "Arthur Hiou" }, { "name": "Lisa Wynn" }, { "name": "Kenneth Israel" }, { "name": "Larry Eudene" }, { "name": "Alice Lowe" }, { "name": "Fionn Whitehead" }, { "name": "Craig Parkinson" }, { "name": "John Abraham" }, { "name": "Shruti Haasan" }, { "name": "Nathalia Kaur" }, { "name": "Nishikant Kamat" }, { "name": "Gary Oldman" }, { "name": "Gerard Butler" }, { "name": "Jason Schwartzman" }, { "name": "Robert Capron" }, { "name": "Jenny Slate" }, { "name": "Jacki Weaver" }, { "name": "J.b. Smoove" }, { "name": "Christian Bale" }, { "name": "Benedict Cumberbatch" }, { "name": "Adam Driver" }, { "name": "John David Washington" }, { "name": "Laura Harrier" }, { "name": "Jang Young Nam" }, { "name": "Lee Hee Joon" }, { "name": "Kim Shi A" }, { "name": "Baek Soo Jang" }, { "name": "Johnny Depp" }, { "name": "Eddie Redmayne" }, { "name": "Zoë Kravitz" }, { "name": "Callum Turner" }, { "name": "Carmen Ejogo" }, { "name": "Wolf Roth" }, { "name": "Matthew Modine" }, { "name": "James Remar" }, { "name": "Tom Sizemore" }, { "name": "John Travolta" }, { "name": "Jennifer Esposito" }, { "name": "Trần Quốc Khôn" }, { "name": "Triệu Văn Trác" }, { "name": "Prakash Raj" }, { "name": "Mahesh Babu" }, { "name": "Sarath Kumar" }, { "name": "Kiara Advani" }, { "name": "Devaraj" }, { "name": "Rajsekhar Aningi" }, { "name": "Judy Greer" }, { "name": "Haluk Bilginer" }, { "name": "Jamie Lee Curtis" }, { "name": "Andi Matichak" }, { "name": "James Jude Courtney" }, { "name": "Nick Castle" }, { "name": "Ray Sahetapy" }, { "name": "Chelsea Islan" }, { "name": "Pevita Pearce" }, { "name": "Karina Suwandhi" }, { "name": "Samo Rafael" }, { "name": "Hadijah Shahab" }, { "name": "Kim Min Kyu" }, { "name": "So Joo Yeon" }, { "name": "Choi Hee Jin" }, { "name": "Kim Young" }, { "name": "Kim Tae Min" }, { "name": "Park Jin" }, { "name": "Betty Gabriel" }, { "name": "Chelsea Alden" }, { "name": "Yuan Nie" }, { "name": "Lu Zhang" }, { "name": "Zhaoqi Shi" }, { "name": "Kevin Cheng" }, { "name": "Lan Qin" }, { "name": "Wei Gan" }, { "name": "Sam Elliott" }, { "name": "Bradley Cooper" }, { "name": "Lady Gaga" }, { "name": "Dave Chappelle" }, { "name": "Hồ Quân" }, { "name": "Tôn Lệ" }, { "name": "Đặng Siêu" }, { "name": "Trịnh Khải" }, { "name": "Jo Jae Yun" }, { "name": "Yoon Kye Sang" }, { "name": "Choi Gwi Hwa" }, { "name": "Min Ren" }, { "name": "Yunlai Xin" }, { "name": "Ruonan Zhang" }, { "name": "Yingbo Zhao" }, { "name": "Danni Zhu" }, { "name": "Han Go Eun" }, { "name": "Kim Byung Gi" }, { "name": "Joo Woo Jae" }, { "name": "Lee Hye Ran" }, { "name": "Kim Ye Ryung" }, { "name": "Chu Nhân" }, { "name": "KAI CHUNG CHEUNG" }, { "name": "Jang Dong Gun" }, { "name": "Hyun Bin" }, { "name": "Son Na Eun" }, { "name": "Seo Young Hee" }, { "name": "Lee Tae Ri" }, { "name": "Bryan Cranston" }, { "name": "Edward Norton" }, { "name": "Koyu Rankin" }, { "name": "Kim Sung Kyung" }, { "name": "Jin Kyung" }, { "name": "Kim Sang Ho" }, { "name": "Lee Sung Min" }, { "name": "Kwak Si Yang" }, { "name": "Park Bom" }, { "name": "Mã Tư Thuần" }, { "name": "Trương Nhược Quân" }, { "name": "Lý Hiện" }, { "name": "Toshiyuki Nishida" }, { "name": "Takeshi Kitano" }, { "name": "Nao Ômori" }, { "name": "Pierre Taki" }, { "name": "Sansei Shiomi" }, { "name": "Tatsuo Nadaka" }, { "name": "Cao Dĩ Tường" }, { "name": "Leehom Wang" }, { "name": "Victoria Song" }, { "name": "Karena Ng" }, { "name": "Ed Helms" }, { "name": "Annabelle Wallis" }, { "name": "Rami Malek" }, { "name": "Christopher Fulford" }, { "name": "Joe David Walters" }, { "name": "Brian Vernel" }, { "name": "Damijan Oklopdzic" }, { "name": "James Franco" }, { "name": "Dennis Quaid" }, { "name": "Jack Reynor" }, { "name": "Carrie Coon" }, { "name": "Ian Matthews" }, { "name": "Phàn Thiếu Hoàng" }, { "name": "Thích Ngạn Năng" }, { "name": "Xa Vĩnh Lợi" }, { "name": "Stephen Rea" }, { "name": "Barry Keoghan" }, { "name": "Moe Dunford" }, { "name": "James Frecheville" }, { "name": "Freddie Fox" }, { "name": "Tom Hardy" }, { "name": "Riz Ahmed" }, { "name": "Michelle Williams" }, { "name": "Mitsuki Takahata" }, { "name": "Masato Sakai" }, { "name": "Sakura Ando" }, { "name": "Yûsuke Iseya" }, { "name": "Kanata Hongô" }, { "name": "Mari Hamada" }, { "name": "Ayaka Miyoshi" }, { "name": "Moon Chae Won" }, { "name": "Ji Sung" }, { "name": "Cho Seung Woo" }, { "name": "Yoo Jae Myung" }, { "name": "Baek Yoon Sik" }, { "name": "Trịnh Y Kiện" }, { "name": "Xa Thi Mạn" }, { "name": "Trần Tiểu Xuân" }, { "name": "Michael Tse" }, { "name": "Kar Lok Chin" }, { "name": "Jerry Lamb" }, { "name": "Jennifer Garner" }, { "name": "Tyson Rittler" }, { "name": "Stanley Tucci" }, { "name": "Will Arnett" }, { "name": "Ludacris" }, { "name": "Natasha Lyonne" }, { "name": "Gabriel Iglesias" }, { "name": "Jordin Sparks" }, { "name": "Shraddha Kapoor" }, { "name": "Rajkummar Rao" }, { "name": "Pankaj Tripathi" }, { "name": "Dermot Mulroney" }, { "name": "Richard Harmon" }, { "name": "Bella Thorne" }, { "name": "Rowan Atkinson" }, { "name": "Ben Miller" }, { "name": "Mimi Chi Yan Kung" }, { "name": "Carlos Chan" }, { "name": "Carmen Soup" }, { "name": "Trương Hiếu Toàn" }, { "name": "Quế Luân Mỹ" }, { "name": "Trần Học Đông" }, { "name": "Tưởng Mộng Điệp" }, { "name": "Vương Uyên Tuệ" }, { "name": "Đậu Bá Lâm" }, { "name": "Soo Ae" }, { "name": "Park Hae il" }, { "name": "Alex Neustaedter" }, { "name": "Becky G" }, { "name": "Alex MacNicoll" }, { "name": "Bruce Willis" }, { "name": "Lưu Diệp" }, { "name": "Tạ Đình Phong" }, { "name": "Alexander Petrov" }, { "name": "Taisiya Vilkova" }, { "name": "Nam Joo Hyuk" }, { "name": "Jo In Sung" }, { "name": "Kim Myung Min" }, { "name": "Kim In kwon" }, { "name": "Choi Woo Sik" }, { "name": "Hyeri" }, { "name": "Kyle MacLachla" }, { "name": "Lauren Cohan" }, { "name": "Michelle Yeoh" }, { "name": "Constance Wu" }, { "name": "Henry Golding" }, { "name": "Son Ye Jin" }, { "name": "Julian Cheung" }, { "name": "Stephy Tang" }, { "name": "Chung Chi Cheung" }, { "name": "Keegan Michael Key" }, { "name": "Boyd Holbrook" }, { "name": "Shin Da Eun" }, { "name": "Jo Min Soo" }, { "name": "Kim Da Mi" }, { "name": "Go Min Si" }, { "name": "Eero Aho" }, { "name": "Johannes Holopainen" }, { "name": "Jussi Vatanen" }, { "name": "Julie Estelle" }, { "name": "Joe Taslim" }, { "name": "Thi Triển" }, { "name": "Lan Lam" }, { "name": "Văn Mộng" }, { "name": "Lâu Nghệ Tiêu" }, { "name": "Tôn Nghệ Châu" }, { "name": "Trần Hách" }, { "name": "Viên Hoằng" }, { "name": "Nakagawa Taishi" }, { "name": "Dean Fujioka" }, { "name": "Chinen Yuri" }, { "name": "Mano Erina" }, { "name": "Komatsu Nana" }, { "name": "Jessica Mila" }, { "name": "Bianca Hello" }, { "name": "Denny Sumargo" }, { "name": "Josh Brolin" }, { "name": "Benicio Del Toro" }, { "name": "Jeffrey Donovan" }, { "name": "Riley Keough" }, { "name": "Jeffrey Wright" }, { "name": "Beckam Crawford" }, { "name": "Michael Tayles" }, { "name": "Issac Bird" }, { "name": "Marisa Tomei" }, { "name": "Mo McRae" }, { "name": "Steve Harris" }, { "name": "Patch Darragh" }, { "name": "Luna Lauren Velez" }, { "name": "Jermel Howard" }, { "name": "Michael Fassbender" }, { "name": "Alicia Vikander" }, { "name": "Rachel Weisz" }, { "name": "Brad Pitt" }, { "name": "Marion Cotillard" }, { "name": "Jared Harris" }, { "name": "Nicolas Cage" }, { "name": "Thomas Jane" }, { "name": "Mario Van Peebles" }, { "name": "Jane Levy" }, { "name": "Dylan Minnette" }, { "name": "Eric Roberts" }, { "name": "Joey Morgan" }, { "name": "Omar Chaparro" }, { "name": "Jun Kunimura" }, { "name": "Jung min Hwang" }, { "name": "Woo hee Chun" }, { "name": "Teresa Palmer" }, { "name": "Gabriel Bateman" }, { "name": "Alexander Dipersia" }, { "name": "Billy Burke" }, { "name": "Maria Bello" }, { "name": "Rolando Boyce" }, { "name": "Kim Jung Tae" }, { "name": "Kim Seung Woo" }, { "name": "Lee Han Wi" }, { "name": "Shin Kang Woo" }, { "name": "Hyuk" }, { "name": "Moon Yong Suk" }, { "name": "Oh Man Seok" }, { "name": "Kim Min Kyung" }, { "name": "Emma Roberts" }, { "name": "Dave Franco" }, { "name": "Keanu Reeves" }, { "name": "Ian McShane" }, { "name": "Ruby Rose" }, { "name": "Dina Meyer" }, { "name": "AnnaLynne McCord" }, { "name": "George MacKay" }, { "name": "Samantha Isler" }, { "name": "Sam Neill" }, { "name": "Julian Dennison" }, { "name": "Rima Te Wiata" }, { "name": "Rudolf Martin" }, { "name": "Christoph Letkowski" }, { "name": "Svenja Jung" }, { "name": "Uta Bonz" }, { "name": "Paul Boche" }, { "name": "Constantin Lücke" }, { "name": "Waléra Kanischtscheff" }, { "name": "Jack Nicholson" }, { "name": "Morgan Freeman" }, { "name": "Sean Hayes" }, { "name": "Anna Kendrick" }, { "name": "J.K. Simmons" }, { "name": "Narges Rashidi" }, { "name": "Avin Manshadi" }, { "name": "Bobby Naderi" }, { "name": "Hollie Burrows" }, { "name": "James Cooke" }, { "name": "Liam Dascombe" }, { "name": "Vikram Prabhu" }, { "name": "Ranya Rao" }, { "name": "Karunas" }, { "name": "Zachary Quinto" }, { "name": "Karl Urban" }, { "name": "Bạch Kính Đình" }, { "name": "Quách Thù Đồng" }, { "name": "Lý Hồng Nghị" }, { "name": "Vương Hạc Nhuận" }, { "name": "Đinh Quan Sâm" }, { "name": "Triệu Văn Long" }, { "name": "Tô Hữu Bằng" }, { "name": "Liễu Nham" }, { "name": "Lâm Canh Tân" }, { "name": "Nhiều diễn viên" }, { "name": "Trần Khôn" }, { "name": "Bạch Bách Hà" }, { "name": "Jin mo Joo" }, { "name": "Dong won Kang" }, { "name": "Sabrina Carpenter" }, { "name": "Sofia Carson" }, { "name": "Nikki Hahn" }, { "name": "Kaya Scodelario" }, { "name": "Orlando Bloom" }, { "name": "Tom Cruise" }, { "name": "Cobie Smulders" }, { "name": "Robert Knepper" }, { "name": "Trần Vỹ Đình" }, { "name": "Đường Nghệ Hân" }, { "name": "Jessica" }, { "name": "Christian Clavier" }, { "name": "Isabelle Nanty" }, { "name": "Pierre François Martin Laval" }, { "name": "Kev Adams" }, { "name": "Arnaud Ducret" }, { "name": "Pio Marmaï" }, { "name": "Franck Gastambide" }, { "name": "Camille Cottin" }, { "name": "Bae Sung Woo" }, { "name": "Yoon Kyun Sang" }, { "name": "Cheeranun Yusanont" }, { "name": "Kom Chuancheun" }, { "name": "Nutchapatchara Wongsuwan" }, { "name": "Pitsanu NimSakul" }, { "name": "Anime" }, { "name": "Dany Boon" }, { "name": "Alice Pol" }, { "name": "Kad Merad" }, { "name": "Kang Dong Won" }, { "name": "Man sik Jeong" }, { "name": "Ji hun Ju" }, { "name": "Jung Woo Sung" }, { "name": "Jason Statham" }, { "name": "Jessica Alba" }, { "name": "Tommy Lee Jones" }, { "name": "Jason Biggs" }, { "name": "Janet Montgomery" }, { "name": "Paul Dano" }, { "name": "Daniel Radcliffe" }, { "name": "Mary Elizabeth Winstead" }, { "name": "Doona Bae" }, { "name": "Jung woo Ha" }, { "name": "Dal su Oh" }, { "name": "Louis Koo" }, { "name": "Ching Wan Lau" }, { "name": "Eddie Peng" }, { "name": "Chris Pratt" }, { "name": "Ethan Hawke" }, { "name": "Pierce Brosnan" }, { "name": "Jason Barry" }, { "name": "Karen Moskow" }, { "name": "Dev Patel" }, { "name": "Jeremy Irons" }, { "name": "Malcolm Sinclair" }, { "name": "Galen T. Chu" }, { "name": "Đồng Phi" }, { "name": "Lâm Thu Nam" }, { "name": "Lưu Nhuế Lân" }, { "name": "Brendan Fletcher" }, { "name": "Dan Shea" }, { "name": "Loretta Walsh" }, { "name": "Melissa McCarthy" }, { "name": "Kristen Bell" }, { "name": "Peter Dinklage" }, { "name": "Kurt Russell" }, { "name": "Douglas M. Griffin" }, { "name": "Tom Hanks" }, { "name": "Felicity Jones" }, { "name": "Ben Foster" }, { "name": "La Tường" }, { "name": "Trạch Tử Mạnh" }, { "name": "Trần Mỹ Hành" }, { "name": "Triệu Cát" }, { "name": "Charles Dance" }, { "name": "Kristen Wiig" }, { "name": "Zach Woods" }, { "name": "Karan Soni" }, { "name": "Frank Grillo" }, { "name": "Elizabeth Mitchell" }, { "name": "Mykelti Williamson" }, { "name": "Renée Zellweger" }, { "name": "Gemma Jones" }, { "name": "Jim Broadbent" }, { "name": "Joe Manganiello" }, { "name": "Mandy Patinkin" }, { "name": "Ngô Kinh" }, { "name": "Lưu Thanh Vân" }, { "name": "Giang Sơ Ảnh" }, { "name": "Khương Hạo Văn" }, { "name": "Ngô Đình Diệp" }, { "name": "Viên Tuyền" }, { "name": "Liêu Khải Trí" }, { "name": "Jamie Dornan" }, { "name": "Tyler Hoechlin" }, { "name": "Jin Se Yun" }, { "name": "Lee Beom Soo" }, { "name": "Lee Jung Jae" }, { "name": "Emma Watson" }, { "name": "Daniel Brühl" }, { "name": "Michael Nyqvist" }, { "name": "Allie Marie Evans" }, { "name": "Patrick Johnson" }, { "name": "Peter O'Brien" }, { "name": "Alexander Black" }, { "name": "Sarita Choudhury" }, { "name": "Amy Adams" }, { "name": "Michael Shannon" }, { "name": "Viên San San" }, { "name": "Park Chan Yeol" }, { "name": "Seo Ju Hyun" }, { "name": "Khương Triều" }, { "name": "Ji Soo – Yong Bi" }, { "name": "Suho – Sang Woo" }, { "name": "Ryoo Joon Yeol – Ji Gong" }, { "name": "Kim Hee Chan – Doo Man" }, { "name": "Jordan Peele" }, { "name": "Tiffany Haddish" }, { "name": "Stephanie Sigman" }, { "name": "Alicia Vela Bailey" }, { "name": "Miranda Otto" }, { "name": "Enjie Lu" }, { "name": "Qiang Zheng" }, { "name": "Wei Dong Chen" }, { "name": "Leslie Mann" }, { "name": "Sunny Suwanmethanon" }, { "name": "Davika Hoorne" }, { "name": "Ferdia Walsh Peelo" }, { "name": "Aidan Gillen" }, { "name": "Maria Doyle Kennedy" }, { "name": "Britt Robertson" }, { "name": "Peggy Lipton" }, { "name": "Gugu Mbatha Raw" }, { "name": "Hướng Tá" }, { "name": "Huỳnh Hiểu Minh" }, { "name": "Lương Gia Huy" }, { "name": "Phạm Băng Băng" }, { "name": "Henry Thomas" }, { "name": "Doug Jones" }, { "name": "Elizabeth Reaser" }, { "name": "Jennifer Lawrence" }, { "name": "Michael Sheen" }, { "name": "Jonathan Groff" }, { "name": "Frankie J. Alvarez" }, { "name": "Murray Bartlett" }, { "name": "JESSE METCALFE" }, { "name": "MEGHAN ORY" }, { "name": "Elle Fanning" }, { "name": "Christina Hendricks" }, { "name": "Dwayne Johnson" }, { "name": "Kevin Hart" }, { "name": "Danielle Nicolet" }, { "name": "Atsuko Tanaka" }, { "name": "Akio Otsuka" }, { "name": "Lu Han" }, { "name": "Tỉnh Bách Nhiên" }, { "name": "Ed Westwick" }, { "name": "Phoebe Tonkin" }, { "name": "Jeremy Sumpter" }, { "name": "Cẩm Vinh" }, { "name": "Đằng Cách Nhĩ" }, { "name": "Alycia Debnam Carey" }, { "name": "William Moselley" }, { "name": "Milo Cawthorne" }, { "name": "James Blake" }, { "name": "Kimberley Crossman" }, { "name": "Sam Berkley" }, { "name": "Daniel Cresswell" }, { "name": "Delaney Tabron" }, { "name": "Stephen Ure" }, { "name": "Colin Moy" }, { "name": "Jodie Rimmer" }, { "name": "Nick Hoskins Smith" }, { "name": "Erroll Shand" }, { "name": "Kate Elliott" }, { "name": "Aaron McGregor" }, { "name": "Andrew Laing" }, { "name": "Tim Foley" }, { "name": "Kris Wu" }, { "name": "Rhona Mitra" }, { "name": "Thành Long" }, { "name": "Milla Jovovich" }, { "name": "Dave Bautista" }, { "name": "Alain Moussi" }, { "name": "Gina Carano" }, { "name": "Van Damme" }, { "name": "Lý Du Phi" }, { "name": "Trần Tuệ Lâm" }, { "name": "Trâu Triệu Long" }, { "name": "Ju hyuk Kim" }, { "name": "So hee Kim" }, { "name": "Yu hwa Choi" }, { "name": "Vladimir Mashkov" }, { "name": "Agne Grudyte" }, { "name": "Sergey Shakurov" }, { "name": "Trương Gia Huy" }, { "name": "Ngô Trấn Vũ" }, { "name": "Trần Hào" }, { "name": "Rose McGowan" }, { "name": "Rachel Nichols" }, { "name": "Idris Elba" }, { "name": "Richard Madden" }, { "name": "Kelly Reilly" }, { "name": "Dương Mịch" }, { "name": "Ngô Diệc Phàm" }, { "name": "Vương Nguyên (Tfboys)" }, { "name": "Jung Yu Mi" }, { "name": "Gong Yoo" }, { "name": "Baek Jin Hee" }, { "name": "Seth Rogen" }, { "name": "Zac Efron | See full cast & crew" }, { "name": "Erin Moriarty" }, { "name": "Mel Gibson" }, { "name": "Trương Học Hữu" }, { "name": "Matt Damon" }, { "name": "Julia Stiles" }, { "name": "Seung Ho Yoo" }, { "name": "Jae Hyeon Jo" }, { "name": "Suk Ho Jun" }, { "name": "Chang Seok Ko" }, { "name": "Kim Min Seok" }, { "name": "Mi Ran Ra" }, { "name": "Dan Chupong" }, { "name": "Nathan Jones" }, { "name": "Damian Mavis" }, { "name": "Kessarin Ektawatk" }, { "name": "Scott Glenn" }, { "name": "Chris O'Donnell" }, { "name": "Bill Paxton" }, { "name": "Ngọc Trai" }, { "name": "Ngô Thanh Vân" }, { "name": "Thành Lộc" }, { "name": "Will" }, { "name": "Phạm Lưu Tuấn Tài" }, { "name": "Chyler Leigh" }, { "name": "Jaime Pressly" }, { "name": "Chris Evans" }, { "name": "Jackie Chan" }, { "name": "Andy Lau and Sammo Hung Kam Bo" }, { "name": "Christopher Meloni" }, { "name": "Lưu Đức Hoa" }, { "name": "Hồng Kim Bảo" }, { "name": "Trần Phái Nghiên" }, { "name": "Min sik Choi" }, { "name": "Hong pa Kim" }, { "name": "Vương Lạc Đan" }, { "name": "Châu Du Dân" }, { "name": "Bào Khởi Tịnh" }, { "name": "Thiên Tâm" }, { "name": "Thiệu Mỹ Kỳ" }, { "name": "Woody Harrelson" }, { "name": "Ellen DeGeneres" }, { "name": "Albert Brooks" }, { "name": "Torbin Xan Bullock" }, { "name": "Lisa Brenner" }, { "name": "Samuel Larsen" }, { "name": "Todd Lowe" }, { "name": "Trương Trí Lâm" }, { "name": "Trần Kiều Ân" }, { "name": "Tiết Giia Yến" }, { "name": "Đường Văn Long" }, { "name": "Jared Leto" }, { "name": "Lý Thẩm" }, { "name": "Đàm Tùng Vận" }, { "name": "Angelababy" }, { "name": "Ngô Thiến" }, { "name": "Margot Robbie" }, { "name": "Samuel L. Jackson" }, { "name": "Triệu Vy" }, { "name": "Chung Hán Lương" }, { "name": "Rachel McAdams" }, { "name": "Benedict Wong" }, { "name": "Rossif Sutherland" }, { "name": "Douangmany Soliphanh" }, { "name": "Sara Botsford" }, { "name": "Chương Tử Di" }, { "name": "Đồng Lệ Á" }, { "name": "Lương Tịnh" }, { "name": "Shailene Wood" }, { "name": "Joseph Gordon Levitt" }, { "name": "Tom Wilkinso" }, { "name": "Christy Meyer" }, { "name": "Adrienne Wilkinson" }, { "name": "Walter Koenig" }, { "name": "Sanzhar Madiyev" }, { "name": "Anton Pampushnyy" }, { "name": "Sebastien Sisak" }, { "name": "Valeriya Shkirando" }, { "name": "Alina Kiziyarova" }, { "name": "Michael Jai White" }, { "name": "Max Ryan" }, { "name": "Han Hye Rin" }, { "name": "Ahn Sung Ki" }, { "name": "Đỗ Văn Trạch" }, { "name": "Philip Keung" }, { "name": "Gregory Wong" }, { "name": "Asami" }, { "name": "Kirara Asuka" }, { "name": "Jack Huston" }, { "name": "Nazanin Boniadi" }, { "name": "Ayelet Zurer" }, { "name": "Kim Min Hee" }, { "name": "Kim Tae Ri" }, { "name": "Cho Jin Woong" }, { "name": "Lena Headey" }, { "name": "Aaron Paul" }, { "name": "Sean Bean" }, { "name": "Jon Campling" }, { "name": "Kezia Burrows" }, { "name": "Will Bowden" }, { "name": "Neil Newbon" }, { "name": "Andrea Tivadar" }, { "name": "Amanda Piery" }, { "name": "Edward Saxby" }, { "name": "Joo Won – Jang Woo Yu Hae Jin – Dược sỹ Min Lee Yoo Young – Shi Eun Ryoo Hye Young – Eun Ji" }, { "name": "Đoàn Dịch Hồng" }, { "name": "Quách Đào" }, { "name": "Lữ Tụng Hiền" }, { "name": "Ngô Ngạn Tổ" }, { "name": "Cảnh Điềm" }, { "name": "Analeigh Tipton" }, { "name": "Sofia Black D'Elia" }, { "name": "Michael Kelly" }, { "name": "Eva Green" }, { "name": "Kim Dickens" }, { "name": "Kathryn Hahn" }, { "name": "Lance Henriksen" }, { "name": "Johnny Strong" }, { "name": "Martin Sheen" }, { "name": "Marlon Brando" }, { "name": "Robert Duvall" }, { "name": "Katherine Waterston" }, { "name": "Dan Fogler" }, { "name": "Alison Sudol" }, { "name": "and Colin Farrell" }, { "name": "Cao Viên Viên" }, { "name": "Dương Thiên Hoa" }, { "name": "Kylie Rogers" }, { "name": "Martin Henderson" }, { "name": "Yoshimasa Hosoya" }, { "name": "Inori Minase" }, { "name": "Ben Whishawlan Richmen" }, { "name": "Louis C.K." }, { "name": "Eric Stonestreet" }, { "name": "Stuart Graham" }, { "name": "Laine Megaw" }, { "name": "Brian Milligan" }, { "name": "Liam McMahon" }, { "name": "Karen Hassan" }, { "name": "Frank McCusker" }, { "name": "Lalor Roddy" }, { "name": "Helen Madden" }, { "name": "Des McAleer" }, { "name": "Geoff Gatt" }, { "name": "Rory Mullen" }, { "name": "Ben Peel" }, { "name": "Helena Bereen" }, { "name": "Paddy Jenkins" }, { "name": "Lambert Wilson" }, { "name": "Virginie Ledoyen" }, { "name": "Guillaume Gouix" }, { "name": "Vương Truyền Nhất" }, { "name": "Lý Yến Chinh" }, { "name": "Sử Đại Tây" }, { "name": "Đậu Trí Khổng" }, { "name": "Phim Hành Động" }, { "name": "Phim Hoạt Hình" }, { "name": "Phim Phiêu Lưu" }, { "name": "Ara Go" }, { "name": "Seong gyoon Kim" }, { "name": "Je hoon Lee" }, { "name": "Anton Yelchin" }, { "name": "Imogen Poots" }, { "name": "Alia Shawkat" }, { "name": "Hiếu Long" }, { "name": "Tào Mộng Cách" }, { "name": "Dương Tử Thâm" }, { "name": "Vu Ba" }, { "name": "Châu Vũ Đồng" }, { "name": "Vương Đức Thuận" }, { "name": "Lý Thanh" }, { "name": "Mia Wasikowska" }, { "name": "Helena Bonham Carter" }, { "name": "Nicholas Hoult" }, { "name": "Vernetta Lopez" }, { "name": "Scott Lawrence" }, { "name": "Jamie Bernadette" }, { "name": "Katie Carpenter" }, { "name": "Gema Calero" }, { "name": "Nick Cheung" }, { "name": "Qi Shu" }, { "name": "Jing Wong" }, { "name": "Ngôn Thừa Húc" }, { "name": "Giản Đình Nhuế" }, { "name": "Lý Ngọc Tỷ" }, { "name": "Lee Min ho" }, { "name": "Wallace Chung" }, { "name": "Tiffany Tang" }, { "name": "Ngô Thiên Ngữ" }, { "name": "Minami Hamabe" }, { "name": "Marie Iitoyo" }, { "name": "Airi Matsui" }, { "name": "Maika Monroe" }, { "name": "Roland Emmerich" }, { "name": "Joey King" }, { "name": "Ryan Reynolds" }, { "name": "Kevin Costner" }, { "name": "Naomi Watts" }, { "name": "Chris Cooper" }, { "name": "Rita Blanco" }, { "name": "Joaquim de Almeida" }, { "name": "Roland Giraud" }, { "name": "Jesse Metcalfe" }, { "name": "Jessica Harmon" }, { "name": "Keegan Connor Tracy" }, { "name": "Trương Siêu" }, { "name": "Trần Kinh Thiên" }, { "name": "Hà Nhuận Đông" }, { "name": "Lý Đông Học" }, { "name": "Hạ Tử Đồng" }, { "name": "Dương Kỳ Minh" }, { "name": "Điền Nguyên" }, { "name": "Tạ Miêu" }, { "name": "Trương Hách" }, { "name": "Tiêu Ân Na" }, { "name": "Megan Fox" }, { "name": "Stephen Amell" }, { "name": "Taron Egerton" }, { "name": "Hugh Jackman" }, { "name": "Tom Costello" }, { "name": "Tống Dực Phi" }, { "name": "Lí Hồng Đào" }, { "name": "Chu Giai Hi" }, { "name": "Sigourney Weaver" }, { "name": "Jennifer Love Hewitt" }, { "name": "Gene Hackman" }, { "name": "Arun Bali" }, { "name": "Meera Chopra" }, { "name": "Gajendra Chouhan" }, { "name": "Nhậm Hiền Tề" }, { "name": "Lâm Gia Đống" }, { "name": "Ron Allen" }, { "name": "George Babbit" }, { "name": "Laila Berzins" }, { "name": "Will Smith" }, { "name": "Cara Delevingne" }, { "name": "Josh Barnett" }, { "name": "Gillian White" }, { "name": "Ploychompoo" }, { "name": "Pongsakorn Tosuwan" }, { "name": "Kate Bosworth" }, { "name": "Devon Sawa" }, { "name": "Owen Teague" }, { "name": "John Cusack" }, { "name": "Melanie Stone" }, { "name": "Adam Johnson" }, { "name": "Jake Stormoen" }, { "name": "Emilia Clarke" }, { "name": "Sam Claflin" }, { "name": "Jenna Coleman" }, { "name": "Thanh Long" }, { "name": "Pimchanok LerwisetpibolThana Aiemniyom" }, { "name": "Johnathan Samson" }, { "name": "Yui Tsutsumi" }, { "name": "Vera Farmiga" }, { "name": "Patrick Wilson" }, { "name": "Frances O'Connor" }, { "name": "Madison Wolfe" }, { "name": "Simon McBurney" }, { "name": "Franka Potente" }, { "name": "Kristian Brodie" }, { "name": "Yvonne Strahovski" }, { "name": "Adrien Brody" }, { "name": "Jennifer Beals" }, { "name": "Châu Tinh Trì" }, { "name": "La Chí Tường" }, { "name": "Trương Vũ Kỳ" }, { "name": "Travis Fimmel" }, { "name": "Robert Kazinsky" }, { "name": "Anders Dahlberg" }, { "name": "Åsmund Brede Eike" }, { "name": "Elg Elgesem" }, { "name": "Tina Fey" }, { "name": "Martin Freeman" }, { "name": "Đỗ Thiên Hạo" }, { "name": "Tần Lam" }, { "name": "Trần Hiểu" }, { "name": "Jesse Eisenberg" }, { "name": "Mark Ruffalo" }, { "name": "Keanu Reeves Charlize Theron Jason Isaacs" }, { "name": "Leonardo DiCaprio" }, { "name": "Kate Winslet" }, { "name": "Billy Zane" }, { "name": "Michael Martin" }, { "name": "Kristen Stewart" }, { "name": "Robert Pattinson" }, { "name": "Justin Chon" }, { "name": "Shailene Woodley" }, { "name": "Theo James" }, { "name": "Jeff Daniels" }, { "name": "Sidharth Malhotra" }, { "name": "Fawad Khan" }, { "name": "Alia Bhatt" }, { "name": "Leon Dai" }, { "name": "Chris Lee" }, { "name": "George Clooney" }, { "name": "Julia Roberts" }, { "name": "Jack O'Connell" }, { "name": "Su jeong Lim" }, { "name": "Jung suk Jo" }, { "name": "Jin wook Lee" }, { "name": "Lanyi Zhang" }, { "name": "Jiang Xinqi" }, { "name": "John Goodman" }, { "name": "John Gallagher Jr." }, { "name": "Kristen StewartAshley Greene" }, { "name": "Taylor Lautner" }, { "name": "Tao liang Tan" }, { "name": "James Tien and Wei Yang" }, { "name": "Motoki Fukami" }, { "name": "Elaiza Ikeda" }, { "name": "Megumi Kagurazaka" }, { "name": "Barry Watson" }, { "name": "Esmé Bianco" }, { "name": "Gavin Lewis" }, { "name": "Willem Dafoe" }, { "name": "Charlotte Gainsbourg" }, { "name": "Storm Acheche Sahlstrøm" }, { "name": "Vincent Cassel" }, { "name": "Léa Seydoux" }, { "name": "André Dussollier" }, { "name": "Sharlto Copley" }, { "name": "Tim Roth" }, { "name": "Haley Bennett" }, { "name": "Ansel Elgort" }, { "name": "Nat Wolff" }, { "name": "BoA" }, { "name": "Uyển Quỳnh Đan" }, { "name": "Đàm Diệu Văn" }, { "name": "Alden Ehrenreich" }, { "name": "Josh Gad" }, { "name": "Danny McBride" }, { "name": "Lê Minh" }, { "name": "Dư Thiếu Quần" }, { "name": "Shane West" }, { "name": "Mandy Moore" }, { "name": "Sharman Joshi" }, { "name": "Zarine Khan" }, { "name": "Karan Singh Grover" }, { "name": "Sam Rockwell" }, { "name": "Hilary Swank" }, { "name": "James Marsters" }, { "name": "Jeffrey Dean Morgan" }, { "name": "Janet McTeer" }, { "name": "Tom Hiddleston" }, { "name": "Young nam Jang" }, { "name": "Ho bin Jeong" }, { "name": "Yun seok Kim" }, { "name": "Halle Berry" }, { "name": "Ian McKellen" }, { "name": "Patrick Stewart" }, { "name": "Ellen Page" }, { "name": "preechaya pongthananikorn" }, { "name": "sunny suwanmethanont" }, { "name": "aoi sora" }, { "name": "popetorn soonthornyanakij" }, { "name": "Vanessa Kirby" }, { "name": "David Ajala" }, { "name": "Deborah Rosan" }, { "name": "Tom McKay" }, { "name": "Mike Noble" }, { "name": "Bentley Kalu" }, { "name": "Toby Jones" }, { "name": "Nick Frost" }, { "name": "Richard Armitage" }, { "name": "Ko Ah Sung" }, { "name": "Sacha Baron Cohen" }, { "name": "Mark Strong" }, { "name": "Eve Mauro" }, { "name": "Danny Trejo" }, { "name": "Rocky Myers" }, { "name": "Steven Seagal" }, { "name": "Pim Bubear" }, { "name": "Amanda Schull" }, { "name": "Rebecca De Mornay" }, { "name": "Nopachai Chaiyanam" }, { "name": "Djuangjai Hirunsri" }, { "name": "Mario Maurer" }, { "name": "Han Hyo Joo" }, { "name": "Kim Dae Myung" }, { "name": "Do Ji Han" }, { "name": "Park Shin Hye" }, { "name": "Park Seo Joon" }, { "name": "James McAvoy" }, { "name": "Taylor Kitsch" }, { "name": "Tạ Na" }, { "name": "Hà Cảnh" }, { "name": "Ngô Hân" }, { "name": "Lý Duy Gia" }, { "name": "Đỗ Hải Đào" }, { "name": "Pablo Schreiber" }, { "name": "James Badge Dale" }, { "name": "Ai Hashimoto" }, { "name": "Mayu Matsuoka" }, { "name": "Yôichi Nukumizu" }, { "name": "Đồng Đại Vĩ" }, { "name": "Heather Lind" }, { "name": "Emory Cohen" }, { "name": "Do Kyung Soo" }, { "name": "Kim So Hyun" }, { "name": "Yoo Yeon Seok" }, { "name": "Brian Cox" }, { "name": "Simon Yam" }, { "name": "Kiu Wai Miu" }, { "name": "Fala Chen" }, { "name": "Bo" }, { "name": "yuan Chan" }, { "name": "Ka" }, { "name": "lun Cheung" }, { "name": "Kuen Cheung" }, { "name": "Matt Schulze" }, { "name": "Francois Berleand (II)" }, { "name": "Ric Young (II)" }, { "name": "Doug Rand" }, { "name": "Elyas M'Barek" }, { "name": "Jella Haase" }, { "name": "Karoline" }, { "name": "Ngưu Manh Manh" }, { "name": "Tăng Chí Vỹ" }, { "name": "Chen Sicheng" }, { "name": "Vương Đông Phương" }, { "name": "Elma Begovic" }, { "name": "Annette Wozniak" }, { "name": "Denise Yuen" }, { "name": "Himesh Reshammiya" }, { "name": "Farah Karimaee" }, { "name": "Naseeruddin Shah" }, { "name": "Nguyên Bưu" }, { "name": "Jason Stathammber Valletta" }, { "name": "Mike Powers" }, { "name": "Devon Aoki" }, { "name": "Sarah Carter" }, { "name": "Ben Stiller" }, { "name": "Owen Wilson" }, { "name": "Penélope Cruz" }, { "name": "Park Shin Yang" }, { "name": "Camilla Belle" }, { "name": "Steven Strait" }, { "name": "Marco Khan" }, { "name": "Vanness Wu" }, { "name": "Shawn Yue" }, { "name": "Yu Xia" }, { "name": "Ralph Ineson" }, { "name": "Kate Dickie" }, { "name": "Olivia Munn" }, { "name": "Tạ Dung Nhi" }, { "name": "Mik Thongraya" }, { "name": "Dương Hạnh" }, { "name": "Kate Siegel" }, { "name": "Michael Trucco" }, { "name": "Kabby Borders" }, { "name": "Mirela Burke" }, { "name": "Hunter Canedy" }, { "name": "Ruby Lin" }, { "name": "Tony Yo ning Yang" }, { "name": "Ryôhei Suzuki" }, { "name": "Kentarô Sakaguchi" }, { "name": "Sawa Suzuki" }, { "name": "Gerardo Taracena" }, { "name": "Raoul Trujillo" }, { "name": "Dalia Hernández" }, { "name": "Mario Casas" }, { "name": "Macarena García" }, { "name": "Daniel O'Neill" }, { "name": "Priya Suandokemai" }, { "name": "Gwion Jacob Miles" }, { "name": "Robert De Niro" }, { "name": "Zac Efron" }, { "name": "Zoey Deutch" }, { "name": "Leslie Cheung" }, { "name": "Maggie Cheung" }, { "name": "Andy Lau" }, { "name": "Scarlett Johansson" }, { "name": "Robert Downey Jr." }, { "name": "Jon Favreau" }, { "name": "Vince Vaughn" }, { "name": "Baihe Bai" }, { "name": "Kun Chen" }, { "name": "Hao Qin" }, { "name": "Chung Tử Ðơn" }, { "name": "Waise Lee Chi Hung" }, { "name": "Norman Chu" }, { "name": "Vu Thừa Huệ" }, { "name": "Tống Dương" }, { "name": "Lý Trình Viện" }, { "name": "Cảnh Lạc" }, { "name": "Han Chae Young" }, { "name": "Billy Lau" }, { "name": "Chin Siu Ho" }, { "name": "Siu hou Chin" }, { "name": "Yusi Peng" }, { "name": "Zhang He" }, { "name": "Lý Nhược Đồng" }, { "name": "Dayo Wong Chi Wah" }, { "name": "Lương Hán Văn" }, { "name": "Lam Kwok Bun" }, { "name": "Alexis Peterman" }, { "name": "Matt Rippy" }, { "name": "Nigel Barber" }, { "name": "Kirsten Dunst" }, { "name": "Amber Kuo" }, { "name": "Kai Chung Cheung" }, { "name": "Abby" }, { "name": "Jiang Wenxuan" }, { "name": "Miao Qing" }, { "name": "Liu Liyuan" }, { "name": "Song Wei" }, { "name": "Blake Anderson" }, { "name": "Tyree Brown" }, { "name": "David Cowgill" }, { "name": "Farhan Akhtar" }, { "name": "Aditi Rao Hydari" }, { "name": "Henry Cavill" }, { "name": "Rupert Evans" }, { "name": "James Russell" }, { "name": "Casey Affleck" }, { "name": "Kana Hanazawa" }, { "name": "Taiten Kusunoki" }, { "name": "Chelsey Crisp" }, { "name": "Riley Smith" }, { "name": "Michael Steger" }, { "name": "Kim Ji Ho" }, { "name": "Park Yong Woo" }, { "name": "Park Hae Joon" }, { "name": "Joo Da Young" }, { "name": "David Lee" }, { "name": "Ramin Karimloo" }, { "name": "Sierra Boggess" }, { "name": "Hadley Fraser" }, { "name": "Wendy Ferguson" }, { "name": "Gareth Snook" }, { "name": "Wynne Evans" }, { "name": "Liz Robertson" }, { "name": "Barry James" }, { "name": "Sergei Polunin" }, { "name": "Yeon Jun Suk" }, { "name": "Jessica Chastain" }, { "name": "Akshay Kumar" }, { "name": "Nimrat Kaur" }, { "name": "Taranjit Kaur" }, { "name": "Nhiều Diễn Viên" }, { "name": "Joseph Fiennes" }, { "name": "Tom Felton" }, { "name": "Peter Firth" }, { "name": "Neel Sethi" }, { "name": "Bill Murray" }, { "name": "Ben Kingsley" }, { "name": "Rosario Dawson" }, { "name": "Christopher Gorham" }, { "name": "Shemar Moore" }, { "name": "Sarah Rose Denton" }, { "name": "Lucy Clarvis" }, { "name": "Lawrence Weller" }, { "name": "Ju Yuebin" }, { "name": "Zhu Liqing" }, { "name": "Lai HongYu" }, { "name": "Rob Van Dam" }, { "name": "Tim Abell" }, { "name": "Sarah Bolger" }, { "name": "Carly Adams" }, { "name": "Carl Bailey" }, { "name": "Claire Forlani" }, { "name": "Mark Paul Gosselaar" }, { "name": "Natalie Dormer" }, { "name": "Stephanie Vogt" }, { "name": "Chris O'Dowd" }, { "name": "Guillaume Canet" }, { "name": "Jae mo Ahn" }, { "name": "Kil kang Ahn" }, { "name": "Richard Epcar" }, { "name": "Matthew Zuk" }, { "name": "Gabriela Lopez" }, { "name": "Dani Rovira" }, { "name": "Michelle Jenner" }, { "name": "Carme Calvell" }, { "name": "Iris Chung" }, { "name": "Dominic Ho" }, { "name": "Tony Ho" }, { "name": "Edgar Ramirez" }, { "name": "Luke Bracey" }, { "name": "Ray Winstone" }, { "name": "Rob Schneider" }, { "name": "Heather Graham" }, { "name": "Omar Sy" }, { "name": "Izïa Higelin" }, { "name": "Michaël Grégorio" }, { "name": "Alec Baldwin" }, { "name": "Bryn Apprill" }, { "name": "Kumiko Asô" }, { "name": "Morgan Berry" }, { "name": "Mia Goth" }, { "name": "Martin McCann" }, { "name": "Andrew Simpson" }, { "name": "Lizzy Caplan" }, { "name": "Lưu Gia Linh" }, { "name": "Lý Vũ Xuân" }, { "name": "Aaron Eckhart" }, { "name": "Từ Thiếu Cường" }, { "name": "Vương Tiểu Nghị" }, { "name": "Huỳnh Bạch Lộ" }, { "name": "Paul Gross" }, { "name": "Christine Horne" }, { "name": "Jason Lee" }, { "name": "Jesica Ahlberg" }, { "name": "Josh Green" }, { "name": "Jean Paul Rouve" }, { "name": "Vanessa Guide" }, { "name": "Steve Daron" }, { "name": "Guisela Moro" }, { "name": "Burt Reynolds" }, { "name": "Josh Hutcherson" }, { "name": "Charlie Weber" }, { "name": "Tom Ainsley" }, { "name": "Brenton Thwaites" }, { "name": "Nikolaj Coster Waldau" }, { "name": "Ginnifer Goodwin" }, { "name": "Jason Bateman" }, { "name": "Nhâm Đạt Hoa" }, { "name": "Hoắc Kiến Hoa" }, { "name": "Michael Keaton" }, { "name": "Narikun Ketprapakorn" }, { "name": "Thanapob Leeratanakajorn" }, { "name": "Thiti Mahayotaruk" }, { "name": "Lily James" }, { "name": "Sam Riley" }, { "name": "Will Kemp" }, { "name": "Brinna Kelly" }, { "name": "William Forsythe" }, { "name": "aomi Watts" }, { "name": "Andy Serkis" }, { "name": "Jamie Bell" }, { "name": "Rooney Mara" }, { "name": "Sibelle Hu" }, { "name": "Cynthia Rothrock" }, { "name": "Kara Hui" }, { "name": "Hong Jong Hyun" }, { "name": "Sarah Snook" }, { "name": "Jessica Brown Findlay" }, { "name": "Ana de Armas" }, { "name": "Christopher McDonald" }, { "name": "Johnny Messner" }, { "name": "Mickey Rourke" }, { "name": "Dương Tử Quỳnh" }, { "name": "Saoirse Ronan" }, { "name": "Domhnall Gleeson" }, { "name": "Brandon Routh" }, { "name": "Yuqi Zhang" }, { "name": "Russell Wong" }, { "name": "Demi Moore" }, { "name": "Kiefer Sutherland" }, { "name": "Donald Sutherland" }, { "name": "Josh Duhamel" }, { "name": "Anthony Hopkins" }, { "name": "Al Pacino" }, { "name": "Jeong min Hwang" }, { "name": "Sung ha Jo" }, { "name": "In kwon Kim" }, { "name": "David Thewlis" }, { "name": "Devon Bostick" }, { "name": "Aaron Ashmore" }, { "name": "Reiko Aylesworth" }, { "name": "Steven Pasquale" }, { "name": "Shareeka Epps" }, { "name": "Tom Hiddleston Brie Larson Toby Kebbell Corey Hawkins John C. Reilly Tom Wilkinson Thomas Mann John Goodman Samuel L. Jackson" }, { "name": "Nicole Kidman" }, { "name": "Jacqueline Abrahams" }, { "name": "Roger Ashton Griffiths" }, { "name": "Jessica Barden" }, { "name": "Sanaa Lathan" }, { "name": "Raoul Bova" }, { "name": "Scott Eastwood" }, { "name": "Angela Sarafyan" }, { "name": "Justin Arnold" }, { "name": "Phùng Thiệu Phong" }, { "name": "Củng Lợi" }, { "name": "Teodora Duhovnikova" }, { "name": "Alon Aboutboul" }, { "name": "Ice Cube" }, { "name": "Tika Sumpter" }, { "name": "Heather Sossaman" }, { "name": "Matthew Bohrer" }, { "name": "Courtney Halverson" }, { "name": "Bai Ling" }, { "name": "Amin Joseph" }, { "name": "Jung Woo" }, { "name": "Angelina Jolie" }, { "name": "Dustin Hoffman" }, { "name": "Michael B. Jordan" }, { "name": "Jacob Tremblay" }, { "name": "Sean Bridgers" }, { "name": "Morena Baccarin" }, { "name": "T.J. Miller" }, { "name": "Trương Mạn Ngọc" }, { "name": "Địch Long" }, { "name": "Yuliya Peresild" }, { "name": "Evgeniy Tsyganov" }, { "name": "Joan Blackham" }, { "name": "Vinnie Jones" }, { "name": "Sean Cronin" }, { "name": "Nicole Faraday" }, { "name": "Luis Tosar" }, { "name": "Elvira Mínguez" }, { "name": "Rossy de Palma" }, { "name": "Quim Gutiérrez" }, { "name": "Carlos Areces" }, { "name": "Liêu Phàm" }, { "name": "Tống giai" }, { "name": "Tưởng Văn Lệ" }, { "name": "Lily Rab" }, { "name": "Jason O'Mara" }, { "name": "Stuart Allan" }, { "name": "Kevin Chapman" }, { "name": "Kelly Blatz" }, { "name": "Billy Bob Thornton" }, { "name": "Phan Hồng" }, { "name": "Kim Sĩ Kiệt" }, { "name": "Hình Giai Đống" }, { "name": "Tim Robbins" }, { "name": "Sun kyun Lee" }, { "name": "Go eun Kim" }, { "name": "Hyeong seong Jang" }, { "name": "Salman Khan" }, { "name": "Kareena Kapoor" }, { "name": "Harshaali Malhotra" }, { "name": "Shin Min Ah" }, { "name": "Jo Jung Suk" }, { "name": "Shôta Sometani" }, { "name": "Eri Fukatsu" }, { "name": "Đinh Tử Tuấn" }, { "name": "Lê Tư" }, { "name": "Lý Tụ Hiền" }, { "name": "Tobey Maguire" }, { "name": "Peter Sarsgaard" }, { "name": "Anne Hathaway" }, { "name": "Jack Madigan" }, { "name": "Cao Thành Long" }, { "name": "Lưu Vũ Thỉnh" }, { "name": "Bành Ngu Khư" }, { "name": "Lưu Hạo Nhiên" }, { "name": "Emily Browning" }, { "name": "Mark Rylance" }, { "name": "Alan Alda" }, { "name": "Zhang Shiyu" }, { "name": "Qu Yu tong" }, { "name": "Carrie Ng" }, { "name": "Sammy Hung Tin Chiu" }, { "name": "Kabby Hui" }, { "name": "Rupert Grint" }, { "name": "Steve Carell" }, { "name": "Ryan Gosling" }, { "name": "Joo Won" }, { "name": "(Fx) Sulli" }, { "name": "Ahn Jae Hyun" }, { "name": "Bang Sung Joon" }, { "name": "Lee David" }, { "name": "Jo Sung Ha" }, { "name": "Guy Pearce" }, { "name": "Scoot McNairy" }, { "name": "Trương Hàm Dư" }, { "name": "Lý Dịch Phong" }, { "name": "Hứa Tình" }, { "name": "Phùng Tiểu Cương" }, { "name": "Charlie Chin" }, { "name": "Dorothy Chi hsia Yu" }, { "name": "Hua Yueh" }, { "name": "Phạm Vỹ" }, { "name": "Giang San" }, { "name": "Tiêu Du Trân" }, { "name": "Vương Nhất Minh" }, { "name": "Trương Gia Dịch" }, { "name": "Từ Tịnh Lôi" }, { "name": "Nhiệt Y Trát" }, { "name": "Tùng San" }, { "name": "Walton Goggins" }, { "name": "Tiểu Thẩm Dương" }, { "name": "Đổng Thành Bằng" }, { "name": "Thích Tiểu Long" }, { "name": "Đàm Tiểu Long" }, { "name": "Từ Khiết Nhi" }, { "name": "Viên Hiểu Siêu" }, { "name": "Lưu Thừa Tuấn" }, { "name": "Hùng Đại Lâm" }, { "name": "Bo lin Chen" }, { "name": "Wenbo Ding" }, { "name": "Zhenyu Qiao" }, { "name": "Jean Reno" }, { "name": "Alban Lenoir" }, { "name": "Caterina Murino" }, { "name": "Song Seung Hun" }, { "name": "Giang Ngữ Thần" }, { "name": "Jia (Miss A)" }, { "name": "Âu Đệ" }, { "name": "Ha Jung woo" }, { "name": "Ha Ji won" }, { "name": "Nam Darum" }, { "name": "No Kang Min" }, { "name": "Jeon Hyeon Seok" }, { "name": "Seong Dong il" }, { "name": "Jeong Man sik" }, { "name": "Kim Seong gyoon" }, { "name": "Lưu Đức Hòa" }, { "name": "Kate Mara" }, { "name": "Mimi Rogers" }, { "name": "Ajay Devgn" }, { "name": "Shriya Saran" }, { "name": "Phim Kinh Dị" }, { "name": "Park Geun Hyung" }, { "name": "Park Chanyeol" }, { "name": "Nguyên Bữu" }, { "name": "Dương Lệ Thanh" }, { "name": "Matthew Reese" }, { "name": "Danielle Chuchran" }, { "name": "Ha Ji Won" }, { "name": "Lim Chang Jung" }, { "name": "Park Chang Ik" }, { "name": "Park Yoo Sun" }, { "name": "Kang Ye Won" }, { "name": "Lee Hun" }, { "name": "Ngải Uy" }, { "name": "Lư Hải Bằng" }, { "name": "Liên Thi Nhã" }, { "name": "Yoo" }, { "name": "Jeong Kim" }, { "name": "Ye Ji Seo" }, { "name": "Ho Joon Son" }, { "name": "Colin Farrell" }, { "name": "Abbie Cornish" }, { "name": "Cillian Murphy" }, { "name": "Brendan Gleeson" }, { "name": "Amanda Abbington" }, { "name": "Rupert Graves" }, { "name": "Una Stubbs" }, { "name": "Lương Siêu" }, { "name": "Ben Collins" }, { "name": "Peter Miles" }, { "name": "Evangelos Grecos" }, { "name": "Jennifer Jason Leigh" }, { "name": "Ke Bai" }, { "name": "Xunzimo Liu" }, { "name": "Tianyu Ma" }, { "name": "Im Ju Hwan" }, { "name": "Lee Won Geun" }, { "name": "Elijah Wood" }, { "name": "Alison Pill" }, { "name": "Hao Lei" }, { "name": "Marika Itô" }, { "name": "Seiko Ozone" }, { "name": "Taichi Yamada" }, { "name": "Lâm Chánh Anh" }, { "name": "Suriya" }, { "name": "Samantha Ruth Prabhu" }, { "name": "Vidyut Jamwal" }, { "name": "Ip Chun" }, { "name": "Siu Wong Fan" }, { "name": "Yi Huang" }, { "name": "Tin Chiu Hung" }, { "name": "Lee Seung Gi" }, { "name": "Lee Seo Jin" }, { "name": "Hwa Young" }, { "name": "Son Ga In" }, { "name": "Lee Dong Hae" }, { "name": "Nam Ji Hyun" }, { "name": "Song Seung Hyun" }, { "name": "Will Poulter" }, { "name": "Alison Brie" }, { "name": "Charlotte Le Bon" }, { "name": "Guillaume Baillargeon" }, { "name": "Hoàng Hồng Thăng" }, { "name": "Vương Dương Minh" }, { "name": "Thái Chấn Nam" }, { "name": "Emily Blunt" }, { "name": "Dee Bradley Baker" }, { "name": "Jeff Bennett" }, { "name": "Beau Black" }, { "name": "Honghui Xu" }, { "name": "Seong woo Bae" }, { "name": "Son Hyun joo" }, { "name": "Jang In sub" }, { "name": "Adam Sandler" }, { "name": "Terry Crews" }, { "name": "Jorge Garcia" }, { "name": "Yi Yan Jiang" }, { "name": "Ka Tung Lam" }, { "name": "Mạc Tiểu Kỳ" }, { "name": "Mã Dục Kha" }, { "name": "Phan Việt Minh" }, { "name": "Grace Wang" }, { "name": "Lâm Tuyết" }, { "name": "Kellan Lutz" }, { "name": "Cao Vân Tường" }, { "name": "Hùng Nãi Cẩn" }, { "name": "Lưu Ngôn Ngữ" }, { "name": "Sienna Miller" }, { "name": "Daisy Ridley" }, { "name": "John Boyega" }, { "name": "Tye Sheridan" }, { "name": "Meng Meng Liu" }, { "name": "Ning Li" }, { "name": "Enhe Kang" }, { "name": "Weixun Zhang" }, { "name": "RenLiang Qiao" }, { "name": "Zhang Xinyu" }, { "name": "French Stewart" }, { "name": "Erick Avari" }, { "name": "Barbara Babcock" }, { "name": "Odeya Rush" }, { "name": "Christina Cabot" }, { "name": "Mos Def" }, { "name": "Jason Segel" }, { "name": "Anna Chlumsky" }, { "name": "Jonathan Bennett" }, { "name": "Talulah Riley" }, { "name": "Rosa Salazar" }, { "name": "Lữ Duật Lai" }, { "name": "Tạ Quân Hào" }, { "name": "Trương Duệ Gia" }, { "name": "Trần Đăng" }, { "name": "Mã Lệ" }, { "name": "Duẫn Chính" }, { "name": "Macaulay Culkin" }, { "name": "Joe Pesci" }, { "name": "Daniel Stern" }, { "name": "John Heard" }, { "name": "Roberts Blossom" }, { "name": "Kodi Smit McPhee" }, { "name": "Ben Mendelsohn" }, { "name": "Wallace Shawn" }, { "name": "Kristoffer Joner" }, { "name": "Thomas Bo Larsen" }, { "name": "Ane Dahl Torp" }, { "name": "Levi Miller" }, { "name": "Garrett Hedlund" }, { "name": "Jennifer Ehle" }, { "name": "Kevin Durand" }, { "name": "Mélanie St Pierre" }, { "name": "Abby Feng" }, { "name": "Yunqi Guo" }, { "name": "Musi Ni" }, { "name": "Jiahao Song" }, { "name": "Hanfeng" }, { "name": "Catherine O’Hara" }, { "name": "Tara Basro" }, { "name": "Christine Hakim" }, { "name": "Eva Celia Latjuba" }, { "name": "Lập Uy Liêm" }, { "name": "Chu Châu" }, { "name": "Ronald Cheng" }, { "name": "Mark Wu" }, { "name": "Archie Kao" }, { "name": "Anita Yuen" }, { "name": "Zimu Zhang" }, { "name": "Anushka Shetty" }, { "name": "Allu Arjun" }, { "name": "Rana Daggubati" }, { "name": "Cheon hee Lee" }, { "name": "Kwang Soo Lee" }, { "name": "Bo yeong Park" }, { "name": "Alex D. Linz" }, { "name": "Olek Krupa" }, { "name": "Rya Kihlstedt" }, { "name": "Laia Costa" }, { "name": "Frederick Lau" }, { "name": "Franz Rogowski" }, { "name": "James Ransone" }, { "name": "Shannyn Sossamon" }, { "name": "Robert Daniel Sloan" }, { "name": "Chin Han" }, { "name": "Ngô Thanh Liên" }, { "name": "Trương Bá Chi" }, { "name": "Frances McDormand" }, { "name": "Maleah Nipay Padilla" }, { "name": "KIKO MIZUHARA" }, { "name": "KANATA HONGO" }, { "name": "RINA TAKEDA" }, { "name": "SATOMI ISHIHARA" }, { "name": "Mark Chao" }, { "name": "Jin Chen" }, { "name": "Li Feng" }, { "name": "Andy Samberg" }, { "name": "Selena Gomez" }, { "name": "Airi Taira" }, { "name": "Ren Kiriyama" }, { "name": "Nonoka Ono" }, { "name": "Sang Woo Kwon" }, { "name": "Young hee Seo" }, { "name": "Dong il Sung" }, { "name": "Hershel Peppers" }, { "name": "Jet Li" }, { "name": "Charlton HestonJames Coburn" }, { "name": "Đồng Đại Vi" }, { "name": "Sung Kang" }, { "name": "Nick Chinlund" }, { "name": "Caitlin Keats" }, { "name": "Phim Hài Hước" }, { "name": "Jackie Shroff" }, { "name": "Haruma Miura" }, { "name": "Kiko Mizuhara" }, { "name": "Jennifer Aniston" }, { "name": "Reina Triendl" }, { "name": "Mariko Shinoda" }, { "name": "Erina Mano" }, { "name": "Chia Liang Liu" }, { "name": "Jung Yuen" }, { "name": "Lars Mikkelsen" }, { "name": "Pilou Asbæk" }, { "name": "Gustav Dyekjær Giese" }, { "name": "Nickie Bryar" }, { "name": "Feodor Chin" }, { "name": "Nika Futterman" }, { "name": "Devin Brochu" }, { "name": "Natalie Portma" }, { "name": "Shia LaBeouf" }, { "name": "John Turturro" }, { "name": "Tyrese Gibson" }, { "name": "Rosie Huntington Whiteley" }, { "name": "Patrick Dempsey" }, { "name": "Rich Hutchman" }, { "name": "Kevin Dunn" }, { "name": "John Malkovic" }, { "name": "Daniel Craig" }, { "name": "Mathieu Amalric" }, { "name": "Gemma Arterton" }, { "name": "Giang Nhất Yến" }, { "name": "Huỳnh Thu Sinh" }, { "name": "Ngô Tú Ba" }, { "name": "Rupert Friend" }, { "name": "Hannah Ware" }, { "name": "Phim Võ Thuật" }, { "name": "Saif Ali Khan" }, { "name": "Sabyasachi Chakraborty" }, { "name": "Thiệu Binh" }, { "name": "Đổng Tuyền" }, { "name": "Bành Ba" }, { "name": "Armie Hammer" }, { "name": "Hayden Christensen" }, { "name": "Jordana Brewster" }, { "name": "Monica Engesser" }, { "name": "Amelia Haberman" }, { "name": "James Ray" }, { "name": "Phim Cổ Trang" }, { "name": "Trịnh Trung Cơ" }, { "name": "William Shatner" }, { "name": "Leonard Nimoy" }, { "name": "DeForest Kelley" }, { "name": "Jonathan Frakes" }, { "name": "Brent Spiner" }, { "name": "Abraham Attah" }, { "name": "Emmanuel Affadzi" }, { "name": "Ricky Adelayitor" }, { "name": "Chang Yiran" }, { "name": "Jiajia Liu" }, { "name": "Ying Fei" }, { "name": "Ward Horton" }, { "name": "Alfre Woodard" }, { "name": "Holly Valance" }, { "name": "Vincent Pastore" }, { "name": "Corinna Harney" }, { "name": "Ngô Tôn" }, { "name": "Malcolm McDowell" }, { "name": "Lilian Prent" }, { "name": "Jan Josef Liefers" }, { "name": "Christoph Maria Herbst" }, { "name": "Chen Chang" }, { "name": "Satoshi Tsumabuki" }, { "name": "Dylan O'Brien" }, { "name": "Thomas Brodie Sangster" }, { "name": "Connie Britton" }, { "name": "Taissa Farmiga" }, { "name": "Malin Akerman" }, { "name": "Adam DeVine" }, { "name": "Boran Jing" }, { "name": "Miroslav Karel" }, { "name": "Anthony Ilott" }, { "name": "Aqueela Zoll" }, { "name": "Sadie Katz" }, { "name": "Kate Beckinsale" }, { "name": "Robin Williams" }, { "name": "Simon Pegg" }, { "name": "Randy Orton" }, { "name": "Wes Studi" }, { "name": "Helen McCrory" }, { "name": "Jeremy Irvine" }, { "name": "Phoebe Fox" }, { "name": "Vin Diesel" }, { "name": "Rose Leslie" }, { "name": "Alan Tang" }, { "name": "Brigitte Lin" }, { "name": "Elsie Chan" }, { "name": "Lake Bell" }, { "name": "Mike Tyson" }, { "name": "Trương Tấn" }, { "name": "Xin Gao" }, { "name": "Christoph Waltz" }, { "name": "Michael Douglas" }, { "name": "Corey Stoll" }, { "name": "Cynthia Khan" }, { "name": "Gary Chow" }, { "name": "Prabhas" }, { "name": "Katrina Law" }, { "name": "Lochlyn Munro" }, { "name": "Victoria Pratt" }, { "name": "Michael Gross" }, { "name": "Jamie Kennedy" }, { "name": "Ernest Ndhlovu" }, { "name": "Ji hyun Jun" }, { "name": "Jung jae Lee" }, { "name": "Jason Clarke" }, { "name": "Ang Phula Sherpa" }, { "name": "Thomas M. Wright" }, { "name": "Stephanie Honoré" }, { "name": "Jerome Andries" }, { "name": "Sue Lynn Ansari" }, { "name": "James Purefoy" }, { "name": "Laura Linney" }, { "name": "Hiroyuki Sanada" }, { "name": "Ed Speleers" }, { "name": "Holly Weston" }, { "name": "Elliot Cowan" }, { "name": "Kane Hodder" }, { "name": "Bill Moseley" }, { "name": "Olivia Alexander" }, { "name": "Isla Fisher" }, { "name": "Jim Parsons" }, { "name": "Anson Mount" }, { "name": "Matthew Goode" }, { "name": "Joe Cole" }, { "name": "Hong Zhou" }, { "name": "Eunsung Kim" }, { "name": "Lee Chae young" }, { "name": "Al Pacinondy Garcia" }, { "name": "James Caan" }, { "name": "Thomas Haden Church" }, { "name": "Josh Wiggins" }, { "name": "Luke Kleintank" }, { "name": "Tony Revolori" }, { "name": "Kiersey Clemon" }, { "name": "Chao Deng" }, { "name": "Yihong Duan" }, { "name": "Tao Guo" }, { "name": "Aaron Stielstra" }, { "name": "Michael Segal" }, { "name": "Marius Bizau" }, { "name": "Lorenza Izzo" }, { "name": "Bruce Payne" }, { "name": "Mark Adams" }, { "name": "Adrian Grenier" }, { "name": "Kevin Connolly" }, { "name": "Jerry Ferrara" }, { "name": "Miles Teller" }, { "name": "Max Rhyser" }, { "name": "Ashton Leigh" }, { "name": "Boomer Tibb" }, { "name": "Daniel MacPherson" }, { "name": "Grace Huang" }, { "name": "Luke Hemsworth" }, { "name": "Brittany Allen" }, { "name": "Freddie Stroma" }, { "name": "Jesse Moss" }, { "name": "Krysten Ritter" }, { "name": "Viktor Bychkov" }, { "name": "Emma Cerná" }, { "name": "Aleksey Chadov" }, { "name": "Ali Larter" }, { "name": "Max Rose" }, { "name": "Chloe Perrin" }, { "name": "Ariel Levy" }, { "name": "Aaron Burns" }, { "name": "Zan Ban" }, { "name": "Zhao Chunyang" }, { "name": "Dongping Gao" }, { "name": "Yayan Ruhian" }, { "name": "Rirî Furankî" }, { "name": "Mio Yûki" }, { "name": "Robin Das" }, { "name": "Zachary Coffin" }, { "name": "Dustin Nguyen" }, { "name": "Sahajak Boonthanakit" }, { "name": "Sarah Butler" }, { "name": "Gabriel Hogan" }, { "name": "Doug McKeon" }, { "name": "Bipasha Basu" }, { "name": "Sulabha Arya" }, { "name": "Matt Winston" }, { "name": "Camille Balsamo" }, { "name": "Chung Hân Đồng" }, { "name": "Kiều Chấn Vũ" }, { "name": "Mayuko Iwasa" }, { "name": "Minehiro Kinomoto" }, { "name": "Nao Nagasawa" }, { "name": "Oona Laurence" }, { "name": "Mike Doyle" }, { "name": "Estella Warren" }, { "name": "Massimo Dobrovic" }, { "name": "Choi Won joon" }, { "name": "Han Se I" }, { "name": "Lee Jae in" }, { "name": "Jang Moon yeong" }, { "name": "Sara Malakul Lane" }, { "name": "Lily Brooks O'Briant" }, { "name": "Pierre Coffin" }, { "name": "Prama Immanothai" }, { "name": "Focus Jirakul" }, { "name": "Chonnikan Netjui" }, { "name": "Stefanie Scott" }, { "name": "Angus Sampson" }, { "name": "Jim Carrey" }, { "name": "Rob Riggle" }, { "name": "Amy Poehler" }, { "name": "Bill Hader" }, { "name": "Lewis Black" }, { "name": "Song Hye Kyo" }, { "name": "Nagasawa Masami" }, { "name": "Takeshi Kaneshiro" }, { "name": "Ed Skrein" }, { "name": "Loan Chabanol" }, { "name": "Ray Stevenson" }, { "name": "Togo Igawa" }, { "name": "Christian Howard" }, { "name": "Mike Moh" }, { "name": "Jeremy Renner" }, { "name": "Jin Goo" }, { "name": "Lee Hyun Woo" }, { "name": "Mu Yeol Kim" }, { "name": "Kevin James" }, { "name": "Michelle Monaghan" }, { "name": "Jessica Lowndes" }, { "name": "Freida Pinto" }, { "name": "Ryan Kwanten" }, { "name": "Mischa Barton" }, { "name": "Luke Goss" }, { "name": "Ving Rhames" }, { "name": "Grace Phipps" }, { "name": "Spencer Breslin" }, { "name": "Maestro Harrell" }, { "name": "Jude Law" }, { "name": "Christina Applegate" }, { "name": "Skyler Gisondo" }, { "name": "Jonah Hill" }, { "name": "Lauren Ambrose" }, { "name": "Wes Ramsey" }, { "name": "Christopher Backus" }, { "name": "Steve Agee" }, { "name": "Nick Damici" }, { "name": "Kevin Duran" }, { "name": "Arnold Schwarzenegger" }, { "name": "Kit Harington" }, { "name": "Tuppence Middleton" }, { "name": "Lara Pulver" }, { "name": "Jonathan Good" }, { "name": "Roger R. Cross" }, { "name": "Daniel Cudmore" }, { "name": "Carla Gugino" }, { "name": "Alexandra Daddario" }, { "name": "Hugh Laurie" }, { "name": "Natalie Martinez" }, { "name": "Matt Mercer" }, { "name": "Marianna Palka" }, { "name": "Morgan Peter Brown" }, { "name": "Rashida Jones" }, { "name": "Lauren Gottlieb" }, { "name": "Salma Hayek" }, { "name": "Tăng Chí Vĩ" }, { "name": "Ngô Quân Như" }, { "name": "Thang Duy" }, { "name": "James Marsden" }, { "name": "Timothy Woodward Jr" }, { "name": "Andrew Cheney" }, { "name": "John Rhys Davies" }, { "name": "Kara Killmer" }, { "name": "Phim Tâm Lý" }, { "name": "Tuva Novotny" }, { "name": "Fridtjov Såheim" }, { "name": "Anders Baasmo Christiansen" }, { "name": "Jennifer Lopez" }, { "name": "Viola Davis" }, { "name": "Shea Whigham" }, { "name": "Allari Naresh" }, { "name": "Allari Naresh Sakshi Chaudhary" }, { "name": "Sarah Wayne Callies" }, { "name": "Veronica Ferres" }, { "name": "Lauren Beatty" }, { "name": "Hans Zhang Han" }, { "name": "Zhang Li" }, { "name": "Fan Chih Wei" }, { "name": "Kong Wei" }, { "name": "Kevin Sorbo" }, { "name": "Peter Fonda" }, { "name": "Andrew Galligan" }, { "name": "Matt Bomer" }, { "name": "Trương Chấn" }, { "name": "Lâm Chí Linh" }, { "name": "Vương Học Kỳ" }, { "name": "Jacky Cheung" }, { "name": "Dermot Magennis" }, { "name": "Callum Maloney" }, { "name": "Tara Flynn" }, { "name": "Jaime King" }, { "name": "Madeleine Stack" }, { "name": "Phim Viễn Tưởng" }, { "name": "Matthew Fox" }, { "name": "Quinn McColgan" }, { "name": "Angela Baby" }, { "name": "Paul Walker" }, { "name": "Michelle Rodriguez" }, { "name": "Chris Bridges" }, { "name": "Lucas Black" }, { "name": "Ko Shibasaki" }, { "name": "Rihanna" }, { "name": "Steve Martin" }, { "name": "Masachika Ichimura" }, { "name": "Yumi Kakazu" }, { "name": "Reese Witherspoon" }, { "name": "Sofía Vergara" }, { "name": "Matthew Del Negro" }, { "name": "Philip Davis" }, { "name": "Dexter Fletcher" }, { "name": "Patrick Bergin" }, { "name": "Junior N.T.R." }, { "name": "Kajal Agarwal" }, { "name": "Ali" }, { "name": "Lim Soo Jung" }, { "name": "Lee Geung Young" }, { "name": "Min ho Lee" }, { "name": "Rae won Kim" }, { "name": "Jin young Jung" }, { "name": "Jun'ichi Okada" }, { "name": "Mao Inoue" }, { "name": "Dong seok Ma" }, { "name": "Daniel Choi" }, { "name": "Teerapat Lohanan" }, { "name": "Pongsatorn Sripinta" }, { "name": "Withawat Thaokhamlue" }, { "name": "Michael Rene Walton" }, { "name": "Vivica A. Fox" }, { "name": "Judi Dench" }, { "name": "Steve Coogan" }, { "name": "Sophie Kennedy Clark" }, { "name": "Clifton Collins Jr." }, { "name": "Jessica Cook" }, { "name": "Tony de Maeyer" }, { "name": "Nghê Ni" }, { "name": "Trình Vũ Mông" }, { "name": "Michel Diercks" }, { "name": "Pit Bukowski" }, { "name": "Uwe Preuss" }, { "name": "Sterling Jerins" }, { "name": "Ty Simpkins" }, { "name": "Keir Gilchrist" }, { "name": "Olivia Luccardi" }, { "name": "Dean Cain" }, { "name": "Paul Wight" }, { "name": "Michael Eklund" }, { "name": "Onni Tommila" }, { "name": "Tom Arnold" }, { "name": "Drake Bell" }, { "name": "Miranda Cosgrove" }, { "name": "Woo bin Kim" }, { "name": "Jun Ho Lee" }, { "name": "Ha Neul Kang" }, { "name": "Paddy Wallace" }, { "name": "Parker Sawyers" }, { "name": "Bashar Rahal" }, { "name": "Liam Neeson" }, { "name": "Ed Harris" }, { "name": "Joel Kinnaman" }, { "name": "Reese Hartwig" }, { "name": "Sixuan Chen" }, { "name": "Mark Cheng" }, { "name": "Jamie Cheung" }, { "name": "Raini Rodriguez" }, { "name": "Eduardo Verástegui" }, { "name": "Rutger Hauer" }, { "name": "Aurélie Meriel" }, { "name": "Seth Macfarlane" }, { "name": "Amanda Seyfried" }, { "name": "Tom Schilling" }, { "name": "Wotan Wilke Möhring" }, { "name": "An Chí Kiệt" }, { "name": "Darren Shahlavi" }, { "name": "Charlotte Peters" }, { "name": "Blake Lively" }, { "name": "Michiel Huisman" }, { "name": "Harrison Ford" }, { "name": "Idina Menzel" }, { "name": "Rosemarie DeWitt" }, { "name": "Kennedi Clement" }, { "name": "Olivia Wilde" }, { "name": "Mark Duplass" }, { "name": "Evan Peters" }, { "name": "Diệp Tuyền" }, { "name": "Tiêu Ân Tuấn" }, { "name": "Andrew Lin" }, { "name": "Sean Penn" }, { "name": "Jasmine Trinca" }, { "name": "Mélanie Laurent" }, { "name": "Sarah Gadon" }, { "name": "Ewan McGregor" }, { "name": "Brendan Kerkvliet" }, { "name": "Clive Owen" }, { "name": "Aksel Hennie" }, { "name": "Takamasa Ishihara" }, { "name": "David Rawle" }, { "name": "Lisa Hannigan" }, { "name": "Roger Carel" }, { "name": "Lorànt Deutsch" }, { "name": "Laurent Lafitte" }, { "name": "Ben Barnes" }, { "name": "Julianne Moore" }, { "name": "Abigail Breslin" }, { "name": "Joely Richardson" }, { "name": "Li Siru" }, { "name": "Wang Chong" }, { "name": "Zhou Ting" }, { "name": "Jin Ji Hee" }, { "name": "Ga In" }, { "name": "Joo Sang Wook" }, { "name": "Chae Sang Woo" }, { "name": "Choi Seong Min" }, { "name": "Ocean Hou" }, { "name": "Tom Prior" }, { "name": "Gabriella Wright" }, { "name": "Jennifer Blanc" }, { "name": "Yeong cheol Kim" }, { "name": "Jessica Lange" }, { "name": "Keira Knightley" }, { "name": "Peyman Moaadi" }, { "name": "Lane Garrison" }, { "name": "Marie Avgeropoulos" }, { "name": "Adam Rayner" }, { "name": "Jacky Wu" }, { "name": "Kevin Lee" }, { "name": "Michelle Hu" }, { "name": "Meryl Streep" }, { "name": "Sheila Vand" }, { "name": "Arash Marandi" }, { "name": "Marshall Manesh" }, { "name": "Mike 'The Miz' Mizanin" }, { "name": "Josh Blacker" }, { "name": "Matthew MacCaull" }, { "name": "Rodrigo Santoro" }, { "name": "Min Hee Kim" }, { "name": "Brian Tee" }, { "name": "An Dĩ Hiên" }, { "name": "Trương Hình Dư" }, { "name": "Troy Baker" }, { "name": "Kevin Conroy" }, { "name": "Józef Pawlowski" }, { "name": "Zofia Wichlacz" }, { "name": "Anna Próchniak" }, { "name": "Triệu Hựu Đình" }, { "name": "Trương Quân Ninh" }, { "name": "Quan Dĩnh" }, { "name": "Tu Kiệt Giai" }, { "name": "Jake Gylle" }, { "name": "Daniel Garcia" }, { "name": "Gambler" }, { "name": "Dư Văn Lạc" }, { "name": "Tatsuya Fujiwara" }, { "name": "Takeru Satô" }, { "name": "Emi Takei" }, { "name": "Colin Firth" }, { "name": "Michael Caine" }, { "name": "Kyle Gallner" }, { "name": "jacky chan" }, { "name": "thành long" }, { "name": "William Fichtner" }, { "name": "Jack Davenport" }, { "name": "Geoffrey Rush" }, { "name": "Phim Âm Nhạc" }, { "name": "Zoe Saldana" }, { "name": "Sam Worthington" }, { "name": "Ryu Seung Ryong" }, { "name": "Jin woong Jo" }, { "name": "Quang Tèo" }, { "name": "Bình Trọng" }, { "name": "NS. Chiến Thắng" }, { "name": "Matthew McConaughey" }, { "name": "Kang Don Won" }, { "name": "Kim Xuyến" }, { "name": "Công Lý" }, { "name": "Matt Lanter" }, { "name": "Sumalee Montano" }, { "name": "Quốc Anh" }, { "name": "Chiến Thắng" }, { "name": "Hán Văn Tình" }, { "name": "Thu Hương" }, { "name": "NS.Phạm Bằng" }, { "name": "Michael Angarano" }, { "name": "Dominik García Lorido" }, { "name": "Từ Phàm" }, { "name": "Trương Tịnh Sơ" }, { "name": "Trần Đạo Minh" }, { "name": "Lý Thần" }, { "name": "Lục Nghị" }, { "name": "Trúc Mai" }, { "name": "Thu Huyền" }, { "name": "Bill Nighy" }, { "name": "Kaitlyn Dever" }, { "name": "Forest Whitaker" }, { "name": "Maggie Grac" }, { "name": "Justin Long" }, { "name": "Michael Parks" }, { "name": "Haley Joel Osment" }, { "name": "Jessica Cambensy" }, { "name": "Abby Fung" }, { "name": "Chang Ha" }, { "name": "Phim Hình Sự" }, { "name": "Richard Sammel" }, { "name": "Alice Taglioni" }, { "name": "Simon Abkarian" }, { "name": "Phim Chiến Tranh" }, { "name": "Chingmy Yau" }, { "name": "Tze Miu" }, { "name": "Deannie Yip" }, { "name": "Victor Webster" }, { "name": "Ellen Hollman" }, { "name": "Nam gil Kim" }, { "name": "Ye jin Son" }, { "name": "Hae jin Yoo" }, { "name": "Tully Banta Cain" }, { "name": "Paul Ben Victo" }, { "name": "Kevin Wu" }, { "name": "Harry Shum Jr." }, { "name": "Alfie Allen" }, { "name": "Phim Thuyết Minh" }, { "name": "Sheila Kelley" }, { "name": "Keiko Kitagawa" }, { "name": "Shunji Igarashi" }, { "name": "Kento Kaku" }, { "name": "Natsuki Katô" }, { "name": "Fumino Kimura" }, { "name": "Osamu Mukai" }, { "name": "Logan Lerman" }, { "name": "James Gandolfini" }, { "name": "David Harbour" }, { "name": "Mireille Enos" }, { "name": "Jamie Blackley" }, { "name": "Tobias Moretti" }, { "name": "Helmuth Häusler" }, { "name": "Matthias Schweighöfer" }, { "name": "August Diehl" }, { "name": "Anna Bederke" }, { "name": "Won Bin" }, { "name": "Rosamund Pike" }, { "name": "Neil Patrick Harris" }, { "name": "Fred Cavayé" }, { "name": "Lea Thompson" }, { "name": "Cassi Thomson" }, { "name": "Justin Chatwin" }, { "name": "Jamie Chung" }, { "name": "Marton Csokas" }, { "name": "Donnie Yen" }, { "name": "Charlie Yeung" }, { "name": "Baoqiang Wang" }, { "name": "Kaito Ishikawa" }, { "name": "Kenji Akabane" }, { "name": "Kensho Ono" }, { "name": "Vegar Hoel" }, { "name": "Ørjan Gamst" }, { "name": "Martin Starr" }, { "name": "Tadanobu Asano" }, { "name": "Rie Miyazawa" }, { "name": "Machiko Ono" }, { "name": "Essie Davis" }, { "name": "Noah Wiseman" }, { "name": "Daniel Henshall" }, { "name": "William H. Macy" }, { "name": "Philip Baker Hall" }, { "name": "Timothy Olyphant" }, { "name": "Andy Richter" }, { "name": "Tom McGrath" }, { "name": "Chris Miller" }, { "name": "Christopher Knights" }, { "name": "Scott Adkins and Ben Cross" }, { "name": "Mykel Shannon Jenkins" }, { "name": "Mark Ivanir" }, { "name": "Hristo Shopov" }, { "name": "Melissa George" }, { "name": "Jimmy Bennett" }, { "name": "Chutavuth Pattarakampol" }, { "name": "Supassra Thanachat" }, { "name": "Noah Taylor" }, { "name": "Olivia Cooke" }, { "name": "Ana Coto" }, { "name": "Daren Kagasoff" }, { "name": "Phim Khoa học Tài liệu" }, { "name": "Noel Clarke" }, { "name": "Ian Somerhalder" }, { "name": "Kim Coates" }, { "name": "Shawn Roberts" }, { "name": "Ryan Potter" }, { "name": "Scott Adsit" }, { "name": "Jack Kilmer" }, { "name": "Olivia Crocicchia" }, { "name": "Ellar Coltrane" }, { "name": "Patricia Arquette" }, { "name": "Chad Anderson" }, { "name": "Lexi Atkins" }, { "name": "Brent Briscoe" }, { "name": "Bill Burr" }, { "name": "Park Sang Joon" }, { "name": "Johnathon Schaech" }, { "name": "Lee Jung jae" }, { "name": "Kim Hyang Gi" }, { "name": "Kim Dong Wook" }, { "name": "Steve Buscemi" }, { "name": "Yuki Yamada" }, { "name": "Jumpei Mizobata" }, { "name": "Mikie Hara" }, { "name": "Dongyu Zhou" }, { "name": "Yi Feng Li" }, { "name": "Cherami Leigh" }, { "name": "Bryce Papenbrook" }, { "name": "Johnny Yong Bosch" }, { "name": "Masami Nagasawa" }, { "name": "Sota Fukushi" }, { "name": "Hana Sugisaki" }, { "name": "Yôsuke Eguchi" }, { "name": "Miyavi" }, { "name": "Ashley Greene" }, { "name": "Yuki Furukawa" }, { "name": "Takemi Fujii" }, { "name": "Hiroshi Abe" }, { "name": "Yoko Maki" }, { "name": "Satomi Kobayashi" }, { "name": "AnnaSophia Robb" }, { "name": "Isabelle Fuhrman" }, { "name": "Victoria Moroles" }, { "name": "Jo Bok Rae" }, { "name": "Kim Sang Kyung" }, { "name": "Yeon Woo Jin" }, { "name": "Kang Min Hyuk" }, { "name": "Shim Eun Kyung" }, { "name": "Ilya Malakov" }, { "name": "Aleksey Serebryakov" }, { "name": "Aleksandr Ilin" }, { "name": "Timofey Tribuntsev" }, { "name": "Yuliya Khlynina" }, { "name": "Andrey Burkovskiy" }, { "name": "Igor Savochkin" }, { "name": "Polina Chernyshova" }, { "name": "Aleksandr Tsoy" }, { "name": "Viktor Proskurin" }, { "name": "Sergey Koltakov" }, { "name": "Julia Pisarenko" }, { "name": "Fedor Starykh" }, { "name": "Minami Takayama" }, { "name": "Kappei Yamaguchi" }, { "name": "Wakana Yamazaki" }, { "name": "Ken'ichi Ogata" }, { "name": "Chân Tử Đan" }, { "name": "Lưu Dĩ Hào" }, { "name": "Nghiêm Chính Lam" }, { "name": "Lý Thuyên" }, { "name": "David Tennant" }, { "name": "Kerry Condon" }, { "name": "Jacqueline Byers" }, { "name": "Carlito Olivero" }, { "name": "Lee Byung Hun" }, { "name": "Ko Soo" }, { "name": "Song Young Chang" }, { "name": "Jo Woo Jin" }, { "name": "Disha Patani" }, { "name": "Deepak Dobriyal" }, { "name": "Darshan Kumaar" }, { "name": "Indraneel Bhattacharya" }, { "name": "Andrea Riseborough" }, { "name": "Linus Roache" }, { "name": "Olwen Fouere" }, { "name": "Ned Dennehy" }, { "name": "Richard Brake" }, { "name": "Donald Glover" }, { "name": "Yuko Takeuchi" }, { "name": "Tsutomu Yamazaki" }, { "name": "Kenny Lin" }, { "name": "Sichun Ma" }, { "name": "Ann Dowd" }, { "name": "Alex Wolff" }, { "name": "BriAnn Rachele" }, { "name": "Fiona Sit" }, { "name": "Jack Kao" }, { "name": "Shao Huai Chang" }, { "name": "Tien Niu" }, { "name": "Jacky Cai" }, { "name": "Tai Bo" }, { "name": "Yi Hang He" }, { "name": "Joy Sheng" }, { "name": "Sean Liu" }, { "name": "Phoebe Yuan" }, { "name": "Yi Chung Chang Chien" }, { "name": "Wei Ni Chang" }, { "name": "Jerry Chen" }, { "name": "Temuera Morrison" }, { "name": "DAN EWING" }, { "name": "STEPHANIE JACOBSEN" }, { "name": "RHIANNON FISH" }, { "name": "ZACHARY GARRED" }, { "name": "JACK KAO KUO HSIN" }, { "name": "CHEN NAN TSAI" }, { "name": "PENG SUN" }, { "name": "Trương Lượng" }, { "name": "Lâm Lộ Địch" }, { "name": "Tomokazu Seki" }, { "name": "Subaru Kimura" }, { "name": "Wasabi Mizuta" }, { "name": "JUNG JIN YOUNG" }, { "name": "Jung Hae In" }, { "name": "Kim Won Hae" }, { "name": "Kim Ju Hyeok" }, { "name": "Jung Sang Hoon" }, { "name": "Minnie Driver" }, { "name": "Natassia Malthe" }, { "name": "Leonor Varela" }, { "name": "Jóhannes Haukur Jóhannesson" }, { "name": "Sammi Cheng" }, { "name": "Kwok Keung Cheung" }, { "name": "Sui Man Chim" }, { "name": "Ada Choi" }, { "name": "Philippe Joly" }, { "name": "Colin David Herbert Blackwell" }, { "name": "Chi Wah Wong" }, { "name": "Cecilia So" }, { "name": "Sze Kwan Cheng" }, { "name": "Lawrence Cheng" }, { "name": "Justin Cheung" }, { "name": "Michael Hui" }, { "name": "Rani Mukerji" }, { "name": "Neeraj Kabi" }, { "name": "Jannat Zubair Rahmani" }, { "name": "Bạch Vũ" }, { "name": "Hoàng Dung" }, { "name": "Khương Chấn Hạo" }, { "name": "Yoshitaka Yuriko" }, { "name": "Kenichi Matsuyama" }, { "name": "Kaya Kiyohara" }, { "name": "Matsuzaka Tori" }, { "name": "Aimi Satsukawa" }, { "name": "Matt Barr" }, { "name": "Kate Upton" }, { "name": "Matt Jones" }, { "name": "Kal Penn" }, { "name": "Ron Livingston" }, { "name": "Mackenzie Davis" }, { "name": "ASHER MILES FALLICA" }, { "name": "Lia Frankland" }, { "name": "Lee Yeon hee" }, { "name": "Dong Il Sung" }, { "name": "Dam Bi Son" }, { "name": "Griffin Dunne" }, { "name": "Deidre Goodwin" }, { "name": "Daniella Rabbani" }, { "name": "Brian J. Carter" }, { "name": "Gemma Forbes" }, { "name": "Conan" }, { "name": "Ran" }, { "name": "Shinichi" }, { "name": "Haibara" }, { "name": "Kim Min Jae" }, { "name": "Sung Dong Il" }, { "name": "Na Moon Hee" }, { "name": "Lee Sung Kyung" }, { "name": "Yu Hae Jin" }, { "name": "Aleksey Faddeev" }, { "name": "Aleksandr Kuznetsov" }, { "name": "Yuriy Tsurilo" }, { "name": "Izmaylova Vasilisa" }, { "name": "Vladimir Ilin" }, { "name": "Yuriy Itskov" }, { "name": "Ike Barinholtz" }, { "name": "Bernard Farcy" }, { "name": "Anouar Toubali" }, { "name": "Edouard Montoute" }, { "name": "Eric Fraticelli" }, { "name": "Dịch Bách Thần" }, { "name": "Chu Tiển" }, { "name": "Khảm Bôn Bôn" }, { "name": "Ngu Y Kiệt" }, { "name": "Lý Thụy Siêu" }, { "name": "Rajit Kapoor" }, { "name": "Vicky Kaushal" }, { "name": "Phùng Húc Đông" }, { "name": "Trinh Kim Minh" }, { "name": "Vân Tường" }, { "name": "Cha Seung Won" }, { "name": "Ryoo Joon Yeol" }, { "name": "Jin Seo Yeon" }, { "name": "Chrissie Chau" }, { "name": "Francis Ng" }, { "name": "Sam Lee" }, { "name": "Roland Møller" }, { "name": "Robert Englund" }, { "name": "Emily Haine" }, { "name": "Grayson Gabriel" }, { "name": "Gabrielle Haugh" }, { "name": "Logan Creran" }, { "name": "Alessandro Nivola" }, { "name": "Điền Tráng Tráng" }, { "name": "Zheming Qu" }, { "name": "Wes Chatham" }, { "name": "Baylee Curran" }, { "name": "Trường Giang" }, { "name": "Thanh Thúy" }, { "name": "Đức Thịnh" }, { "name": "Mai Tài Phến" }, { "name": "Carmen Machi" }, { "name": "Adriana Ozores" }, { "name": "Aitana Sánchez Gijón" }, { "name": "Sophie Skelton" }, { "name": "Michael Rainey Jr." }, { "name": "Dwayne Cameron" }, { "name": "Weston Cage" }, { "name": "Andy Nyman" }, { "name": "Paul Whitehouse" }, { "name": "Lý Hân Trạch" }, { "name": "Phó Dương Dương" }, { "name": "Trương Duyệt Nam" }, { "name": "Michael Peña" }, { "name": "Mike Colter" }, { "name": "Emma Booth" }, { "name": "Tom Riley" }, { "name": "Ji Hyun Woo" }, { "name": "Lee Seung Wook" }, { "name": "Kim Hak Cheol" }, { "name": "Jim Gaffigan" }, { "name": "Eddie Marsan" }, { "name": "Lucy Hale" }, { "name": "Landon Liboiron" }, { "name": "Tyler Posey" }, { "name": "Violett Beane" }, { "name": "Sophia Ali" }, { "name": "Dean Norris" }, { "name": "Jaeden Lieberher" }, { "name": "Lee Pace" }, { "name": "Thích Lam Duẫn" }, { "name": "Rafe Spall" }, { "name": "Justice Smith" }, { "name": "NADIYA DOROFEEVA" }, { "name": "OLEKSIY ZAVHORODNIY" }, { "name": "YEVHEN MALUKHA" }, { "name": "SERHIY PRYTULA" }, { "name": "Bành Kính Từ" }, { "name": "Từ Nam" }, { "name": "Alex Essoe" }, { "name": "Perla Haney Jardine" }, { "name": "Dylan McTee" }, { "name": "Andrew Rothenberg" }, { "name": "Andy Garcia" }, { "name": "Grace Byers" }, { "name": "Vincent Spano" }, { "name": "Ana Ularu" }, { "name": "Boris Gulyarin" }, { "name": "Noriaki Sugiyama" }, { "name": "Noriko Shitaya" }, { "name": "Katee Sackhoff" }, { "name": "Julie Cox" }, { "name": "Steven Cree" }, { "name": "Ray Fearon" }, { "name": "Noush Skaugen" }, { "name": "Diane Kruger" }, { "name": "Numan Acar" }, { "name": "Denis Moschitto" }, { "name": "Ranveer Singh" }, { "name": "Deepika Padukone" }, { "name": "Shahid Kapoor" }, { "name": "Stephanie Pearson" }, { "name": "Kelly Connaire" }, { "name": "Rod Hernandez" }, { "name": "Im Si Wan" }, { "name": "Sol Kyung gu" }, { "name": "Ko Chang seok" }, { "name": "So Ji Sub" }, { "name": "Lee Joon Hyuk" }, { "name": "Son Yeo Eun" }, { "name": "Lee You Jin" }, { "name": "Kelly Asbury" }, { "name": "Mary J. Blige" }, { "name": "Chris Rock" }, { "name": "Rachel Dratch" }, { "name": "Allison Strong" }, { "name": "Roland Buck Iii" }, { "name": "Kim Hee Won" }, { "name": "Oh Ha Nee" }, { "name": "Lee Hak Joo" }, { "name": "Max Irons" }, { "name": "Mike Myers" }, { "name": "Katarina Cas" }, { "name": "Richard Ayoade" }, { "name": "Jim Sturgess" }, { "name": "Luke Evans" }, { "name": "Dominic Cooper" }, { "name": "Bradley Coope" }, { "name": "Caity Lotz" }, { "name": "Camilla Luddington" }, { "name": "Scott Michael Foster" }, { "name": "Anupam Kher" }, { "name": "Jae yeong Jeong" }, { "name": "Jo Jung suk" }, { "name": "Keri Russell" }, { "name": "lly" }, { "name": "Masahiro Higashide" }, { "name": "Ryusuke Ito" }, { "name": "Chris Sarandonndre the Giant" }, { "name": "Phim TV Show" }, { "name": "DMX" }, { "name": "Kelly Hu" }, { "name": "Anthony Anderson" }, { "name": "Matt Walsh" }, { "name": "Jake Johnson" }, { "name": "Damon Wayans Jr." }, { "name": "Bi Rain" }, { "name": "50 Cent" }, { "name": "Peter Stormare" }, { "name": "Danny Glover" }, { "name": "Jun Sang Yu" }, { "name": "Kim Basinger" }, { "name": "John Hurt" }, { "name": "Andy On" }, { "name": "Kate Hudson" }, { "name": "Tom Wilkinson" }, { "name": "Adam Levine" }, { "name": "Lorna Raver" }, { "name": "Philip Seymour Hoffman" }, { "name": "Richard Jenkins" }, { "name": "Antonio Banderas" }, { "name": "Birgitte Hjort Sørensen" }, { "name": "Dylan McDermott" }, { "name": "Zach Gilfor" }, { "name": "Eric Bana" }, { "name": "Édgar Ramírez" }, { "name": "Mi Yang" }, { "name": "Chao Liang" }, { "name": "Yan Liu" }, { "name": "Jacqueline Fernandez" }, { "name": "Nawazuddin Siddiqui" }, { "name": "Cameron Diaz" }, { "name": "Rob Corddry" }, { "name": "Trần Tĩnh" }, { "name": "Juno Temple" }, { "name": "Ye ri Han" }, { "name": "Man shik Jeong" }, { "name": "Beau Knapp" }, { "name": "Lương Triều Vỹ" }, { "name": "Truong Mạn Ngọc" }, { "name": "Zang Ziyi" }, { "name": "Phim Thần Thoại" }, { "name": "Bingbing Fan" }, { "name": "Xiaoming Huang" }, { "name": "Wenzhuo Zhao" }, { "name": "Yoo In Na" }, { "name": "Jin Lee Han" }, { "name": "Namgung Min" }, { "name": "Nicola Peltz" }, { "name": "Alex Fong Lik Sun" }, { "name": "Lam Suet" }, { "name": "Renata Tan" }, { "name": "Wayne Liu" }, { "name": "He Meitian" }, { "name": "Mike Dopud" }, { "name": "David Belle" }, { "name": "RZA" }, { "name": "Seth MacFarlane" }, { "name": "Đang Cập Nhật" }, { "name": "Viva Bianca" }, { "name": "Hanna Mangan Lawrence" }, { "name": "Aaron Taylor Johnson" }, { "name": "Elizabeth Olsen" }, { "name": "Watanabe Ken" }, { "name": "Juliette Binoche" }, { "name": "David Strathairn" }, { "name": "Sally Hawkins" }, { "name": "Cameron 'CJ' Adams" }, { "name": "Brian Markinson" }, { "name": "Richard T. Jones" }, { "name": "Hyuk Jang" }, { "name": "Andrew William Brand" }, { "name": "In Pyo Cha" }, { "name": "Drew Barrymore" }, { "name": "Scott Mechlowicz" }, { "name": "Alphonso McAuley" }, { "name": "Winter Ave Zoli" }, { "name": "Michael York" }, { "name": "Finn Jones" }, { "name": "Grace Van Dien" }, { "name": "Catherine Oxenberg" }, { "name": "Jung Joon Ho" }, { "name": "Song Yoon Ah" }, { "name": "Lea Michele" }, { "name": "Kelsey Grammer" }, { "name": "Dan Aykroyd" }, { "name": "Jason Wong" }, { "name": "Asen Asenov" }, { "name": "Daniel Coetzer" }, { "name": "Christian Slater" }, { "name": "Emily Tennant" }, { "name": "Mary Louise Parker" }, { "name": "Olivia Colman" }, { "name": "Ruth Wilson" }, { "name": "Richard Coyle" }, { "name": "Claire Foy" }, { "name": "Yasmine Al Masri" }, { "name": "Abhishek Bachchan" }, { "name": "Joey Lauren Adams" }, { "name": "Elizabeth Gillies" }, { "name": "Parker Young" }, { "name": "Emily Watson" }, { "name": "Winona Ryder" }, { "name": "Shin Hye Park" }, { "name": "Won sang Park" }, { "name": "Katie Crown" }, { "name": "Brian Doe" }, { "name": "Patrick Gilmore" }, { "name": "Michelle Chen" }, { "name": "Qing Ye" }, { "name": "Siu Lung Sik" }, { "name": "Sebastian Stan" }, { "name": "Andrew Garfield" }, { "name": "Emma Stone" }, { "name": "Jamie Foxx" }, { "name": "Natalie Portman" }, { "name": "Ty Burrell" }, { "name": "Max Charles" }, { "name": "Stephen Colbert" }, { "name": "Dada Chan" }, { "name": "Lương Vịnh Kì" }, { "name": "Arjun Kapoor" }, { "name": "Amrita Singh" }, { "name": "Huỳnh Tông Trạch – Trác Úc" }, { "name": "Hồ Định Hân – Phương Minh Du" }, { "name": "Randeep Hooda" }, { "name": "Durgesh Kumar" }, { "name": "Chung Tử Đan" }, { "name": "Châu Dương." }, { "name": "Christian Oliver" }, { "name": "Les Brandt" }, { "name": "Cary Hiroyuki Tagawa" }, { "name": "Terrence Howard" }, { "name": "Macon Blair" }, { "name": "Devin Ratray" }, { "name": "Amy Hargreaves" }, { "name": "Sinjai Plengpanit" }, { "name": "Supanart Jittaleela" }, { "name": "Ray MacDonald" }, { "name": "Elle FanningKyle Chandler" }, { "name": "Mitsuki Koga" }, { "name": "Yoshiyuki Yamaguchi" }, { "name": "Masanori Mimoto" }, { "name": "Eun kyung Shim" }, { "name": "Mun hee Na" }, { "name": "In hwan Park" }, { "name": "Dong il Song" }, { "name": "Hạ Vũ" }, { "name": "Dương Thái Ni" }, { "name": "Dư Nam" }, { "name": "Nghê Đại Hồng và Trương Lập" }, { "name": "John Hennigan" }, { "name": "Marcus Shirock" }, { "name": "James Woods" }, { "name": "Luci Christian" }, { "name": "David Matranga" }, { "name": "Elizabeth Bunch" }, { "name": "Jeremy McWilliams" }, { "name": "Lynsey Taylor Mackay" }, { "name": "Alexa Vega" }, { "name": "Beau Bridges" }, { "name": "Aidan Quinn" }, { "name": "Josh Henderson" }, { "name": "Sullivan Stapleton" }, { "name": "Roxanne McKee" }, { "name": "Michelle Fairley" }, { "name": "Danny Webb" }, { "name": "Uma Thurman" }, { "name": "David Carradine" }, { "name": "Michael Madsen" }, { "name": "John Jarratt" }, { "name": "Ryan Corr" }, { "name": "Shannon Ashlyn" }, { "name": "Mindy Robinson" }, { "name": "Freya Tingley" }, { "name": "Gaia Weiss" }, { "name": "Wanida Termthanaporn" }, { "name": "Kunatip PinPradub" }, { "name": "Puvadol Vechwongsa" }, { "name": "Kittipat Samarntragulchai" }, { "name": "Pongpitch Preechaborisuthikul" }, { "name": "Jemaine Clement" }, { "name": "Kristina Anapau" }, { "name": "James C. Burns" }, { "name": "Tina Casciani" }, { "name": "Uma ThurmanMichael Madsen" }, { "name": "Lucy Liu" }, { "name": "Vivica A Fox" }, { "name": "Samuel L Jackson" }, { "name": "Kuriyama Chiaki" }, { "name": "Bella Boyd" }, { "name": "Russell Crowe" }, { "name": "Jennifer Connelly" }, { "name": "Bak Ming Wong" }, { "name": "Eric Tsang" }, { "name": "Sandra Ng Kwan Yue" }, { "name": "Arifin Putra" }, { "name": "Michael Fassbender và Jamie Bell" }, { "name": "Kevin Spacey" }, { "name": "Goran Visnjic" }, { "name": "Terence Stamp" }, { "name": "Will Yun Lee" }, { "name": "Eliza Bennett" }, { "name": "Jane March" }, { "name": "Jamie Thomas King" }, { "name": "Gerard Butlerm" }, { "name": "Gloria Reuben" }, { "name": "Josh Hartnett" }, { "name": "Alexis Bledel" }, { "name": "Elizabeth Banks" }, { "name": "Gillian Jacobs" }, { "name": "Sarah Wright" }, { "name": "Ty Simpkins |" }, { "name": "Stella Maeve" }, { "name": "Alexander Nifong" }, { "name": "J. Mallory McCree" }, { "name": "Kris Holden Ried" }, { "name": "Emily Hampshire" }, { "name": "Claudia Bassols" }, { "name": "Catbus" }, { "name": "Satsuki Kusakabe" }, { "name": "Mei Kusakabe" }, { "name": "Noriko Hidaka" }, { "name": "Hitoshi Takagi" }, { "name": "Tanie Kitabayashi" }, { "name": "Tsuyoshi Kusanagi" }, { "name": "Yui Aragaki" }, { "name": "Takao Osawa" }, { "name": "Stellan Skarsgård" }, { "name": "Michael Dorman" }, { "name": "Aiysha Hart" }, { "name": "Paddy Considine" }, { "name": "Faraz Ayub" }, { "name": "Suthep Po ngam" }, { "name": "Theeradanai Suwannahom" }, { "name": "Shahkrit Yamnarm" }, { "name": "Ryosuke Yamada" }, { "name": "Hiroki Narimiya" }, { "name": "Kelvin Kwan" }, { "name": "Teddy Robin Kwan" }, { "name": "Diogo Morgado" }, { "name": "Amber Rose Revah" }, { "name": "Sebastian Knapp" }, { "name": "Bonnie Lee Bouman" }, { "name": "Dylan Edy" }, { "name": "Michael Everson" }, { "name": "Sunil Shetty" }, { "name": "Hồ Quan" }, { "name": "Yoo Gong" }, { "name": "Jae yun Jo" }, { "name": "Seong ha Jo" }, { "name": "Sonam Kapoor" }, { "name": "Pavan Malhotra" }, { "name": "Shengyi Huang" }, { "name": "Yu Kang" }, { "name": "Sharni Vinson" }, { "name": "Joe Swanberg" }, { "name": "AJ Bowen" }, { "name": "Spencer Locke" }, { "name": "Kenneth Branagh" }, { "name": "Eliza Taylor" }, { "name": "Bob Morley" }, { "name": "Lili Taylor" }, { "name": "Ashley Hinshaw" }, { "name": "Albert Dupontel" }, { "name": "Sandrine Kiberlain" }, { "name": "Nicolas Marié" }, { "name": "Connie Nielsen" }, { "name": "Chia Hui Liu" }, { "name": "Ammara Siripong" }, { "name": "Samuel L. JacksonJulia Margulies" }, { "name": "Paul Logan" }, { "name": "Ralitsa Paskaleva" }, { "name": "Borislav Iliev" }, { "name": "Gattlin Griffith" }, { "name": "Lucy Fry" }, { "name": "Danila Kozlovsky" }, { "name": "Pål Sverre Hagen" }, { "name": "Nicolai Cleve Broch" }, { "name": "Bjørn Sundquist" }, { "name": "Kathy Borland (english adaptation)" }, { "name": "Abraham Vurnbrand" }, { "name": "Rebecca Da Costa" }, { "name": "Crispin Glover" }, { "name": "Hannah Hoekstra" }, { "name": "Isis Cabolet" }, { "name": "Robert de Hoog" }, { "name": "Fumi Nikaidô" }, { "name": "Isao Natsuyagi" }, { "name": "Kim Kap Soo" }, { "name": "Lâm Y Thần" }, { "name": "Miyazaki Aoi" }, { "name": "Mukai Osamu" }, { "name": "Thích Hạng Vũ" }, { "name": "Trương Nhã Mai" }, { "name": "Joaquin Phoenix" }, { "name": "Michael Cera" }, { "name": "Tanya van Graan" }, { "name": "Cam Gigandet" }, { "name": "Thomas Gibson" }, { "name": "Toby Stephens" }, { "name": "Sam Hazeldine" }, { "name": "Kokone Hamada" }, { "name": "Aya Ueto" }, { "name": "Kayoko Kishimoto" }, { "name": "Tom Benedict Knight" }, { "name": "Simon Phillips" }, { "name": "Christina Bellavia" }, { "name": "Jin gu Yeo" }, { "name": "Mạc Văn Úy" }, { "name": "Kang ho Song" }, { "name": "Jung Jae Lee" }, { "name": "Yun shik Baek" }, { "name": "Richard E. Grant" }, { "name": "Demian Bichir" }, { "name": "Seishirô Katô" }, { "name": "Roi Hayashi" }, { "name": "Roy Hayashi" }, { "name": "Craig T. Nelson" }, { "name": "Holly Hunter" }, { "name": "Mi seon Jeon" }, { "name": "Jung Hee Moon" }, { "name": "Hyeon ju Son" }, { "name": "Duncan Casey" }, { "name": "Lee Charles" }, { "name": "Greg Pearson" }, { "name": "Mark Webber" }, { "name": "Devon Graye" }, { "name": "T.O.P" }, { "name": "Seung Hyun Choi" }, { "name": "An Duyệt Khê" }, { "name": "Đổng Tử Kiện" }, { "name": "Nadech Kugimiya" }, { "name": "Kobori" }, { "name": "Arewadee Decubes" }, { "name": "Angsumalin" }, { "name": "Tilda Swinton" }, { "name": "Quách Thái Khiết" }, { "name": "Phòng Tổ Danh" }, { "name": "Ben Diskin" }, { "name": "Kate Higgins" }, { "name": "Lindsay Torrance" }, { "name": "Jason Dohring" }, { "name": "Enrico Colantoni" }, { "name": "Andrew Divoff" }, { "name": "Dominic Purcell" }, { "name": "Adam Beach" }, { "name": "Michael Ironside" }, { "name": "Mae Whitman" }, { "name": "Brendan Fraser" }, { "name": "Kohtee Aramboy" }, { "name": "Sudarat Butrprom" }, { "name": "Kom Chauncheun" }, { "name": "Hoàng Dụ Tường" }, { "name": "Trương Dung Dung" }, { "name": "Jennifer Carpenter" }, { "name": "Brian Bloom" }, { "name": "John Eric Bentley" }, { "name": "Annie Rose Buckley" }, { "name": "Tae seong Jang" }, { "name": "Sang wook Joo" }, { "name": "Dae Hyeon" }, { "name": "Dane DeHaan" }, { "name": "Michael C. Hall" }, { "name": "Charlie Rowe" }, { "name": "Angourie Rice" }, { "name": "Diệp Sơn Hào" }, { "name": "Diêu Thần" }, { "name": "Lã Lương Vỹ" }, { "name": "Lâm Gia Đốn" }, { "name": "Y Tử Duy" }, { "name": "Cuba Gooding Jr." }, { "name": "Dennis Haysbert" }, { "name": "LisaGay Hamilton" }, { "name": "Sean Astin" }, { "name": "Currie Graham" }, { "name": "Ryan Donowho |" }, { "name": "James D'Arcy" }, { "name": "Sophie Lowe" }, { "name": "Daryl Sabara" }, { "name": "Hae suk Kim" }, { "name": "Sang ho Kim" }, { "name": "Mi ran Ra" }, { "name": "Iain De Caestecker" }, { "name": "Alice Englert" }, { "name": "Allen Leech" }, { "name": "Benedict Lim" }, { "name": "Danil Ishutin" }, { "name": "Clinton Loomis" }, { "name": "Matthew Lillard" }, { "name": "John DiMaggio" }, { "name": "Grey DeLisle" }, { "name": "Kim Choong ryeol" }, { "name": "Lee Gyoo bok" }, { "name": "Carice van Houten" }, { "name": "Diedrich Bader" }, { "name": "Laura Bailey" }, { "name": "Dante Basco" }, { "name": "Cao Hổ" }, { "name": "Đỗ Vấn Trạch" }, { "name": "Brandon Anthony" }, { "name": "Carson Holden" }, { "name": "D'Angelo Midili" }, { "name": "Torsten Voges" }, { "name": "Jonathan Banks" }, { "name": "Bryan Larkin" }, { "name": "Iván Kamarás" }, { "name": "Michael McKell" }, { "name": "Yû Aoi" }, { "name": "Ayano Fukuda" }, { "name": "Arata Furuta" }, { "name": "Quan Sở Huy" }, { "name": "La Lực Uy" }, { "name": "LiênThi Nhã" }, { "name": "Adam Brody" }, { "name": "Rob Huebel" }, { "name": "James Cosmo" }, { "name": "Michael Culkin" }, { "name": "Ross Nathan" }, { "name": "Sam Pancake" }, { "name": "Ben Begley" }, { "name": "Herbert Russell" }, { "name": "Bruce Dern" }, { "name": "Will Forte" }, { "name": "June Squibb" }, { "name": "Piolo Pascual" }, { "name": "Gerald Anderson" }, { "name": "Joel Torre" }, { "name": "Châu Kiệt Luân" }, { "name": "Alan Ko" }, { "name": "Châu Tú Na" }, { "name": "Dada Lo" }, { "name": "Hidy Yu" }, { "name": "Zach Callison" }, { "name": "Jon Daly" }, { "name": "Melonie Diaz" }, { "name": "Kyle Chandle" }, { "name": "Jeremy Ray Valdez" }, { "name": "Walter Perez" }, { "name": "Fernanda Romero" }, { "name": "Yuliya Snigir" }, { "name": "Lee Min Ho" }, { "name": "Choi Jin Hyuk" }, { "name": "Kim Sung Ryung" }, { "name": "Kim Woo Bin" }, { "name": "Kim Ji Won" }, { "name": "Yoon Son Ha" }, { "name": "Choi Woon Young" }, { "name": "Kang Ha Neul" }, { "name": "Park Hyung Shik" }, { "name": "Im Joo Eun" }, { "name": "Nawat Kulratanarat" }, { "name": "Rhatha Pho ngam" }, { "name": "Wiraporn Jiravechsoontornkul" }, { "name": "Anon Saisangcharn" }, { "name": "Duek mun Choi" }, { "name": "Jin ho Choi" }, { "name": "Trương Tử Lâm" }, { "name": "Lương Vịnh Kỳ" }, { "name": "Emile Hirsch" }, { "name": "Lý Tâm Khiết" }, { "name": "Joseph Morgan" }, { "name": "Thomas Kretschmann" }, { "name": "Alexandra Lesch" }, { "name": "Kristiana Rohder" }, { "name": "Lara Baum" }, { "name": "Robert Redford" }, { "name": "Clare Kramer" }, { "name": "Lin Shaye" }, { "name": "Greg Grunberg" }, { "name": "Ray Wise" }, { "name": "Quan Chi Lâm" }, { "name": "Triêu Vy" }, { "name": "William Chan" }, { "name": "Christine Kuo" }, { "name": "Michelle Wai" }, { "name": "Terence Chui" }, { "name": "Oscar Leung" }, { "name": "Alien Sun" }, { "name": "Yanina Studilina" }, { "name": "Philippe Reinhardt" }, { "name": "Maaya Sakamoto" }, { "name": "Vithaya Pansringarm" }, { "name": "Vilde Zeiner" }, { "name": "Agnes Kittelsen" }, { "name": "Orlando Jones" }, { "name": "Tom Everett Scott" }, { "name": "Amy Seimetz" }, { "name": "Frank Mosley" }, { "name": "Shane Carruth" }, { "name": "Nanako Matsushima" }, { "name": "Takao Ohsawa" }, { "name": "Gorô Kishitani" }, { "name": "Kyra Sedgwick" }, { "name": "Madison Pettis" }, { "name": "Roselyn Sanchez" }, { "name": "Sylvia Hoeks" }, { "name": "Maiara Walsh" }, { "name": "Brant Daugherty" }, { "name": "Cody Christian" }, { "name": "Bongkoj Khongmalai" }, { "name": "Rit Luecha" }, { "name": "Chalad Na Songkhla" }, { "name": "Kevin McKidd" }, { "name": "Genesis Rodriguez" }, { "name": "Nick Gomez" }, { "name": "Judd Lormand" }, { "name": "Paula Patton" }, { "name": "Tim Allen" }, { "name": "Joan Cusack" }, { "name": "Tom Welling" }, { "name": "Lâm Phong" }, { "name": "Từ Tử San" }, { "name": "Thịnh Quân" }, { "name": "Kyung gu Sol" }, { "name": "So ri Moon" }, { "name": "Daniel Henney" }, { "name": "Ranbir Kapoor" }, { "name": "Madhuri Dixit" }, { "name": "Ashley Sommers" }, { "name": "Carlos Alazraqui" }, { "name": "Dane Cook" }, { "name": "Stacy Keach" }, { "name": "Michelle Pfeiffer" }, { "name": "Dianna Agron" }, { "name": "Matthew Marsden" }, { "name": "Kristanna Loken" }, { "name": "Christian Pitre" }, { "name": "Weerachai Hattagowit" }, { "name": "Sharon Hinnendael" }, { "name": "Kaniehtiio Horn" }, { "name": "C.C. Sheffield" }, { "name": "Kelly Preston" }, { "name": "Danielle Panabaker" }, { "name": "Lily Collins" }, { "name": "Jamie Campbell Bower và Robert Sheehan" }, { "name": "Chương Hàm Du" }, { "name": "Traylor Howard" }, { "name": "Alan Cumming" }, { "name": "Al Pacino Cosgrove" }, { "name": "Will Payne" }, { "name": "Jaime Murray" }, { "name": "Sean Power" }, { "name": "Gianni Capaldi" }, { "name": "Bruce Greenwood" }, { "name": "Parker Posey" }, { "name": "Callum Blue" }, { "name": "Anthony Michael Hall" }, { "name": "Maxim Roy" }, { "name": "Ted Whittall" }, { "name": "Allison Janney" }, { "name": "Frank Welker" }, { "name": "Mindy Cohn" }, { "name": "Nick Robinson" }, { "name": "Gabriel Basso" }, { "name": "Moises Arias" }, { "name": "Jonah Bobo" }, { "name": "Haley Ramm" }, { "name": "Martin Copping" }, { "name": "Clare Niederpruem" }, { "name": "Woong in Jung" }, { "name": "Hwang Jung Min" }, { "name": "Yo won Lee" }, { "name": "Jun Sang Yoo" }, { "name": "Jemma Dallender" }, { "name": "Joe Absolom" }, { "name": "Yavor Baharov" }, { "name": "Aleksandar Aleksiev" }, { "name": "Mary Stockley" }, { "name": "Ted Levine" }, { "name": "Joe Anderson" }, { "name": "Kevin Zegers" }, { "name": "Laurence Fishburne" }, { "name": "Marrese Crump" }, { "name": "JeeJa Yanin" }, { "name": "Christopher Mintz Plasse" }, { "name": "Jiao Xu" }, { "name": "Hee won Kim" }, { "name": "John Ratzenberger" }, { "name": "Michael Teigen" }, { "name": "Jason Earles" }, { "name": "Karel Roden" }, { "name": "Joshua Sasse" }, { "name": "Robert Gwilym" }, { "name": "Carrie Anne Moss" }, { "name": "Kevin Dillon" }, { "name": "Brandon T. Jackson" }, { "name": "Claudio Santamaria" }, { "name": "Jennifer Ulrich" }, { "name": "Elio Germano" }, { "name": "Eriko Hatsune" }, { "name": "Fernando Alves Pinto" }, { "name": "Alessandra Negrini" }, { "name": "Caco Ciocler" }, { "name": "Megumi Oohara" }, { "name": "Hyo ju Han" }, { "name": "Woo sung Jung" }, { "name": "Paul Giamatti" }, { "name": "Maya Rudolph" }, { "name": "Max Burkholder" }, { "name": "Sienna Guillory" }, { "name": "Clive Russell" }, { "name": "Rebecca Ferdinando" }, { "name": "Mingus Johnston" }, { "name": "Katherine Heigl" }, { "name": "Diane Keaton" }, { "name": "Helen Mirren" }, { "name": "Byung hun Lee" }, { "name": "Demian Bichi" }, { "name": "Patitta Attayatamavitaya" }, { "name": "Supachai Girdsuwan" }, { "name": "Setsit Limkasitdej" }, { "name": "Caleb Landry" }, { "name": "Kevin Bacon" }, { "name": "Hyeon woo Kim" }, { "name": "Hae hyo Kwon" }, { "name": "Si young Lee" }, { "name": "Gon" }, { "name": "Killua and Leorio" }, { "name": "Veronica Diaz Carranza" }, { "name": "Melissa Cordero" }, { "name": "Q'orianka Kilcher" }, { "name": "Lindsay Lohan" }, { "name": "James Deen" }, { "name": "Nolan Gerard Funk" }, { "name": "Michael Clarke Duncan" }, { "name": "Luke Treadaway" }, { "name": "Emily Atack" }, { "name": "Craig Fairbrass" }, { "name": "Simon Rex" }, { "name": "Charlie Sheen" }, { "name": "Jacob Lofland" }, { "name": "Wesley Snipes" }, { "name": "Kevin Howarth" }, { "name": "Joo hyun Jo" }, { "name": "Se hong Jeon" }, { "name": "Gwang il Lee" }, { "name": "Matt Doran" }, { "name": "David Field" }, { "name": "Jin mo Ju" }, { "name": "So yeon Kim" }, { "name": "Hee soon Park" }, { "name": "Shin Ha Kyun" }, { "name": "Jo Eun Ji" }, { "name": "Oh Jung Se" }, { "name": "Helene Bergsholm" }, { "name": "Malin Bjørhovde" }, { "name": "Henriette Steenstrup" }, { "name": "David Chokachi" }, { "name": "Tia Carrere" }, { "name": "Meghan McLeod" }, { "name": "Ryan Goslingm" }, { "name": "Kim Seul gi I" }, { "name": "Ko Kyeong pyo" }, { "name": "Lee Se yeong" }, { "name": "Lee Soo hyeok" }, { "name": "Park Seong woong" }, { "name": "Seong Joon" }, { "name": "Bemin Epps" }, { "name": "Justin Chambers" }, { "name": "C. Thomas Howell" }, { "name": "Lauren Ashley Carter" }, { "name": "Kaitlin Cullum" }, { "name": "Miracle Laurie" }, { "name": "Krisada Sukosol Clapp" }, { "name": "Somchai Kemglad" }, { "name": "Sakarin Suthamsamai" }, { "name": "BiaSean Brosnan" }, { "name": "Van Dammep" }, { "name": "Tom Wilson" }, { "name": "Garrison Keillor" }, { "name": "Trịnh Tú Văn" }, { "name": "Kuralay AnarbekovaAliya Telebarisova" }, { "name": "Nathalie Emmanuel" }, { "name": "Milo Ventimiglia" }, { "name": "Say Gupta" }, { "name": "Stephen Moyer" }, { "name": "Mia Kirshner" }, { "name": "Allie MacDonald" }, { "name": "Chadwick Boseman" }, { "name": "Nicole Beharie" }, { "name": "Ryusei Nakao" }, { "name": "Byron J. BrochmanPauline Egan" }, { "name": "Jeronimo Garcia" }, { "name": "Victor Golez" }, { "name": "Katharine Isabellen Fehr" }, { "name": "Nicola Posener" }, { "name": "Vidal Sancho" }, { "name": "David Haydn" }, { "name": "Kippei Shîna" }, { "name": "Duy Ni" }, { "name": "Matilda Anna Ingrid Lutz" }, { "name": "Kevin Janssens" }, { "name": "Vincent Colombe" }, { "name": "Michael Beach" }, { "name": "Danielle Savre" }, { "name": "Rob Mayes" }, { "name": "Sung Hoon" }, { "name": "Jo Han Sun" }, { "name": "Lee Kyoung Young" }, { "name": "Jeon Kwang Leol" }, { "name": "Kim Moo Yul" }, { "name": "Lim Won Hee" }, { "name": "Jasmine Waltz" }, { "name": "Park Ji Hyun" }, { "name": "Park Sung Hoon" }, { "name": "Wi Ha Joon" }, { "name": "Oh Ah Yeon" }, { "name": "Moon Ye Won" }, { "name": "Yoo Je Yoon" }, { "name": "Oprah Winfrey" }, { "name": "Mindy Kaling" }, { "name": "Jacqueline Bisset" }, { "name": "Belçim Bilgin" }, { "name": "Rachel Wilson" }, { "name": "Anushka Sharma" }, { "name": "Parambrata Chatterjee" }, { "name": "Rajat Kapoor" }, { "name": "Ritabhari Chakraborty" }, { "name": "Alex Roe" }, { "name": "Abby Ryder Fortson" }, { "name": "Travis Tritt" }, { "name": "Peter Cambor" }, { "name": "Bailee Madison" }, { "name": "Lewis Pullman" }, { "name": "Emma Bellomy" }, { "name": "Damian Maffei" }, { "name": "Trương Ngải Gia" }, { "name": "Karl Maka" }, { "name": "Sam Hui (Hứa Quán Kiệt)" }, { "name": "Emily Ratajkowski" }, { "name": "Anthony Hayes" }, { "name": "Susie Porter" }, { "name": "Tak Sakaguchi" }, { "name": "Yura Kondo" }, { "name": "Takumi Saitoh" }, { "name": "Vincent D'Onofrio" }, { "name": "Elisabeth Shue" }, { "name": "Camila Morrone" }, { "name": "Robert Downey Jr" }, { "name": "Ryoo Seung Ryong" }, { "name": "Ko Gyung Pyo" }, { "name": "Song Sae Byeok" }, { "name": "Billy Magnussen" }, { "name": "Scott Shepherd" }, { "name": "Ava Cooper" }, { "name": "Stella Cooper" }, { "name": "David Midthunder" }, { "name": "Nhạc Vân Bằng" }, { "name": "Jeremy Strong" }, { "name": "Dominic Power" }, { "name": "Aaron McCusker" }, { "name": "Alaa Safi" }, { "name": "Arkie Reece" }, { "name": "Gou Ayano" }, { "name": "Yuu Shirota" }, { "name": "Tetsuji Tamayama" }, { "name": "Yudai Chiba" }, { "name": "Takeru Satoh" }, { "name": "Rina Kawaei" }, { "name": "Zaira Wasim" }, { "name": "Meher Vij" }, { "name": "Raj Arjun" }, { "name": "Billy Brown" }, { "name": "Vanessa Williams" }, { "name": "Seung ryong Ryu" }, { "name": "Jung min Park" }, { "name": "Finn Scicluna O'Prey" }, { "name": "Emm Wiseman" }, { "name": "Jamie Lee Money" }, { "name": "Kim Kang Woo" }, { "name": "Jo Jae Hyun" }, { "name": "Park Shi Yeon" }, { "name": "Lee Won Jong" }, { "name": "Jang Hye Jin" }, { "name": "Afiya Bennett" }, { "name": "Morgan Allen" }, { "name": "Jeffrey Men" }, { "name": "James Tam" }, { "name": "Fayssal Bazzi" }, { "name": "Colin Moody" }, { "name": "Lý Tuấn Vĩ" }, { "name": "Triệu Tân" }, { "name": "Triệu Văn Kỳ" }, { "name": "Han Ji An" }, { "name": "Lee Ji Hoon" }, { "name": "Seo Hyun Woo" }, { "name": "Eloise Mumford" }, { "name": "Eric Johnson" }, { "name": "Rita Ora" }, { "name": "Diêm Lộc Dương" }, { "name": "Lý Quả" }, { "name": "Trang Sâm" }, { "name": "Jung Ryeo Won" }, { "name": "Lee Moon Sik" }, { "name": "Im Chang Jung" }, { "name": "Kim Do Hoon" }, { "name": "Alexis Knapp" }, { "name": "Kai Wang" }, { "name": "Darren Wang" }, { "name": "So Jin Sub" }, { "name": "Noah Jupe" }, { "name": "Park Ki woong" }, { "name": "Park Hae Jin" }, { "name": "Oh Yeon Seo" }, { "name": "Yu In Young" }, { "name": "Sandara Park" }, { "name": "Oh Jong Hyuk" }, { "name": "Moon Ji Yoon" }, { "name": "Kim Hyun Jin" }, { "name": "Rie Kugimiya" }, { "name": "Wataru Takagi" }, { "name": "O'Shea Jackson Jr." }, { "name": "Alexander Siddig" }, { "name": "Jannik Schümann" }, { "name": "Reda Kateb" }, { "name": "Cole Hauser" }, { "name": "Shawn Ashmore" }, { "name": "Trần Dịch Tấn" }, { "name": "Lý Nhất Đồng" }, { "name": "Lý Vinh Hạo" }, { "name": "Maggie Grace" }, { "name": "Toby Kebbell" }, { "name": "Ben Cross" }, { "name": "Kiele Sanchez" }, { "name": "Darby Camp" }, { "name": "Gralen Bryant Banks" }, { "name": "Will Rothhaar" }, { "name": "Hugh Grant" }, { "name": "Ben Whishaw" }, { "name": "Michael Gambon" }, { "name": "Olivia Chenery" }, { "name": "Ruby Bustamante" }, { "name": "Jason Maza" }, { "name": "David Gyasi" }, { "name": "Sonoya Mizuno" }, { "name": "John Schwab" }, { "name": "Charlie Day" }, { "name": "Tian Jing" }, { "name": "Levi Meaden" }, { "name": "Kim Eui sung" }, { "name": "Jung woo Sung" }, { "name": "kwak do won" }, { "name": "Park Eun Hye" }, { "name": "Ahn Mi Na" }, { "name": "Trần Hạo Dân" }, { "name": "Lâm Tử Thông" }, { "name": "Phạm Mộng" }, { "name": "Elsa Pataky" }, { "name": "Taylor Sheridan" }, { "name": "Thich Nhát Hanh" }, { "name": "Brother Pháp De" }, { "name": "Lee Min Ki" }, { "name": "Oh Dal su" }, { "name": "Kim Bum" }, { "name": "Kim Jung Hwa" }, { "name": "Hong Chau" }, { "name": "Rolf Lassgård" }, { "name": "Gabriel Byrne" }, { "name": "Mark Addy" }, { "name": "Sibylla Deen" }, { "name": "Lupita Nyong'o" }, { "name": "Daniel Kaluuya" }, { "name": "Angela Bassett" }, { "name": "Danai Gurira" }, { "name": "Giancarlo Esposito" }, { "name": "Ki Hong Lee" }, { "name": "Katherine McNamara" }, { "name": "Barry Pepper" }, { "name": "Lý Tương" }, { "name": "Phan Nguyễn" }, { "name": "Lý Tử" }, { "name": "Bill Milner" }, { "name": "David Bradley" }, { "name": "Charlotte Vega" }, { "name": "Eugene Simon" }, { "name": "Leigh Whannell" }, { "name": "Vương Thụy Xương" }, { "name": "Vu Nghị" }, { "name": "Hà Hoa" }, { "name": "Dong xue Li" }, { "name": "Janicke Askevold" }, { "name": "Eriq Ebouaney" }, { "name": "Triệu Đông Trạch" }, { "name": "Ngưu Hiểu Lâm" }, { "name": "Trương Dương" }, { "name": "Dominic West" }, { "name": "Kristin Scott Thomas" }, { "name": "Hannah John Kamen" }, { "name": "Satomi Ishihara" }, { "name": "Satoshi Ohno" }, { "name": "Yuri Chinen" }, { "name": "Trùng Thiệu Phong" }, { "name": "Sophon Sakdaphisit" }, { "name": "Numthip Jongrachatawiboon" }, { "name": "Apichaya Thongkham" }, { "name": "Panisara Rikulsurakan" }, { "name": "Huy Xán" }, { "name": "Hà Ất Hiên" }, { "name": "Lưu Hán Triệu" }, { "name": "Alex Pettyfer" }, { "name": "Emily Althaus" }, { "name": "Gene Jones" }, { "name": "Lý Băng Băng" }, { "name": "Yasmin Kassim" }, { "name": "Leslie Bibb" }, { "name": "Stephen McHattie" }, { "name": "Nicholas Campbell" }, { "name": "Matt Craven" }, { "name": "Vicky Krieps" }, { "name": "Lesley Manville" }, { "name": "Daniel Day Lewis" }, { "name": "Sophie Cookson" }, { "name": "Corneliu Ulici" }, { "name": "Ada Lupu" }, { "name": "Catalin Babliuc" }, { "name": "Arsher Ali" }, { "name": "Robert James Collier" }, { "name": "La Trọng Khiêm" }, { "name": "Triệu Lệ Dĩnh" }, { "name": "Jeff Fahey" }, { "name": "Marc McKevitt Ewins" }, { "name": "Olatunde Osunmi" }, { "name": "Cas APaul Birchardtelli" }, { "name": "Mario MaurerJoross Gamboa" }, { "name": "Zhao Yihuan" }, { "name": "Chaney Qiu" }, { "name": "Wen Zhuo" }, { "name": "Liu Huipu" }, { "name": "Vency Wen" }, { "name": "Billy Crystal" }, { "name": "Casper Van Dien" }, { "name": "Sarah Lieving" }, { "name": "Aditya Roy Kapoor" }, { "name": "Shaad Randhawa" }, { "name": "Carsten BjørnlundMarina Bouras" }, { "name": "Barry Sloane" }, { "name": "Shiloh Fernandez" }, { "name": "Jessica Lucas" }, { "name": "Lou Taylor Pucci" }, { "name": "Đông Phi" }, { "name": "Hà Văn Phi" }, { "name": "Lương Liệt Duy" }, { "name": "Thẩm Chấn Thiên" }, { "name": "Nattapong Chartpong" }, { "name": "Sean Elliot" }, { "name": "Rose Sirna" }, { "name": "Puttipong Pormsaka Na SakoWasin Pokpong" }, { "name": "Jane Lynch" }, { "name": "Pamela Adlon" }, { "name": "Senem Temiz" }, { "name": "Vicky McClure" }, { "name": "Gemma ArtertonJustin Timberlake" }, { "name": "Văn Chương" }, { "name": "Lưu Thi Thi" }, { "name": "Trần Nghiên Hy" }, { "name": "Angel LocsiDingdong Dantes" }, { "name": "Spike Jonze" }, { "name": "José Garcia" }, { "name": "Michaël Youn" }, { "name": "Isabelle Funaro" }, { "name": "Daniella Kertesz" }, { "name": "Gareth John Bale" }, { "name": "Ian Dicks" }, { "name": "Nick Renaud" }, { "name": "Henry Monfries" }, { "name": "Gemmenne de la Peña" }, { "name": "Karoline Herfurth" }, { "name": "Harriet MacMasters Green" }, { "name": "Sabrina Jolie Perez" }, { "name": "Jarreth J. Merz" }, { "name": "Cherrie Ying" }, { "name": "Zhang Duo" }, { "name": "Wang Zizi" }, { "name": "Shôta Matsuda" }, { "name": "Nozomi Sasaki" }, { "name": "Sei Ando" }, { "name": "Julie Delpy" }, { "name": "Seamus Davey Fitzpatrick" }, { "name": "Ashley Scott" }, { "name": "Bailey Chas" }, { "name": "Danica McKellar" }, { "name": "Kenneth Mitchell" }, { "name": "AKen Jeong" }, { "name": "Emmanuelle Vaugier" }, { "name": "Evert McQueen" }, { "name": "Kenny Kwann Zhang" }, { "name": "Jason Griffith" }, { "name": "Rica Matsumoto" }, { "name": "Đồng Đại Vy" }, { "name": "Tư Cầm Cao Oa" }, { "name": "Kelsy AbbottFachry Albar" }, { "name": "Adrián Suar" }, { "name": "Carla Peterson" }, { "name": "Julieta Díaz" }, { "name": "Maria Ehrich" }, { "name": "Jannis Niewöhner" }, { "name": "Daniel Giménez Cacho" }, { "name": "Ebon Moss Bachrach" }, { "name": "Vinessa Shaw" }, { "name": "Huỳnh Nhật Hoa" }, { "name": "Lữ Lương Vỹ" }, { "name": "Mạc Thiếu Thông" }, { "name": "Anne Curtisnn" }, { "name": "Adelaide Clemens" }, { "name": "Derek Magyar" }, { "name": "Jaideep Ahlawat" }, { "name": "Dimple Bagrey" }, { "name": "Sukhwinder Chahal" }, { "name": "Kan Iyer" }, { "name": "David Duchovny" }, { "name": "Joe Estevez" }, { "name": "Dan Haggerty" }, { "name": "Thomas Downey" }, { "name": "Danielle Harris" }, { "name": "Zach Galligan" }, { "name": "Elisabeth Harnois" }, { "name": "Val Kilmer" }, { "name": "Diora Baird" }, { "name": "Michelle Trachtenberg" }, { "name": "Mason Cook" }, { "name": "Ileana" }, { "name": "Rajendraprasad" }, { "name": "Steve Bacic" }, { "name": "Christian SlaterAmy Matysio" }, { "name": "Tomoyuki Morikawa" }, { "name": "Chie Nakamura" }, { "name": "Junko Takeuchi" }, { "name": "Ratklao Amaradit" }, { "name": "Savika Chaiyadej" }, { "name": "Eva Mendes" }, { "name": "Anthony Pizza" }, { "name": "Graham Phillips" }, { "name": "Jaden Smith" }, { "name": "Takayuki Yamada" }, { "name": "Ruth Sundell" }, { "name": "Daniel Genalo" }, { "name": "Ivan Trojan" }, { "name": "Sebastian Koch" }, { "name": "Sona Norisová" }, { "name": "Wei LeeQuan Ren" }, { "name": "Quách Kinh Phi" }, { "name": "Tề Khê" }, { "name": "Toda Erika" }, { "name": "Kase Ryo" }, { "name": "Yahya Gaier" }, { "name": "Mimoun Ouled Radi" }, { "name": "Sergio Hasselbaink" }, { "name": "Marty Adams" }, { "name": "Shaun Benson" }, { "name": "Meghan Heffern" }, { "name": "Zach Galifianakis" }, { "name": "Trịnh Thiếu Thu" }, { "name": "Phó Tân Bác" }, { "name": "Huỳnh Tông Trạch" }, { "name": "Đạng Lệ Hân" }, { "name": "Jason Momo" }, { "name": "Ye Liu" }, { "name": "Hanyu Zhang" }, { "name": "Bo Huang" }, { "name": "Chie Tanaka" }, { "name": "Katie Aselton" }, { "name": "Penelope Ann Miller" }, { "name": "David Eigenberg" }, { "name": "Kenneth Adams" }, { "name": "Joshua Michael Allen" }, { "name": "Sada Alpat" }, { "name": "Cindy Busby" }, { "name": "Raj Babbar" }, { "name": "Mahie Gill" }, { "name": "Mugdha Godse" }, { "name": "Beyoncé Knowles" }, { "name": "Dương Thừa Lâm" }, { "name": "Luke Kirby" }, { "name": "Ruth Negga" }, { "name": "Peter Falk" }, { "name": "Wai Man Chan" }, { "name": "Patrick Tam" }, { "name": "Kwok Cheung Tsang" }, { "name": "Christopher Lloyd" }, { "name": "Martha MacIsaac" }, { "name": "Tôn Hồng Lôi" }, { "name": "Huỳnh Dịch" }, { "name": "Tia Bajpai" }, { "name": "Vidya Malvade" }, { "name": "Aftab Shivdasan" }, { "name": "Jira Maligool" }, { "name": "rapper Ludacris" }, { "name": "Kamal Hassan" }, { "name": "Rahul Bose" }, { "name": "Pooja Kumar" }, { "name": "Vương Tử Văn" }, { "name": "Sergey Puskepalis" }, { "name": "Anatoliy Belyy" }, { "name": "Svetlana Khodchenkova" }, { "name": "Hyeon sang Kwon" }, { "name": "Bo ra Nam" }, { "name": "Yoo Oh Seong" }, { "name": "Yoo Seon" }, { "name": "Nicolás Martínez" }, { "name": "Eli Roth" }, { "name": "Spencer Treat Clark" }, { "name": "Nick Eversman" }, { "name": "Alan Drake" }, { "name": "Kiran Shah" }, { "name": "Sheri Moon Zombie" }, { "name": "Bruce Davison" }, { "name": "Jeff Daniel Phillips" }, { "name": "Tómas Lemarquis" }, { "name": "MohaHarsh Chhaya" }, { "name": "Vibha Chhibber" }, { "name": "Jon Bernthal" }, { "name": "Susan Sarandon" }, { "name": "Paresh Rawal" }, { "name": "Rajeev Khandelwal" }, { "name": "Tena Desae" }, { "name": "Dakota Fanning" }, { "name": "Amrita Puri" }, { "name": "Sushant Singh Rajput" }, { "name": "Amit Sadh" }, { "name": "Christopher Walken Kilcher" }, { "name": "John Henshaw" }, { "name": "Gary Maitland" }, { "name": "Chapman To" }, { "name": "Simon Lui" }, { "name": "Shiou Yun Chang" }, { "name": "Akira Chen" }, { "name": "Lawrence Ko" }, { "name": "Shahid KapoorPrachi Desai" }, { "name": "Eileen Davies" }, { "name": "Steve Oram" }, { "name": "BreRob Corddry" }, { "name": "Richard Gere" }, { "name": "Anthony LaPaglia" }, { "name": "Chris Colfer" }, { "name": "Luca Argentero" }, { "name": "Laura Chiatti" }, { "name": "Julianne Hough" }, { "name": "Imran KhaPaj Kapur" }, { "name": "Caleb Landry Jones" }, { "name": "Lisa Berry" }, { "name": "Samantha Mathis" }, { "name": "Jason Beghe" }, { "name": "Esai Morales" }, { "name": "Erin Karpluk" }, { "name": "Edward Furlong" }, { "name": "Mitsu Dakihiro Mayama" }, { "name": "Takuma Hiraoka" }, { "name": "Brittany Snow" }, { "name": "Jeffrey Combs" }, { "name": "Jonny Coyne" }, { "name": "Bill Murra" }, { "name": "Muku Michael Dewil" }, { "name": "Alex Carter" }, { "name": "Monica Keena" }, { "name": "Alex Arleo" }, { "name": "Mao Thuấn Quân" }, { "name": "Alex Hafnerntonio de la Torre" }, { "name": "Brian Geraghty" }, { "name": "Catherine Keener" }, { "name": "Christopher Stadulis" }, { "name": "Stephen Dorff" }, { "name": "JR Bourne" }, { "name": "Bernard Alane" }, { "name": "Isabelle Spade" }, { "name": "Kacey Mottet Klein" }, { "name": "Ario Bayundre" }, { "name": "Janice Man" }, { "name": "Bill Pullman" }, { "name": "Chang Jung Lim" }, { "name": "Ji won Ha" }, { "name": "Seong guk Choi" }, { "name": "Prabhu Deva" }, { "name": "Ganesh Acharya" }, { "name": "Kay Kay Menon" }, { "name": "Ajith Kumar" }, { "name": "Parvathy Omanakuttan" }, { "name": "Bruna Abdullah" }, { "name": "Hae il Park" }, { "name": "Kim Go Eun" }, { "name": "Harish Shar" }, { "name": "Belén Rueda" }, { "name": "Hugo Silva" }, { "name": "Tom Frederic" }, { "name": "Gil Kolirin" }, { "name": "Christian Contreras" }, { "name": "America Olivo" }, { "name": "Nora Arnezeder" }, { "name": "Kelly Carlson" }, { "name": "Robert Patrick" }, { "name": "David Lyons" }, { "name": "Sra Noithai" }, { "name": "Matt Bellefleur" }, { "name": "George Canyon" }, { "name": "Gabriel Carter" }, { "name": "Marianne Farley" }, { "name": "Quinn Lord" }, { "name": "Francis X. McCarthy" }, { "name": "Phương Lực Thân" }, { "name": "Lưu Vũ Kỳ" }, { "name": "Sara Loren" }, { "name": "Lee Bum Soo" }, { "name": "Yoon Jung Hee" }, { "name": "Trey Songz" }, { "name": "Erica Leerhsen" }, { "name": "Henry Rollins" }, { "name": "Daniella Alonso" }, { "name": "Steve Braun" }, { "name": "Ewen Bremner" }, { "name": "Jonny Lee Miller" }, { "name": "Juliette Binoche Kulig" }, { "name": "Cha Tae hyeon" }, { "name": "Kang Ye won" }, { "name": "Lee Moon soo" }, { "name": "Jang Young nam and Cheon Bo geun" }, { "name": "John Noble" }, { "name": "Megumi Hayashibara Kitaohgi" }, { "name": "Jeremy Sisto" }, { "name": "Eliza Dushku" }, { "name": "Desmond Harrington" }, { "name": "Kim Hyeon Jeong" }, { "name": "Lee Je yong" }, { "name": "Kim Dae wu" }, { "name": "Hayley Atwell" }, { "name": "Damian Lewis" }, { "name": "Trần Ý Hàm" }, { "name": "Trịnh Nguyên Sướng" }, { "name": "Petchtai Wongkamlao" }, { "name": "Jacqueline Apitananon" }, { "name": "Manoj Bajpayee" }, { "name": "Richa Chadda" }, { "name": "Blake Freeman" }, { "name": "Jason Mewes" }, { "name": "Mindy Sterling" }, { "name": "Lauren Holly" }, { "name": "Samuel l. jackson" }, { "name": "Ice cube" }, { "name": "Willem dafoe" }, { "name": "Nick Nolte" }, { "name": "Silje Reinåmo" }, { "name": "Erlend Nervold" }, { "name": "Jon Sigve Skard" }, { "name": "Barbra Streisand" }, { "name": "Julene Renee Preciado" }, { "name": "Jared Gilman" }, { "name": "MaliJohn Cusack" }, { "name": "Liam Cunningham" }, { "name": "Ông Hồng" }, { "name": "Tống Mạnh Chung" }, { "name": "Lương Tư Hạo" }, { "name": "Hal Holbrook" }, { "name": "Lincoln Burrows Wentworth Miller" }, { "name": "Michael Scofield Amaury Nolasco" }, { "name": "Fernando Sucre" }, { "name": "Hà Siêu Nghi" }, { "name": "Diego Boneta" }, { "name": "Robert Amstler" }, { "name": "Nadia Lanfranconi" }, { "name": "John J. Welsh" }, { "name": "Won yeong Choi" }, { "name": "Bren Maher" }, { "name": "Trần Nghiên Hi" }, { "name": "Kha Chấn Đông" }, { "name": "Ngạo Khuyển" }, { "name": "Hác Thiệu Văn" }, { "name": "Abbas Alibhai Burmawallalibhai Burmawalla" }, { "name": "Ah jung Kim" }, { "name": "Yong geon Kim" }, { "name": "Sa rang Kim" }, { "name": "Jun Gyu Park" }, { "name": "Hyeok jae Lee" }, { "name": "Ha Neul Kim" }, { "name": "Ji Hwan Kang" }, { "name": "Seung yong Ryoo" }, { "name": "Jonny Weston" }, { "name": "Peter Holden" }, { "name": "Jang Mi In Nae" }, { "name": "Kwon Min" }, { "name": "Marlon Wayans" }, { "name": "Essence Atkins" }, { "name": "Marlene Forte" }, { "name": "Seann William Scott" }, { "name": "Marit ThoreseDaniel Wu" }, { "name": "Tsutomu Tatsumi" }, { "name": "Ayano Shiraishi" }, { "name": "Yoshiko Shinohara" }, { "name": "Holt McCallany" }, { "name": "Lucas Till" }, { "name": "Robin Wright" }, { "name": "Mickey Rooney" }, { "name": "Pearl Bailey" }, { "name": "Reba McEntire" }, { "name": "Patrick Swayze" }, { "name": "Michael Pena" }, { "name": "and Emma Stone" }, { "name": "Jon Voight" }, { "name": "Iain Glen" }, { "name": "Monica Bellucci" }, { "name": "Ciarán Hinds" }, { "name": "Kaori Momoi" }, { "name": "Erika Sawajiri" }, { "name": "Vijay" }, { "name": "Sathyan" }, { "name": "Ram Charan" }, { "name": "Amala Paul" }, { "name": "BeOlga Kurylenko" }, { "name": "ANeil Patrick Harris" }, { "name": "Hank Azaria" }, { "name": "Jayma Mays" }, { "name": "Blair Brown" }, { "name": "The Dalai Lama" }, { "name": "David Schwimmer" }, { "name": "Jada Pinkett Smith" }, { "name": "Danny Jacobs" }, { "name": "Cedric the Entertainer" }, { "name": "Hayato Ichihara" }, { "name": "Erika Toda" }, { "name": "Shinnosuke Abe" }, { "name": "Đặng Gia Giai" }, { "name": "Trần Chí Bằng" }, { "name": "Hilary Duff" }, { "name": "Chad Michael Murray" }, { "name": "Jennifer Coolidge" }, { "name": "Ray Liotta" }, { "name": "Michael Chiklis" }, { "name": "Sean Faris" }, { "name": "Al Pacinolarkin" }, { "name": "Trần Y Hàm" }, { "name": "Trần Bách Lâm" }, { "name": "Quách Tuyết Phù" }, { "name": "Irene MoDerek de Lint" }, { "name": "Isidora Simijonovic Mikitisin" }, { "name": "Christy Chung" }, { "name": "Jue Huang" }, { "name": "Aaron Kwok" }, { "name": "Choi Daniel" }, { "name": "Jo Yoon Hee" }, { "name": "Keri RussellJosh Hamilton" }, { "name": "Mira Nair" }, { "name": "Helena Kriel" }, { "name": "Eric F. Adams" }, { "name": "Marcelle Baer" }, { "name": "Edrick Browne" }, { "name": "Clive OweGillianderson" }, { "name": "Helena BoRalph Fiennes" }, { "name": "Robbie Coltrane" }, { "name": "Craig Robinson" }, { "name": "và Martin Star." }, { "name": "Ryu Seung Bum" }, { "name": "Kim Ok Bin" }, { "name": "Jamie FoxxJames Woods" }, { "name": "Jake Weber" }, { "name": "Lance Reddick" }, { "name": "Tao Okamoto" }, { "name": "Hoàng Tông Trạch" }, { "name": "Hà Vận Thi" }, { "name": "Phùng Tôi Phàm" }, { "name": "Hạ Như Chi" }, { "name": "Lâm Tông Nhâ" }, { "name": "Devon Werkheiser" }, { "name": "Nicole Forester" }, { "name": "Justin Deeley" }, { "name": "Caitlin Carmichael" }, { "name": "David Kross" }, { "name": "Florian David Fitz" }, { "name": "Karl Markovics" }, { "name": "Isabel Christine Andreasen" }, { "name": "Ingrid Bolsø Berdal" }, { "name": "Kristian Espedal" }, { "name": "Mike Möller" }, { "name": "Volkram Zschiesche" }, { "name": "Oliver Juhrs" }, { "name": "Stephen Cloud" }, { "name": "Trương Vũ Ỷ" }, { "name": "Asia Argento" }, { "name": "Kim Sung Kyun" }, { "name": "Kim Yunjin" }, { "name": "Joko Ar" }, { "name": "Katharine Isabelle" }, { "name": "Antonio Cupo" }, { "name": "Tristan Risk" }, { "name": "Uhm Tae Woong" }, { "name": "Jung Ryu Won" }, { "name": "Jessica Biel" }, { "name": "Jodelle Ferland" }, { "name": "William B. Davis" }, { "name": "Seol Kyeong gu" }, { "name": "Son Ye jin" }, { "name": "Kim Sang kyeong" }, { "name": "Yamada Ryosuke" }, { "name": "Haruna Kawaguchi" }, { "name": "Arioka Daiki" }, { "name": "Từ Nhược Tuyên" }, { "name": "Paul Schneider" }, { "name": "Kevin Heffernan" }, { "name": "Viên Vịnh Nghi" }, { "name": "Vương Tổ Lam" }, { "name": "Paoli Dam" }, { "name": "Nikhil Dwivedi" }, { "name": "Gulshan Devaiah" }, { "name": "Joshua Jackson" }, { "name": "Hideaki Itô" }, { "name": "Ai Katô" }, { "name": "Ryûta Satô" }, { "name": "Cecilia Cheung" }, { "name": "Siu Fai Cheung" }, { "name": "Lưu Đức Hoà" }, { "name": "Dreama Walker" }, { "name": "Pat Healy" }, { "name": "Lauren Graham" }, { "name": "Johnny Simmons" }, { "name": "Fatima Ptacek" }, { "name": "Shawn Christensen" }, { "name": "Kim Allen" }, { "name": "Jackie Channd Jim Broadbent" }, { "name": "Billy Campbell" }, { "name": "Jesse Johnson" }, { "name": "Geraldine Hughes" }, { "name": "Tobias Zilliacus" }, { "name": "Mikael Persbrandt" }, { "name": "Lena Olin" }, { "name": "Juno TempleAlexis Bledel" }, { "name": "Alan Rickman" }, { "name": "Abigail Spencer" }, { "name": "Steve Austin" }, { "name": "Eric Keenleyside" }, { "name": "Ajay DevgnSonakshi Si" }, { "name": "Kristen ConnollyJane McNeill" }, { "name": "Kesarin Chaichalermpol" }, { "name": "Lưu Ngân Ngân" }, { "name": "Thị Tuyên Như" }, { "name": "Cha Tae Hyun" }, { "name": "Do Kyung soo D.O EXO" }, { "name": "Kim Yong Hwa" }, { "name": "Jacqueline McKenzie" }, { "name": "Hayley McElhinney" }, { "name": "Myles Pollard" }, { "name": "Justin Timberlake" }, { "name": "Woody Allen" }, { "name": "Diêm Ni" }, { "name": "Phan Bâng Long" }, { "name": "Dương Hựu Ninh" }, { "name": "Vương Cảnh Xuân" }, { "name": "Đoàn Dịch" }, { "name": "Hoành" }, { "name": "Greg Kinnear" }, { "name": "Djimon Hounsou" }, { "name": "Joe Wright" }, { "name": "Ngô Vũ Sâm" }, { "name": "Shelley Hennig" }, { "name": "James Arnold Taylor" }, { "name": "Kate Micucci" }, { "name": "Kevin Michael Richardson" }, { "name": "Sajjad Delafrooz" }, { "name": "Lưu Địch" }, { "name": "Uông Tình" }, { "name": "Vệ Diên Khản" }, { "name": "Tsubasa Honda" }, { "name": "Kar Yan Lam" }, { "name": "Ethan Juan" }, { "name": "Shi Shi Liu" }, { "name": "Jingfei Guo" }, { "name": "Miêu Kiều Vỹ" }, { "name": "Tang Bình" }, { "name": "Viên Gia Mẫn" }, { "name": "Trương Thiên Dương" }, { "name": "Hà Hoằng San" }, { "name": "Vạn Thương" }, { "name": "Josh O'Connor" }, { "name": "Harry Lister Smith" }, { "name": "Ian Hart" }, { "name": "Alec Secareanu" }, { "name": "Thư Nhã" }, { "name": "Tề Siêu" }, { "name": "Trương Phong" }, { "name": "Stephen Chbosky" }, { "name": "Izabela Vidovic" }, { "name": "Takumi Saito" }, { "name": "Takahiro" }, { "name": "Hiroomi Tosaka" }, { "name": "Noémie Nakai" }, { "name": "Christina Cox" }, { "name": "David Forseth" }, { "name": "Svetlana Ivanova" }, { "name": "Meg Foster" }, { "name": "Victor Salva" }, { "name": "Stan Shaw" }, { "name": "Brandon Smith" }, { "name": "Ái Phỉ Nhi" }, { "name": "Cát Tranh" }, { "name": "Yoo Ji Tae" }, { "name": "An Se‑Ha" }, { "name": "Hứa Minh Hổ" }, { "name": "Phiền Nhị" }, { "name": "Trương Thiên Kỳ" }, { "name": "Kaitlyn Boyé" }, { "name": "Damien Garvey" }, { "name": "Olga Miller" }, { "name": "Kim Gyngell" }, { "name": "Óscar Barberán" }, { "name": "Luis Posada" }, { "name": "Miguel Ángel Jenner" }, { "name": "José Corbacho" }, { "name": "Kim Hye Soo" }, { "name": "Piercey Dalton" }, { "name": "Patricia Bethune" }, { "name": "Lâm Tử Hoành" }, { "name": "Đường Chấn Cương" }, { "name": "Blanca Portillo" }, { "name": "Antonio Dechent" }, { "name": "Vicente Romero" }, { "name": "Marc Domènech" }, { "name": "Nausicaa Bonnín" }, { "name": "Andrés Herrera" }, { "name": "Ứng Hạo Minh" }, { "name": "Tu Kiệt Khải" }, { "name": "Nam Sanh" }, { "name": "Ngô Dạng" }, { "name": "Lý Vỹ" }, { "name": "Yuki Kaji" }, { "name": "Mamoru Miyano" }, { "name": "Bạch Tử Hiên" }, { "name": "Lý Ba Nhi" }, { "name": "Đỗ Ngọc Minh" }, { "name": "Garret Dillahunt" }, { "name": "Jill Wagner" }, { "name": "Từ Cẩm Giang" }, { "name": "Cố Vũ Phong" }, { "name": "Túng Hân Hân" }, { "name": "Quách Vỹ" }, { "name": "Lý Trị Đình" }, { "name": "Chu Đông Vũ" }, { "name": "Ngũ Bách" }, { "name": "Ngụy Lộ" }, { "name": "Trương Nghệ Kiển" }, { "name": "Christopher Lambert" }, { "name": "Seo Young Hwa" }, { "name": "Do Kyung soo" }, { "name": "Kim Dong Young" }, { "name": "Park Soo Young" }, { "name": "Lucy Punch" }, { "name": "Sarah Parish" }, { "name": "Faye Marsay" }, { "name": "David Warner" }, { "name": "Tobin Bell" }, { "name": "Matt Passmore" }, { "name": "Callum Keith Rennie" }, { "name": "Tưởng Mộng Tiệp" }, { "name": "Shuhei Nomura" }, { "name": "Kentaro" }, { "name": "Yuina Kuroshima" }, { "name": "Tina Tamashiro" }, { "name": "Yuna Taira" }, { "name": "Yuri Tsunematsu" }, { "name": "Nhiệt Ny Trát" }, { "name": "Triệu Bổn Sơn" }, { "name": "Trần Lâm" }, { "name": "Khưu Hạo Kỳ" }, { "name": "Văn Kỳ" }, { "name": "Ngũ Doãn Long" }, { "name": "Trương Cẩm Tình" }, { "name": "Từ Đông Đông" }, { "name": "James Urbaniak" }, { "name": "Damian Young" }, { "name": "Douglas Booth" }, { "name": "Jerome Flynn" }, { "name": "Robert Gulaczyk" }, { "name": "Lương Tịnh Kháng" }, { "name": "Nghiêm Mễ Lạp" }, { "name": "Trương Lâm Nghệ" }, { "name": "Harry Dean Stanton" }, { "name": "David Lynch" }, { "name": "Ed Begley Jr." }, { "name": "Tom Skerritt" }, { "name": "Beth Grant" }, { "name": "Algee Smith" }, { "name": "Carter Roy" }, { "name": "Alena von Stroheim" }, { "name": "Chris O'Brien" }, { "name": "Hứa Vĩ Ninh" }, { "name": "Cao Tuệ Quân" }, { "name": "Hoàng Hà" }, { "name": "Chiêm Uyển Nho" }, { "name": "Ngô Niệm Hiên" }, { "name": "Kim Quang Minh" }, { "name": "Lưu Lị Nhân" }, { "name": "Trần Viên" }, { "name": "Wei ning Hsu" }, { "name": "Kaiser Chuang" }, { "name": "Chia Yen Ko" }, { "name": "Christopher Ming Shun Lee" }, { "name": "Mason Lee" }, { "name": "Phương Trung Tín" }, { "name": "Lâm Thân" }, { "name": "Hứa Kinh Xuyên" }, { "name": "Lương Tuấn Nhất" }, { "name": "Maria Canals Barrera" }, { "name": "Pat Boone" }, { "name": "Robin Givens" }, { "name": "Melissa Joan Hart" }, { "name": "Brad Heller" }, { "name": "Mark Hamill" }, { "name": "Carrie Fisher" }, { "name": "Kelly Marie Tran" }, { "name": "Missi Pyle" }, { "name": "Nhậm Tố Tịch" }, { "name": "Cao Hiệp" }, { "name": "Trần Tỉ Húc" }, { "name": "Dịch Dương" }, { "name": "Dương Chính" }, { "name": "Thẩm Phương Hi" }, { "name": "Bridget Regan" }, { "name": "Trương Quốc Trụ" }, { "name": "Hoàng Tử Thao" }, { "name": "Lý Mộng" }, { "name": "Dương Thái Ngọc" }, { "name": "Emilio Rivera" }, { "name": "Luke Grimes" }, { "name": "Dax Shepard" }, { "name": "Kurtwood Smith" }, { "name": "Kimberly Quinn" }, { "name": "Hầu Dũng" }, { "name": "Kim Thần" }, { "name": "Đại Trương Vỹ" }, { "name": "Bobby Cannavale" }, { "name": "Boris Kodjoe" }, { "name": "Takafumi Hatano" }, { "name": "Hajime Hashimoto" }, { "name": "Văn Trác" }, { "name": "Lâu Giai Duyệt" }, { "name": "Trương Khánh Khánh" }, { "name": "Ngô Việt" }, { "name": "Diego Luna" }, { "name": "Kiersey Clemons" }, { "name": "Morakot Liu" }, { "name": "Eisaya Hosuwan" }, { "name": "Nutthasit Kotimanuswanich" }, { "name": "Ploy Sornarin" }, { "name": "Peem Jaiyen" }, { "name": "La Gia Anh" }, { "name": "Tạ Y Lâm" }, { "name": "Giả Chính Vũ" }, { "name": "Tống Tinh Nghiên" }, { "name": "Trịnh Húc Đông" }, { "name": "Trâu Dương" }, { "name": "Tào Hi Nguyệt" }, { "name": "Tom Holland" }, { "name": "Diana Rigg" }, { "name": "Camilla Rutherford" }, { "name": "Olivia Williams" }, { "name": "Ali Fazal" }, { "name": "Trương Hàn" }, { "name": "Chu Nhất Long" }, { "name": "Liễu Ni Na" }, { "name": "Rachelle Lefevre" }, { "name": "Sarah Dugdale" }, { "name": "Jared Abrahamson" }, { "name": "Lucy Boynton" }, { "name": "Jamie Clayton" }, { "name": "Shin Eun Jung" }, { "name": "Minho" }, { "name": "Hà Hân Tử" }, { "name": "Trần Ngọc Dũng" }, { "name": "Timothée Chalamet" }, { "name": "Michael Stuhlbarg" }, { "name": "Eric Balfour" }, { "name": "Donald Faison" }, { "name": "Scottie Thompson" }, { "name": "Chiara Aurelia" }, { "name": "Masataka Kubota" }, { "name": "Aoi Yu" }, { "name": "Fumika Shimizu" }, { "name": "Yo Oizumi" }, { "name": "An Hổ" }, { "name": "Cù Cúc Huy" }, { "name": "Vương Nguy" }, { "name": "Raffey Cassidy" }, { "name": "Alicia Silverstone" }, { "name": "Sarah Natochenny" }, { "name": "Sarah Lind" }, { "name": "Jakob Davies" }, { "name": "Hugh Dillon" }, { "name": "Vicellous Shannon" }, { "name": "Kurt Max Runte" }, { "name": "Masaki Okada" }, { "name": "Masaki Suda" }, { "name": "Shun Oguri" }, { "name": "Hà Khiết Văn" }, { "name": "Supriya Pilgaonkar" }, { "name": "Đồ Lê Mạn" }, { "name": "Ezra Miller" }, { "name": "Diane Lane" }, { "name": "Ray Fisher" }, { "name": "Phó Bác Văn" }, { "name": "Quỷ Quan Lâm" }, { "name": "Trần Bội Tư" }, { "name": "Tân Kiều" }, { "name": "Katie Holmes" }, { "name": "Thái Trác Nghiên" }, { "name": "Lan Law" }, { "name": "Hàn Chí Thạc" }, { "name": "Thái Điệp" }, { "name": "Triệu Uy Lâm" }, { "name": "Park Ha Sun" }, { "name": "Hà Vân Vĩ" }, { "name": "Trương Nhất Long" }, { "name": "Tony jaa" }, { "name": "Jack Ma" }, { "name": "Trình Tiểu Đông" }, { "name": "Trình Hạo Phong" }, { "name": "Hoa Thiếu" }, { "name": "Trịnh Quốc Lâm" }, { "name": "Charles Aitken" }, { "name": "Rachel Matthews" }, { "name": "Jason Bayle" }, { "name": "Takuya Kimura" }, { "name": "Kristin Chenoweth" }, { "name": "Chanon Santinatornkul" }, { "name": "Teeradon Supapunpinyo" }, { "name": "Bing He" }, { "name": "Jet Chao" }, { "name": "Ray Wang" }, { "name": "Rose McIver" }, { "name": "Alice Krige" }, { "name": "Ben Lamb" }, { "name": "Maika Yamamoto" }, { "name": "Mei Nagano" }, { "name": "Shohei Miura" }, { "name": "Alan Shirahama" }, { "name": "Ryuta Sato" }, { "name": "Naomi Nishida" }, { "name": "Dominik Kowalczyk" }, { "name": "Ewa Blaszczyk" }, { "name": "Magdalena Niec" }, { "name": "Marcos A. Ferraez" }, { "name": "Benjamin A. Hoyt" }, { "name": "Alison Fernandez" }, { "name": "Mai Kadowaki" }, { "name": "Tống Hiểu Phong" }, { "name": "Đường Na" }, { "name": "Trương Gia Hào" }, { "name": "Josh Grelle" }, { "name": "Hoàng Hoành" }, { "name": "Lưu Hướng Kinh" }, { "name": "Vương Hải Yến" }, { "name": "Nhạc Đông Phong" }, { "name": "Vương Hồng Thiên" }, { "name": "Paul Anderson" }, { "name": "Nathalie Boltt" }, { "name": "Kazuya Kamenashi" }, { "name": "Mahiro Takasugi" }, { "name": "Tao Tsuchiya" }, { "name": "Daigo Nishihata" }, { "name": "Kim Rae Won" }, { "name": "Baek Bong Ki" }, { "name": "Lily Sullivan" }, { "name": "Greg McLean" }, { "name": "Mizuki Yamamoto" }, { "name": "Maeda Makkenyu" }, { "name": "Đại Bằng" }, { "name": "Kiều Sam" }, { "name": "Phạm Vĩ" }, { "name": "Lưu Vũ Kì" }, { "name": "Hải Đông" }, { "name": "Thẩm Trì" }, { "name": "Lee Je Hoon" }, { "name": "Na Mun hee" }, { "name": "Văn Vịnh San" }, { "name": "Hứa Chí An" }, { "name": "Minh Tuấn Thần" }, { "name": "Quách Nhược Hàn" }, { "name": "Y Na" }, { "name": "Luc Besson" }, { "name": "Taecyeon" }, { "name": "Lưu Dương" }, { "name": "Hầu Phất Minh" }, { "name": "Lý Khai Minh" }, { "name": "Trường Hoành Bác" }, { "name": "Diego Klattenhoff" }, { "name": "Charlotte Sullivan" }, { "name": "Robert Borges" }, { "name": "Andrea del Campo" }, { "name": "Nazariy Demkowicz" }, { "name": "Brett Donahue" }, { "name": "Tom Kenny" }, { "name": "Se ha Ahn" }, { "name": "Yo han Byeon" }, { "name": "Seo jin Chae" }, { "name": "Carter Jenkins" }, { "name": "Michael Grant" }, { "name": "Matt Shively" }, { "name": "Nick Marini" }, { "name": "Taryn Manning" }, { "name": "Francesca Eastwood" }, { "name": "Trần Hán Điển" }, { "name": "Kim Thế Giai" }, { "name": "Lý Tử Phong" }, { "name": "Phạm Điềm Điềm" }, { "name": "Từ Hy Đệ" }, { "name": "Hứa Quân Thông" }, { "name": "Trương Kinh Vĩ" }, { "name": "Trương Quân Hàm" }, { "name": "Kim Seolhyun" }, { "name": "Kyoung gu Sul" }, { "name": "Xiao Lian Sha" }, { "name": "Tu Te Ha Meng" }, { "name": "Shih Chieh King" }, { "name": "Teri Hatcher" }, { "name": "Sean Marquette" }, { "name": "Silverio Palacios" }, { "name": "Jordi Mollà" }, { "name": "Đường Vũ Triết" }, { "name": "Trương Ngữ Cách" }, { "name": "Thanh Ngọc Văn" }, { "name": "Đặng Lệ Hân" }, { "name": "Trương Địch" }, { "name": "Đoạn Trác Văn" }, { "name": "Cristina Serafini" }, { "name": "Atanas Srebrev" }, { "name": "Philip Ng" }, { "name": "Teresa Navarro" }, { "name": "Terry Chen" }, { "name": "Nigel O'Neill" }, { "name": "Susan Lynch" }, { "name": "Diana Prince" }, { "name": "Marshal Hilton" }, { "name": "Bradley Bundlie" }, { "name": "Boriana Williams" }, { "name": "Olivia Stiefel" }, { "name": "Debby Gerber" }, { "name": "Mộc Lam" }, { "name": "Trương Giác" }, { "name": "José Coronado" }, { "name": "Bárbara Lennie" }, { "name": "Ana Wagener" }, { "name": "Trần Hổ" }, { "name": "Lý Quán Lâm" }, { "name": "Nguyên Trạch Vũ" }, { "name": "Thạc Lỗi" }, { "name": "Cinda Adams" }, { "name": "Bob Barlen" }, { "name": "Cal Brunker" }, { "name": "Joey Camen" }, { "name": "David Epstein" }, { "name": "Pappy Faulkner" }, { "name": "Sam Strike" }, { "name": "Vanessa Grasse" }, { "name": "Sam Coleman" }, { "name": "Alba Galocha" }, { "name": "Itziar Atienza" }, { "name": "Florin Opritescu" }, { "name": "Jang Hyuk" }, { "name": "Jo Bo Ah" }, { "name": "Sunwoo Sun" }, { "name": "Shûgo Oshinari" }, { "name": "Pedro Pascal" }, { "name": "Han Chae Ah" }, { "name": "Gang Ye Won" }, { "name": "Kim Min Kyo" }, { "name": "Kim Sung Eun" }, { "name": "Mã Thiên Vũ" }, { "name": "Lý Thạnh" }, { "name": "Diêu Tinh Đồng" }, { "name": "Châu Vi Đồng" }, { "name": "Song Kang‑Ho" }, { "name": "Neal McDonough" }, { "name": "Molly Parker" }, { "name": "Dylan Schmid" }, { "name": "Kaitlyn Bernard" }, { "name": "Tanya Champoux" }, { "name": "Kim Ah Joong" }, { "name": "Seong oh Kim" }, { "name": "Krissada Sukosol Clapp" }, { "name": "Achita Sikamana" }, { "name": "Sarunyu Wongkrachang" }, { "name": "Arisara Tongborisuth" }, { "name": "Soranut Yupanun" }, { "name": "Sucharat Manaying" }, { "name": "Quách Hiểu Đông" }, { "name": "Victoria Justice" }, { "name": "Johnny Knoxville" }, { "name": "Chelsea Handler" }, { "name": "Josh Radnor" }, { "name": "Goo Ja Hyeong" }, { "name": "Lee Hyung Suk" }, { "name": "Sin Yong woo" }, { "name": "Kristopher Turner" }, { "name": "Crystal Lowe" }, { "name": "Phan Tử" }, { "name": "Mie Sonozaki" }, { "name": "Masaki Terasoma" }, { "name": "Atsushi Abe" }, { "name": "Masumi Asano" }, { "name": "Keiji Fujiwara" }, { "name": "Calvin Reederrd" }, { "name": "Park Han Byul" }, { "name": "Kim Ji Seok" }, { "name": "Park Jin Joo" }, { "name": "Gérard Depardieu" }, { "name": "Frank Langella" }, { "name": "Aneurin Barnard" }, { "name": "Wunmi Mosaku" }, { "name": "Yōichi Masukawa" }, { "name": "Kazuhiko Inoue" }, { "name": "Shotaro Morikubo" }, { "name": "Akira Ishida" }, { "name": "Yasuyuki Kase" }, { "name": "Sally Field" }, { "name": "Chandler Canterbury" }, { "name": "Mike Vogel" }, { "name": "Yu Shaoqun" }, { "name": "Bai Jing" }, { "name": "Huang Younan" }, { "name": "Hui Tianci" }, { "name": "Yuan Qiu" }, { "name": "Yuan Hua" }, { "name": "Zou Zhaolong" }, { "name": "Hui Yinghong" }, { "name": "Sheridan Smith" }, { "name": "Joel Mathews" }, { "name": "Dwayne JohnsoJohnny Knoxville" }, { "name": "Raúl Arévalo" }, { "name": "Alexandra Jiménez" }, { "name": "Javier Bódalo" }, { "name": "Mirai Kataoka" }, { "name": "Takuma Negishi" }, { "name": "Ami Taniguchi" }, { "name": "Ashley BellMichael Eklund" }, { "name": "Nicole LaLiberte" }, { "name": "Liam Aiken" }, { "name": "Chase Williamson" }, { "name": "Kekin" }, { "name": "Ken Watanabe" }, { "name": "Billy Connolly" }, { "name": "Luke Pasqualino" }, { "name": "Lili Bordán" }, { "name": "Ty Olsson" }, { "name": "Ryan Phillippe" }, { "name": "Joseph Cross" }, { "name": "Kekindrew Marton" }, { "name": "Martin Balsam" }, { "name": "Sou Yamamura" }, { "name": "Ai Kobayashi" }, { "name": "Yûji Kishi" }, { "name": "BeJoseph Fiennes" }, { "name": "Mary McDonnell" }, { "name": "Graham Greene" }, { "name": "John Leguizamo" }, { "name": "Adam O'BriaCathy Dresbach" }, { "name": "Annie Liu" }, { "name": "Matthew Broderick" }, { "name": "Fedor Borchuk" }, { "name": "SimoVirginie Ledoyen" }, { "name": "Robinson Stévenin" }, { "name": "Chunthawit Thanasewi" }, { "name": "Nuengthida Sophon" }, { "name": "Gregory Peck" }, { "name": "Anthony Quinn" }, { "name": "George C. Scott" }, { "name": "Katharine Towne" }, { "name": "Steve McQueen" }, { "name": "James Garner" }, { "name": "Richard Attenborough" }, { "name": "Emma Fitzpatrick" }, { "name": "Sharon Stone" }, { "name": "Promise LaMarco" }, { "name": "Lee Marvin" }, { "name": "Ernest Borgnine" }, { "name": "Charles Bronson" }, { "name": "Eddie Baroo" }, { "name": "Justin Batchelor" }, { "name": "Nicholas Bell" }, { "name": "William HoldeJack Hawkins" }, { "name": "Ekin Cheng" }, { "name": "Joyce Cheng" }, { "name": "Charlene Choi" }, { "name": "Quvenzhané Wallis" }, { "name": "Dwight Henry" }, { "name": "Levy Easterly" }, { "name": "Isabel Lucas" }, { "name": "Rasmus Hardiker" }, { "name": "Harry Treadaway" }, { "name": "Michelle Ryan" }, { "name": "Jang Dong gun" }, { "name": "Won Bin và Lee Eun joo" }, { "name": "Go Soo" }, { "name": "Jude Law và Aaron Taylor Johnson" }, { "name": "Joong ki Song" }, { "name": "Bo yeong Park and Young nam Jang" }, { "name": "Ross Noble" }, { "name": "Gemma Leah Devereux" }, { "name": "Tommy Knight" }, { "name": "Marc Singer" }, { "name": "Art LaFleur" }, { "name": "Hayley DuMond" }, { "name": "Thor Kristjansson" }, { "name": "Damon Younger" }, { "name": "Triệu Bản Sơn" }, { "name": "Trần Tư Thành" }, { "name": "Lưu Đức Khải" }, { "name": "Lưu Hiểu Khánh" }, { "name": "Bria Miller" }, { "name": "Darren ShahlaviKandyse McClure" }, { "name": "Henry Winkler" }, { "name": "Miley Cyrus" }, { "name": "Katrina Bowden" }, { "name": "Randy Wayne" }, { "name": "Erin Marie Hogan" }, { "name": "Trương Quốc Lập" }, { "name": "Chad Michael Collins" }, { "name": "Han Hyo joo" }, { "name": "Seung Ryong Ryu" }, { "name": "Megan Charpentier" }, { "name": "Nadine Velazquez" }, { "name": "Don Cheadle" }, { "name": "Juliet Rylance" }, { "name": "Bette Midler và Marisa Tomei" }, { "name": "Jeong hwa Eom" }, { "name": "Priscilla Faia" }, { "name": "Adrian Holmes" }, { "name": "Jesse Hutch" }, { "name": "Peter Weller" }, { "name": "Ariel Winter" }, { "name": "Michael Emerson" }, { "name": "Kim Thành Vũ" }, { "name": "Huệ Anh Hồng" }, { "name": "Petar Bachvarov" }, { "name": "Zahary Baharov" }, { "name": "Katie Featherston" }, { "name": "Kathryn Newton" }, { "name": "Mark Steger" }, { "name": "KIM Hyeon soo" }, { "name": "NOH Kang min" }, { "name": "Tiêu Huân" }, { "name": "Lưu Tích Minh" }, { "name": "Juan Diego Botto" }, { "name": "Mágica Pérez" }, { "name": "Kôji Seto" }, { "name": "Tsutomu Takahashi" }, { "name": "Jamel Debbouze" }, { "name": "Alain Chabat" }, { "name": "Fred Testot" }, { "name": "Amaia SalamaMaxi Iglesias" }, { "name": "Lucho Fernández" }, { "name": "Scott Peat" }, { "name": "Marissa Merrill" }, { "name": "Johnny Hallyday" }, { "name": "Anthony Wong" }, { "name": "Lam Ka Tung" }, { "name": "Sylvie Testud" }, { "name": "Natasha Calis" }, { "name": "Rachelle Dimarialex Bell" }, { "name": "Noel Clarke Campbell Hughes" }, { "name": "Kirati Nakinon" }, { "name": "Joel KiFares Fares" }, { "name": "Matias Varela" }, { "name": "Juantonio Bayona" }, { "name": "Hugh JackmanRichard Roxburgh" }, { "name": "Xander Berkeley" }, { "name": "ChaPreechaya Pongthananikorn" }, { "name": "Kim Kang woo" }, { "name": "Kim Hyo jin" }, { "name": "Baek Yoon sik" }, { "name": "Yoon Yeo jeong" }, { "name": "Bug Hall" }, { "name": "Donnie Jeffcoat" }, { "name": "Sean McGowan" }, { "name": "Aubrey Plaza" }, { "name": "Eamon Farren" }, { "name": "Evan Bird" }, { "name": "Deborah Kara Unger" }, { "name": "Kimble Rell" }, { "name": "Jody Thompson" }, { "name": "Conner Dwelly" }, { "name": "Ryan Grantham" }, { "name": "Dong gun Jang" }, { "name": "Steve Zahn" }, { "name": "Burn GormanRon Perlman" }, { "name": "Max Baker" }, { "name": "Morris Rong" }, { "name": "Yvonne Yao" }, { "name": "Sona Eyambe" }, { "name": "Danny DeVito" }, { "name": "Pat Carroll Adams" }, { "name": "Donnelly Rhodes" }, { "name": "Ben BarnesGeorgie Henley" }, { "name": "Georgie Henley" }, { "name": "William Moseley" }, { "name": "Robert De Niro and Cillian Murphy" }, { "name": "Thom Hoffman" }, { "name": "Emmy Rossum" }, { "name": "Joan Chen" }, { "name": "Shaofeng Feng" }, { "name": "Valheim Hagenders Baasmo Christiansen" }, { "name": "Tiền Gia Lạc" }, { "name": "Doãn Tử Duy" }, { "name": "Milla Jovovich Guillory and Michelle Rodriguez" }, { "name": "Dennis Alexio" }, { "name": "Dennis Chan" }, { "name": "Max Thieriot" }, { "name": "Bill Goldberg" }, { "name": "Heidi Schanz" }, { "name": "ABrittany Snow" }, { "name": "Tae woong Eom" }, { "name": "Ga in Han" }, { "name": "Rae Dawn Chong" }, { "name": "Clint Eastwood" }, { "name": "Kevin T. Collins" }, { "name": "Marc Diraison" }, { "name": "Doug Erholtz" }, { "name": "Sudeep" }, { "name": "Nani" }, { "name": "Bryan Trương Thư Hào" }, { "name": "Zoe Bell" }, { "name": "Paul Wesley" }, { "name": "Tom Wilkinsonnd Helena Bom Carter" }, { "name": "Oseph Gordon LevittJamie Chungshley Carter" }, { "name": "Yulia Snigir" }, { "name": "Amaury Nolasco" }, { "name": "Megalyn Echikunwoke" }, { "name": "Anne Vyalitsyna" }, { "name": "và Mary Elizabeth Winstead" }, { "name": "Donal Logue" }, { "name": "Tyne Daly" }, { "name": "Harry Guardino" }, { "name": "Ella" }, { "name": "Hạ Quân Tường" }, { "name": "Phương Chí Hữu" }, { "name": "Đại Nguyên" }, { "name": "Ranbir KapoorHaradhan Bannerjee" }, { "name": "Seon gyun Lee" }, { "name": "Sung min Lee" }, { "name": "Zachary Gordon" }, { "name": "Eric Banam" }, { "name": "Mayumi Tanaka" }, { "name": "Kazuya Nakai" }, { "name": "Akemi Okamura" }, { "name": "Anora Lyn" }, { "name": "Jeong Man Sik" }, { "name": "Tyler Perry" }, { "name": "Antje Traue" }, { "name": "Russell Crowe star" }, { "name": "D.J. Cotrona" }, { "name": "Adrianne Palicki" }, { "name": "Ray Park" }, { "name": "Jonathan Pryce" }, { "name": "Channing Tatum cùng Bruce Willis" }, { "name": "Alex Arleon" }, { "name": "Angelina" }, { "name": "Connie" }, { "name": "Monnie" }, { "name": "Gwendoline Yeo" }, { "name": "Don Swayze" }, { "name": "Sin Se Kyung" }, { "name": "Yoo Joon Sang" }, { "name": "Kim Sung Soo" }, { "name": "Lee Ha Na" }, { "name": "Lee Jong Suk" }, { "name": "Guy Pearce and Gwyneth Paltrow" }, { "name": "Dragan Bakema" }, { "name": "Alison Carroll and Jappe Claes" }, { "name": "Sophie Marceau" }, { "name": "Andrea Di Stefano" }, { "name": "Bronson Webb" }, { "name": "Agyness Deyn" }, { "name": "Mark Andrews Chapman" }, { "name": "Andy McPhee" }, { "name": "Nam Kyeong Eup" }, { "name": "Oh Ji Ho" }, { "name": "Kate Ashfield" }, { "name": "Nicky Bell" }, { "name": "Alan Brent" }, { "name": "Randy Couture" }, { "name": "Joseph Gordon Levitt và Gary Oldman" }, { "name": "Jesse McCartney" }, { "name": "Jonathan Sadowski" }, { "name": "Olivia Dudley" }, { "name": "Doug Bradley" }, { "name": "Camilla Arfwedson" }, { "name": "Simon Ginty" }, { "name": "Michael Paré" }, { "name": "Michael Fassbeder" }, { "name": "Audrey Tautou" }, { "name": "Alfred Molina" }, { "name": "Sir Ian McKellen" }, { "name": "Kim Seung woo" }, { "name": "Oh Ji ho" }, { "name": "Kim Min jeong" }, { "name": "Choi Soo young" }, { "name": "Choi Yoon so" }, { "name": "Josh Lucas" }, { "name": "Louis Moru" }, { "name": "Anthony Wong Chau Sang" }, { "name": "Xiaodong Guo" }, { "name": "Barbie Hsu" }, { "name": "Josie Ho" }, { "name": "Michelle Ye" }, { "name": "Jo Yeo Jung" }, { "name": "Kim Min Joon" }, { "name": "Park Ji young" }, { "name": "Jo Eun ji" }, { "name": "Jung Chan" }, { "name": "Nathan Fillion" }, { "name": "Michael Rooker" }, { "name": "Leraldo ALuci Christian" }, { "name": "Melissa Davis" }, { "name": "Won Joo" }, { "name": "Byeol Kang" }, { "name": "Elika Portnoy" }, { "name": "Taylor Schilling" }, { "name": "Blythe Danner." }, { "name": "Saffron Burrows" }, { "name": "Stephen Campbell Moore" }, { "name": "Brooklyn Decker" }, { "name": "Til Schweiger" }, { "name": "Rosamund Kwan" }, { "name": "David Wu" }, { "name": "Miriam Yeung Chin Wah" }, { "name": "Singh Hartihan Bitto" }, { "name": "Yat Ning Chan" }, { "name": "Luke Wilson" }, { "name": "Bành Vu YếChu Vũ Thần" }, { "name": "Châu Dương" }, { "name": "Hà Khiết" }, { "name": "Jon Barton" }, { "name": "Elena Beuca" }, { "name": "Sui man Chim" }, { "name": "Koni Lui" }, { "name": "Dong Kun Jang" }, { "name": "Chae young Han" }, { "name": "Du shim Ko" }, { "name": "Ray Romano" }, { "name": "Denis Leary" }, { "name": "Chris Diamantopoulos" }, { "name": "Will Sasso" }, { "name": "Rhett Giles" }, { "name": "Victor Parascos" }, { "name": "Vanessa Gray" }, { "name": "Filip AntonioPetra Hrebícková" }, { "name": "Václav Jílek" }, { "name": "Vica Kerekes" }, { "name": "Ester Kocicková" }, { "name": "Berenika Kohoutová" }, { "name": "Eliska Krenková" }, { "name": "Lukás Langmajer" }, { "name": "Jirí Machácek" }, { "name": "Sean BeaCharlotte Rampling" }, { "name": "Giả Hiểu Thần" }, { "name": "Dun Jones" }, { "name": "Colleen Clinkenbeard" }, { "name": "Pam Dougherty" }, { "name": "Josephine Siao" }, { "name": "Michelle Reis" }, { "name": "Chan Chung Yung" }, { "name": "Zhao Wen Zhou" }, { "name": "KeviLouise Fletcher" }, { "name": "Lucius Baston" }, { "name": "Eamonn Walker" }, { "name": "Emma Stone và Rhys Ifans" }, { "name": "Candy Yu" }, { "name": "Maksim Matveev" }, { "name": "Egor Beroev" }, { "name": "Mario Van Peebles Watts" }, { "name": "Amber Heardble" }, { "name": "Seba Mubarak" }, { "name": "Pernilla August" }, { "name": "Catherine Chan" }, { "name": "Chris Sarandon" }, { "name": "Charles S" }, { "name": "Nathalie Baye và Sami Bouajila" }, { "name": "Takashi Hirajô" }, { "name": "Minami Ichikawa" }, { "name": "Toshiaki" }, { "name": "Nakazawa" }, { "name": "Tôichirô Shiraishi" }, { "name": "Jeremy" }, { "name": "Thomas" }, { "name": "Michihiko" }, { "name": "Yanagisawa" }, { "name": "Denzel WashingtonSam Shepard" }, { "name": "Rubén Blades" }, { "name": "Kim Yeong Ho" }, { "name": "Kim Hye Seon" }, { "name": "Yoon Chae Yi" }, { "name": "Kim San Ho" }, { "name": "Hiro Hayama" }, { "name": "Leni Lan Crazybarby" }, { "name": "Miyavi Matsunoi" }, { "name": "Quách Phẩm Siêu" }, { "name": "Josh Hutcherson Dwayne Johnson" }, { "name": "Andrew Seeley" }, { "name": "Cyril Raffaelli" }, { "name": "Philippe Torreton" }, { "name": "Daniel Duval" }, { "name": "David Alan Basche" }, { "name": "James DuMont" }, { "name": "Yul Vazquez" }, { "name": "Daniel Franzese" }, { "name": "Tae gyu BongDal su OhSu min Lee" }, { "name": "Mi ju Ryu" }, { "name": "Bruce WillisWill Patton" }, { "name": "Jessica Steen" }, { "name": "Kagiso Kuypers" }, { "name": "Arnold Vosloo" }, { "name": "Antony Coleman" }, { "name": "Benu Mabhena" }, { "name": "Anointing Lukola" }, { "name": "David Harewood" }, { "name": "Basil Wallace" }, { "name": "Jimi Mistry" }, { "name": "Maria Ozawa" }, { "name": "Minami Marika" }, { "name": "Mizuse Manami" }, { "name": "Namiko" }, { "name": "Kobayashi Kazunori" }, { "name": "Kouno Tomonori" }, { "name": "Oosako Shigeo" }, { "name": "Akikawa Yuri" }, { "name": "Philip Bartlett" }, { "name": "Ikue Ootani" }, { "name": "Robert Downey" }, { "name": "Jr." }, { "name": "Terence Chang" }, { "name": "Jimmy Huang" }, { "name": "John Woo" }, { "name": "Selma Blair" }, { "name": "Amy Smart and Jason Lee" }, { "name": "Nimród Al" }, { "name": "Carmen Electra" }, { "name": "Charlie O'Connell" }, { "name": "Brooke Hogan" }, { "name": "Jake GylleGemma Arterton" }, { "name": "Jay Chou" }, { "name": "Gang Wang" }, { "name": "Hugo Arana" }, { "name": "Antonella Costa" }, { "name": "Monica Galán" }, { "name": "Leandro Stivelman" }, { "name": "Natasha Henstridge" }, { "name": "Marg Helgenberger" }, { "name": "Ann Mitchell" }, { "name": "Jolyon Coy" }, { "name": "Karl Johnson" }, { "name": "Simon Russell Beale" }, { "name": "Harry Hadden Paton" }, { "name": "Sarah Kants" }, { "name": "Oliver Ford Davies" }, { "name": "Barbara Jefford" }, { "name": "Mark Tandy" }, { "name": "Scott Martin" }, { "name": "Clint Glenn" }, { "name": "Tony Pauletto" }, { "name": "Zach Cregger" }, { "name": "Eugene Bell" }, { "name": "Trevor Moore" }, { "name": "Tucker Cleigh" }, { "name": "Raque" }, { "name": "Lynn Collins" }, { "name": "Sasha Grey" }, { "name": "Brian Koppelman" }, { "name": "David Levien" }, { "name": "Tony Leung Chiu Wai" }, { "name": "Wei Tang" }, { "name": "Chung Hua Tou" }, { "name": "Chih ying Chu" }, { "name": "Ying hsien Kao" }, { "name": "Johnson Yuen" }, { "name": "Yan Su" }, { "name": "Dustin Nguyễn" }, { "name": "Đỗ Hải Yến" }, { "name": "Tăng Thanh Hà" }, { "name": "Josh Holloway" }, { "name": "Anil Kapoor" }, { "name": "Lee Seong jae" }, { "name": "Yeon woo Hyeon jin" }, { "name": "Lucy May Barker" }, { "name": "Alexander Gould" }, { "name": "Erica Beck" }, { "name": "Shailene Woodley and Amara Miller" }, { "name": "Déborah Révy" }, { "name": "Helene Zimmer" }, { "name": "Gowan Didi" }, { "name": "Bruce Boxleitner" }, { "name": "James Frain" }, { "name": "Ewa Fröling" }, { "name": "Tatsuya Nakadaichi Nezu" }, { "name": "François Truffaut Marcel Moussy François Truffaut Marcel Moussy" }, { "name": "Sam Peckih" }, { "name": "Evey Hammond Hugo Weaving" }, { "name": "V Stephen Rea" }, { "name": "Inspector Finch Stephen Fry" }, { "name": "Jack McGee" }, { "name": "Armin Mueller Stahl" }, { "name": "Oliver Reed" }, { "name": "Richard Harris" }, { "name": "Derek Jacobi" }, { "name": "David Schofield" }, { "name": "John Shrapnel" }, { "name": "Tomas Arana" }, { "name": "Ralf Moeller" }, { "name": "Tom Berenger" }, { "name": "Matt LongNicolas Cage" }, { "name": "Tony Ghosthawk" }, { "name": "Hugh Sexton" }, { "name": "Marcus Jones" }, { "name": "Matt Norman" }, { "name": "Kenneth Ransom" }, { "name": "Philippe NoiretAntonella Attili" }, { "name": "Humphrey Bogart" }, { "name": "Walter Huston" }, { "name": "Tim Holt" }, { "name": "Anne Bancroft" }, { "name": "John Gielgud" }, { "name": "Wendy Hiller" }, { "name": "Bruno Ganz" }, { "name": "Alexandra Maria Lara" }, { "name": "Ulrich Matthes" }, { "name": "Toshirô Mifune" }, { "name": "Tatsuya Nakadai" }, { "name": "Yôko Tsukasa" }, { "name": "Isuzu Yamada" }, { "name": "Cathy Moriarty" }, { "name": "Frank Vincent" }, { "name": "Audrey Hepburn" }, { "name": "Eddie Albert" }, { "name": "Paul Newman" }, { "name": "George Kennedy" }, { "name": "Strother Martin" }, { "name": "Emmanuelle Seigner" }, { "name": "Marie Josée Croze" }, { "name": "Lamberto Maggiorani" }, { "name": "Enzo Staiola" }, { "name": "Lianella Carell" }, { "name": "Harvey Keitel" }, { "name": "Ryan O'Marisa Berenson" }, { "name": "Patrick Magee" }, { "name": "Jason Flemyng" }, { "name": "Nick Moran" }, { "name": "BreOded Fehr" }, { "name": "Patricia Velasquez" }, { "name": "Freddie Boath" }, { "name": "The Rock" }, { "name": "Adewal" }, { "name": "Charles Chaplin" }, { "name": "Charlton Heston" }, { "name": "John Cazale" }, { "name": "Ricardo Darín" }, { "name": "Soledad Villamil and Pablo Rago" }, { "name": "Robbie Sheehan" }, { "name": "Ulrich Thomsen" }, { "name": "Stephen Graham" }, { "name": "Javier Bardem" }, { "name": "Don Cheadle Sophie Okonedo Joaquin Phoenix Nick Nolte Jean Reno" }, { "name": "Xavier Dolan" }, { "name": "Tom Hulce" }, { "name": "Elizabeth Berridge" }, { "name": "Simon Callow" }, { "name": "Jeffrey Jones" }, { "name": "Mifune Toshirō" }, { "name": "Shimura Takashi" }, { "name": "Mori Masayuki" }, { "name": "Chiaki Minoru" }, { "name": "Robert Mitchum; Shelley Winters; Lillian Gish; Billy Chapin; Sally Jane Bruce" }, { "name": "Shosuke Tanihara" }, { "name": "Hikaru Yamamoto" }, { "name": "Mitsuki Oishi" }, { "name": "Saki Kagami" }, { "name": "Meagan Good" }, { "name": "Odette Yustman" }, { "name": "Suh Jung" }, { "name": "Shim Ji Ho" }, { "name": "Oh Yoon Hong" }, { "name": "Sun Ok Hyun" }, { "name": "Naomie HarriRick Yune" }, { "name": "Rain" }, { "name": "Martina Gedeck" }, { "name": "Ulrich Mühe" }, { "name": "Ulrich Tukur" }, { "name": "Thomas Thieme" }, { "name": "Hans Uwe Bauer" }, { "name": "Peter Sellers" }, { "name": "Sterling Hayden" }, { "name": "Slim Pickens" }, { "name": "Peter Bull" }, { "name": "Keenan Wynn" }, { "name": "James Earl Jones" }, { "name": "Audrey Tatou" }, { "name": "Mathieu Kassovitz" }, { "name": "Rufus" }, { "name": "Rovella Cravota" }, { "name": "Paulette Goddard" }, { "name": "Henry Bergman" }, { "name": "Tiny Sandford" }, { "name": "Kirk Douglas" }, { "name": "Ralph Meeker" }, { "name": "Shelley Duvall" }, { "name": "Scatman Crothers" }, { "name": "Danny Lloyd" }, { "name": "Fairuza Balk" }, { "name": "Minako Komukai" }, { "name": "Shôhei Hino and Mari Komatsuzaki" }, { "name": "Jodie Fosternthony Heald" }, { "name": "Annette Bening" }, { "name": "Thora Birch" }, { "name": "Anthony Perkins" }, { "name": "Vera Miles" }, { "name": "John Gavin" }, { "name": "Janet Leigh" }, { "name": "James Stewart" }, { "name": "Grace Kelly" }, { "name": "Robin Wright Penn" }, { "name": "Gary Sinise" }, { "name": "Jo In sung" }, { "name": "Ju Jin mo" }, { "name": "Song Ji hyo" }, { "name": "Shim Ji ho" }, { "name": "Billy Dee Williams" }, { "name": "Anthony Daniels" }, { "name": "Harrison FordPaul Freeman" }, { "name": "Ronald Lacey" }, { "name": "Takashi Shimura" }, { "name": "Keiko Tsushima" }, { "name": "Frank Oz" }, { "name": "Christopher Lee" }, { "name": "Ingrid Berman" }, { "name": "James StewartLionel Barrymore" }, { "name": "Henry Travers" }, { "name": "Alec Guinness" }, { "name": "Peter Cushing" }, { "name": "Alain Cuny" }, { "name": "Sylvia Kristel" }, { "name": "Marika Green" }, { "name": "Daniel Sarky" }, { "name": "Jake Lloyd" }, { "name": "Lorraine Bracco" }, { "name": "Nhập Đạt Hoa" }, { "name": "Tằng Chí Vĩ" }, { "name": "Vương Bách Kiệt" }, { "name": "BreLý Liên Kiệt" }, { "name": "Lương Lạc Thi" }, { "name": "AmaMarcia DeBonis" }, { "name": "Gael García Bernal" }, { "name": "Giordano Formenti" }, { "name": "Bruce Lee" }, { "name": "Lý Tử Long" }, { "name": "Matt DamonBrian CoxMarton Csokas" }, { "name": "Tom Gallop" }, { "name": "Christina Hendricks Cardellini and Matthew Gray Gubler" }, { "name": "Danny Boylen" }, { "name": "Matt DamonChris Cooper" }, { "name": "Judy Parfitt" }, { "name": "Gabriel Mann" }, { "name": "Jackie ChaBilly Ray Cyrus" }, { "name": "Ekin Cheng Yee Kin" }, { "name": "Charlene Choi Cheuk Yin" }, { "name": "Bernice Jan Liu" }, { "name": "Tang Kin Wan" }, { "name": "Ronald Cheng Chung Kei" }, { "name": "Trần Vỹ" }, { "name": "Rumi Hiiragi" }, { "name": "Miyu Irino" }, { "name": "Mari Natsuki" }, { "name": "Takashi Naitō" }, { "name": "Yasuko Sawaguchi" }, { "name": "Daveigh Chase" }, { "name": "Jason Marsden" }, { "name": "Suzanne Pleshette" }, { "name": "David Ogden Stiers" }, { "name": "Susan Egan" }, { "name": "Bob Bergen" }, { "name": "Tara Strong" }, { "name": "RowaJohn Malkovich and Natalie Imbruglia" }, { "name": "Ben Browder Tapping và Christopher Judge" }, { "name": "Katie Featherstonnd Mark Fredrichs" }, { "name": "Vương Lực Hoành" }, { "name": "Từ Đông Mai" }, { "name": "Cynthia Khan Lai Ching (Dương Lệ Thanh)" }, { "name": "Michael Wong Man Tak (Vương Mẫn Đức)" }, { "name": "Donnie Yen Chi Tan" }, { "name": "Yuen Yat Chor" }, { "name": "Liu Kai Chi (Liêu Khải Trí)" }, { "name": "Lisa Chiao Chiao (Tiêu Giao)" }, { "name": "Yuen Shun Yee" }, { "name": "Song Ji Hyo" }, { "name": "Shin Yi" }, { "name": "Choi Sung Kook" }, { "name": "Channing TatumAdam Sevani" }, { "name": "Edison Cheng" }, { "name": "Amber Tamblyn" }, { "name": "Sarah Michelle Gellar" }, { "name": "Arielle Kebbel" }, { "name": "Marques Houston" }, { "name": "Omari Grandberry" }, { "name": "Jarell Houston" }, { "name": "DeMario Thornton" }, { "name": "Dreux Frederic" }, { "name": "Jennifer Freeman" }, { "name": "Lil' Kim" }, { "name": "Okina Megumi" }, { "name": "Ito Misaki" }, { "name": "Uehara Misa" }, { "name": "Ichikawa Yui" }, { "name": "Mekhi Phifer" }, { "name": "Lil' Romeo" }, { "name": "Missy Elliott" }, { "name": "Channing TatumDamaine Radcliff" }, { "name": "Olivia Thirlby" }, { "name": "Max Minghella" }, { "name": "Tony D'Amario" }, { "name": "Sam Shepard" }, { "name": "Briana Evigan" }, { "name": "Robert Hoffman" }, { "name": "Cassie Ventura" }, { "name": "Adam G. Sevani" }, { "name": "Telisha Shaw" }, { "name": "Heath Ledger" }, { "name": "Ed Asner" }, { "name": "Christopher Plummer" }, { "name": "Steve CarellMargo Dana Gaier" }, { "name": "Edith Elsie Fisher" }, { "name": "Agnes" }, { "name": "Tonny Jaa" }, { "name": "Prachya Piew" }, { "name": "Pete Postlethwaite" }, { "name": "Arliss Howard" }, { "name": "Laura Dern" }, { "name": "Trương Phong Nghị" }, { "name": "Ted Dibiaseble Wanamakok" }, { "name": "Téa Leoni" }, { "name": "Seong HyuCho Dong Hyuk" }, { "name": "Lee Chang Yong" }, { "name": "Tae hyun Cha" }, { "name": "Seok hyeon Wang" }, { "name": "Đồng Đại Vỹ" }, { "name": "Hà Gia Kính" }, { "name": "Phan Sương Sương" }, { "name": "Osric Chau" }, { "name": "Daming Chen" }, { "name": "Li Gong" }, { "name": "Kim Jae Won" }, { "name": "JoaRichard Gere" }, { "name": "Nat Chan" }, { "name": "Sharla Cheung" }, { "name": "Sandra Ng" }, { "name": "Sandra" }, { "name": "Quách Phú Thành (vai Bộ Kinh Vân) Trịnh Y Kiện (vai Nhiếp Phong)" }, { "name": "Ngô Mẫn Đạt" }, { "name": "Ray Lui" }, { "name": "Charles Heung" }, { "name": "Cheung Man" }, { "name": "Tan Lap Man" }, { "name": "Dougray Scott" }, { "name": "Thandie Newton" }, { "name": "Norman Tsui" }, { "name": "Lin Wei" }, { "name": "Celina Jade and Kara Hui" }, { "name": "Thích Ngọc Võ" }, { "name": "Khương Văn" }, { "name": "Jung Woon Taek" }, { "name": "Kim Sang Jung" }, { "name": "Tyrese" }, { "name": "Paddy Considine Aidan Gillen" }, { "name": "Trần Hàm Dư" }, { "name": "Trần Tiểu Sinh" }, { "name": "Phùng Thiệu Phong và An Chí Kiệt" }, { "name": "Phùng Tổ Minh" }, { "name": "Ryan Merriman" }, { "name": "Kris Lemche" }, { "name": "Jeremy Renner và Paula Patton" }, { "name": "Kimberly Corman" }, { "name": "Thomas Burker" }, { "name": "Krista Allennten" }, { "name": "Damien Marzette" }, { "name": "Trula M. Marcus" }, { "name": "Zachery Ty Bryan" }, { "name": "Kerr Smith" }, { "name": "Henry FoLee J Cobb" }, { "name": "EG Marshall" }, { "name": "Jack Klugman" }, { "name": "Eric Stoltz" }, { "name": "Từ Hy Viên" }, { "name": "Ngô Bội Từ" }, { "name": "Lâm Hy Lôi" }, { "name": "Nicholas D'Agosto" }, { "name": "Emma Bell" }, { "name": "David Koechner" }, { "name": "Nikolaj coster waldau" }, { "name": "Julie r." }, { "name": "Lgaard" }, { "name": "Aksel hennie" }, { "name": "Louise Fletcher" }, { "name": "Bob Gunton" }, { "name": "William Sadler" }, { "name": "Gil Bellows" }, { "name": "James Babson" }, { "name": "Laura Baranik" }, { "name": "Geoff Bell" }, { "name": "Matthew Blood Smyth" }, { "name": "Brian Caspe" }, { "name": "John Comer" }, { "name": "Mackenzie Crook" }, { "name": "Christian Dunckley Clark" }, { "name": "Patrick Hurd Wood" }, { "name": "Rachel Hurd Wood" }, { "name": "Park Hae Il" }, { "name": "Ryoo Seung Yong" }, { "name": "Kim Moo Yeol" }, { "name": "Park Ki Woong" }, { "name": "Otani Ryohei" }, { "name": "Katy Perry" }, { "name": "Jonathan Winters" }, { "name": "DeaBlane Cypurda and Tenika Davis" }, { "name": "Lí Liên Kiệt" }, { "name": "Quế Luân Mĩ" }, { "name": "Hoàng Thánh Y" }, { "name": "Khương Vũ" }, { "name": "Quách Thiện Ni" }, { "name": "Michelle Rodriguez and Bridget Moynahan" }, { "name": "Viva BiaPeter Docker" }, { "name": "Katie Findlay" }, { "name": "Jennifer Dale" }, { "name": "Alex Ozerov" }, { "name": "Lý Manh Manh" }, { "name": "Tống Ninh" }, { "name": "Chu Sở Sở" }, { "name": "Tôn Y Hàm" }, { "name": "Patrick Warburton" }, { "name": "Virginia Madsen" }, { "name": "Olivia DeJonge" }, { "name": "Ed Oxenbould" }, { "name": "Aleks Mikic" }, { "name": "Orla Brady" }, { "name": "Charlie Murphy" }, { "name": "Michael McElhatton" }, { "name": "Patrick Huard" }, { "name": "Colm Feore" }, { "name": "Erik Knudsen" }, { "name": "Sarah Jeanne Labrosse" }, { "name": "Lucie Laurier" }, { "name": "Hỏa Tịnh Nam" }, { "name": "Phan Gia Tuấn" }, { "name": "Vương Uy" }, { "name": "Cameron Monaghan" }, { "name": "Sairi Itoh" }, { "name": "Âu Hào" }, { "name": "Âu Dương Na Na" }, { "name": "Trần Phi Vũ" }, { "name": "Âu Thành Hàng" }, { "name": "Trâu Nguyên Thanh" }, { "name": "Anthony Chau Sang Wong" }, { "name": "Pakho Chow" }, { "name": "Thượng Tư Kỳ" }, { "name": "Vinh Khuê" }, { "name": "Frank Whaley" }, { "name": "Tommy Wiseau" }, { "name": "Candy Clark" }, { "name": "Lý Thuần" }, { "name": "Vạn Tây" }, { "name": "April Billingsley" }, { "name": "Juan Gaspard" }, { "name": "Từ Lộ" }, { "name": "Bành Dục Sướng" }, { "name": "Lưu Vịnh Hi" }, { "name": "Lý Nặc" }, { "name": "Bill Skarsgård" }, { "name": "Suki Waterhouse" }, { "name": "Jayda Fink" }, { "name": "Catherine Tate" }, { "name": "Ethan Rouse" }, { "name": "Felipe Calero" }, { "name": "Juan Sebastián Calero" }, { "name": "Evan Rachel Wood" }, { "name": "Elijah Kelley" }, { "name": "Tằng Mộng Tuyết" }, { "name": "Thần Diệc Nho" }, { "name": "Freddie Thorp" }, { "name": "Mary" }, { "name": "Lưu Sở Điềm" }, { "name": "Tê Tê Lợi" }, { "name": "Kari Matchett" }, { "name": "Hồng Sĩ Nhã" }, { "name": "Ma Nguyệt" }, { "name": "Suzu Hirose" }, { "name": "Hirona Yamazaki" }, { "name": "Haruka Fukuhara" }, { "name": "Mackenyu" }, { "name": "Miu Tomita" }, { "name": "Ayami Nakajo" }, { "name": "Anna Faris" }, { "name": "Martin Shaw" }, { "name": "Ben Turner" }, { "name": "Châu Tử Long" }, { "name": "Hà Văn Huy" }, { "name": "Taishi Nakagawa" }, { "name": "Yuzo Asahara" }, { "name": "Ye Sung" }, { "name": "Elisabeth Röhm" }, { "name": "Sherilyn Fenn" }, { "name": "Tô Đồng" }, { "name": "Bì Dật Gia" }, { "name": "Lý Lạc" }, { "name": "Viktor Andrienko" }, { "name": "Kate Bristol" }, { "name": "Allen Enlow" }, { "name": "Dominic Sherwood" }, { "name": "Drea de Matteo" }, { "name": "Cary Elwes" }, { "name": "Alex Rocco" }, { "name": "Jill Hennessy" }, { "name": "Andrew Caldwell" }, { "name": "Jennifer Tilly" }, { "name": "Brad Dourif" }, { "name": "Christine Elise" }, { "name": "Fiona Dourif" }, { "name": "Alex Vincent" }, { "name": "Summer H. Howell" }, { "name": "Song Joong Ki" }, { "name": "Finn Wolfhard" }, { "name": "Nicholas Hamilton" }, { "name": "Margie Rasri Balenciaga" }, { "name": "Toni Rakkaen" }, { "name": "Maythinee Booranasiri" }, { "name": "Bawriboon Chanreuang" }, { "name": "Rodrigo De la Serna" }, { "name": "Ben Cura" }, { "name": "Claire Holt" }, { "name": "Phoeung Kompheak" }, { "name": "Sareum Srey Moch" }, { "name": "Sveng Socheata" }, { "name": "Amy Louise Wilson" }, { "name": "Bérénice Marlohe" }, { "name": "Mew Nittha Jirayungyurn" }, { "name": "Naphat Siangsomboon" }, { "name": "Ter Chantavit" }, { "name": "Abbey Lee" }, { "name": "Ronnie Alonte" }, { "name": "Janella Salvador" }, { "name": "Elmo Magalona" }, { "name": "Sofia Andres" }, { "name": "Diego Loyzaga" }, { "name": "Charlotte Rampling" }, { "name": "Harriet Walter" }, { "name": "Seung heon Song" }, { "name": "David Roberts" }, { "name": "Joanne Samuel" }, { "name": "Rowland Holmes" }, { "name": "Jordan Dulieu" }, { "name": "Teo Briones" }, { "name": "Eric Lange" }, { "name": "Kelsey Asbille" }, { "name": "Martin Donovan" }, { "name": "Jordana Largy" }, { "name": "Matt Ellis" }, { "name": "Evelyne Brochu" }, { "name": "Henry Ian Cusick" }, { "name": "Holliday Grainger" }, { "name": "David Hasselhoff" }, { "name": "Rhys Darby" }, { "name": "Rebecca Olejniczak" }, { "name": "Melanie Brown" }, { "name": "James Landry Hébert" }, { "name": "Scout Taylor Compton" }, { "name": "Mark Boone Junior" }, { "name": "Russell Geoffrey Banks" }, { "name": "Elana Krausz" }, { "name": "Trương Thiên Ái" }, { "name": "Matthew Mercer" }, { "name": "Eiza González" }, { "name": "Hồng Thiên Minh" }, { "name": "Tự Vạn Xuyến" }, { "name": "Allison Tolman" }, { "name": "Bobby Moynihan" }, { "name": "Hannah Simone" }, { "name": "Taran Killam" }, { "name": "Marwan Kenzari" }, { "name": "Tomiwa Edun" }, { "name": "Sae Okazaki" }, { "name": "Colton Haynes" }, { "name": "Jillian Bell" }, { "name": "Dana Gourrier" }, { "name": "Sage Correa" }, { "name": "Malea Rose" }, { "name": "Saxon Sharbino" }, { "name": "Bonnie Morgan" }, { "name": "Alexis G. Zall" }, { "name": "Brandon Soo Hoo" }, { "name": "Jordan Essoe" }, { "name": "Burlee Vang" }, { "name": "Aya Hirano" }, { "name": "Mai Nakahara" }, { "name": "Yûichi Nakamura" }, { "name": "Wataru Hatano" }, { "name": "Yui Horie" }, { "name": "Lưu Đào" }, { "name": "Qianyuan Wang" }, { "name": "Thomas Middleditch" }, { "name": "Christopher Abbott" }, { "name": "Elodie Yung" }, { "name": "Nathan Brewer" }, { "name": "Jay Hieron" }, { "name": "Florence Pugh" }, { "name": "Cosmo Jarvis" }, { "name": "Paul Hilton" }, { "name": "Seo Hyun Ahn" }, { "name": "SEO KYEONG SOOK" }, { "name": "PARK CHUL SOO" }, { "name": "Terry Notary" }, { "name": "Karin Konoval" }, { "name": "Amiah Miller" }, { "name": "Lakeith Stanfield" }, { "name": "Ville Virtanen" }, { "name": "Antti Holma" }, { "name": "Mikko Neuvonen" }, { "name": "Malin Buska" }, { "name": "Outi Mäenpää" }, { "name": "Cung Le" }, { "name": "Chad Lindberg" }, { "name": "Liam McIntyre" }, { "name": "Trịnh Sảng" }, { "name": "Tanaka Mayumi" }, { "name": "Yamaguchi Kappei" }, { "name": "Hiroaki Hirata" }, { "name": "Shūichi Ikeda" }, { "name": "DeRay Davis" }, { "name": "CLAUDIA KIM" }, { "name": "Sulli" }, { "name": "Kang Han Na" }, { "name": "Choi Ri" }, { "name": "Son Sook" }, { "name": "Seo Mi Ji" }, { "name": "Sung Joon" }, { "name": "Kim Seo Hyung" }, { "name": "Đàm Húc" }, { "name": "Chiêm Mục" }, { "name": "Radha Mitchell" }, { "name": "David Mazouz" }, { "name": "Riley Wang" }, { "name": "Artemis" }, { "name": "Ramón Rodríguez" }, { "name": "Celina Jade" }, { "name": "Oleg Prudius" }, { "name": "Trương Gia Nghê" }, { "name": "Thái Nghi Đạt" }, { "name": "Lý Tịnh Dương" }, { "name": "Mã Linh" }, { "name": "Jacob Latimore" }, { "name": "Dulé Hill" }, { "name": "Storm Reid" }, { "name": "Trey Parker" }, { "name": "Jessica McNamee" }, { "name": "Tracy Morgan" }, { "name": "Diệp Chân" }, { "name": "Trần Trạch Vũ" }, { "name": "Hồ Dục Hâm" }, { "name": "Trịch Dật Tường" }, { "name": "Tần Vũ Ca" }, { "name": "Hàn Nghệ Hinh" }, { "name": "SAM JAEGER" }, { "name": "Kyra Zagorsky" }, { "name": "Ty Shelton" }, { "name": "Maeve Dermody" }, { "name": "Sam Reid" }, { "name": "Peter Cullen" }, { "name": "Patton Oswalt" }, { "name": "Dương Tử San" }, { "name": "Hứa Vỹ Ninh" }, { "name": "Cynthia Gibb" }, { "name": "Alexis Lariviere" }, { "name": "Lim Jung Eun" }, { "name": "Jung Han Yong" }, { "name": "Jung Ae Ri" }, { "name": "Ngô Đông Ni" }, { "name": "Vương Dã" }, { "name": "Diane Farr" }, { "name": "Nora Jane Noone" }, { "name": "Gwyneth Paltrow" }, { "name": "Jacob Batalon" }, { "name": "Gillian Chung" }, { "name": "Jiong He" }, { "name": "Elena Anaya" }, { "name": "Saïd Taghmaoui" }, { "name": "Jace Norman" }, { "name": "Ngô Trác Hy" }, { "name": "Alan Arkin" }, { "name": "Matt Dillon" }, { "name": "Ann Margret" }, { "name": "Gina Gershon" }, { "name": "Nicky Whelan" }, { "name": "Darin De Paul" }, { "name": "Erin Cahill" }, { "name": "Orion Acaba" }, { "name": "Mario Espitia" }, { "name": "Valene Kane" }, { "name": "Marcela Mar" }, { "name": "Sha Xuezhou" }, { "name": "Zheng Shuang" }, { "name": "Robbie Daymond" }, { "name": "Ryan Bartley" }, { "name": "Yu Aoi" }, { "name": "Shido Nakamura" }, { "name": "Takashi Sorimachi" }, { "name": "Trương Ngọc Ánh" }, { "name": "Quốc Khánh" }, { "name": "Nguyễn Thu Trang" }, { "name": "Trần Thiên Tú" }, { "name": "Đỗ Thu Hằng" }, { "name": "Garance Marillier" }, { "name": "Ella Rumpf" }, { "name": "Rabah Nait Oufella" }, { "name": "Adah Sharma" }, { "name": "Esha Gupta" }, { "name": "Takahiro Sakurai" }, { "name": "Mahesh Jadu" }, { "name": "Jai Courtney" }, { "name": "Loïs van Wijk" }, { "name": "Karin Leclercq" }, { "name": "Anton Lesser" }, { "name": "Suet Lam" }, { "name": "Jing Li" }, { "name": "Yunjin Cao" }, { "name": "Blayne Weaver" }, { "name": "Lyndie Greenwood" }, { "name": "Billy Crudup" }, { "name": "Elijah Wolf" }, { "name": "Logan Gillies" }, { "name": "Ben Skelton" }, { "name": "Aiden Haggarty" }, { "name": "Lu Xin" }, { "name": "Daniel Boileau" }, { "name": "Martin Cummins" }, { "name": "Phan Bân Long" }, { "name": "Mr Bean" }, { "name": "Diệp Tiểu Khai" }, { "name": "Chu Lệ Lam" }, { "name": "Trương Nghệ Tuyên" }, { "name": "Tề Lân" }, { "name": "Tim Griffin" }, { "name": "Eion Bailey" }, { "name": "Bethany Joy Lenz" }, { "name": "Barkhad Abdi" }, { "name": "Hoàng Hiên" }, { "name": "Hiroaki Iwanaga" }, { "name": "Takahiro Fujiwara" }, { "name": "Christian Gaul" }, { "name": "Nicolette Krebitz" }, { "name": "Tilman Dobler" }, { "name": "Maria Conchita Alonso" }, { "name": "John Magaro" }, { "name": "Carrie Keranen" }, { "name": "Denise Richards" }, { "name": "Jonathan Lipnicki" }, { "name": "Gaspard Schlatter" }, { "name": "Sixtine Murat" }, { "name": "Paulin Jaccoud" }, { "name": "Michel Vuillermoz" }, { "name": "Raul Ribera" }, { "name": "Max Riemelt" }, { "name": "Cem Tuncay" }, { "name": "Lucie Aron" }, { "name": "Matthias Habich" }, { "name": "Marine Vacth" }, { "name": "Géraldine Pailhas" }, { "name": "Frédéric Pierrot" }, { "name": "Fantin Ravat" }, { "name": "Martin Compston" }, { "name": "Amariah Olson" }, { "name": "Jonathan Rhys Meyers" }, { "name": "Obin Olson" }, { "name": "Liu Naping" }, { "name": "Nelson Li" }, { "name": "Waise Lee" }, { "name": "Halston Sage" }, { "name": "Elena Kampouris" }, { "name": "Tony Shalhoub" }, { "name": "Shannon Elizabeth" }, { "name": "Embeth Davidtz" }, { "name": "Jung Man sik" }, { "name": "Hyo jin Kong" }, { "name": "Ji won Uhm" }, { "name": "Joon Go" }, { "name": "Giả Nãi Lượng" }, { "name": "Lý Tiểu Lộ" }, { "name": "Vương Tấn" }, { "name": "Patrick Baladi" }, { "name": "Ben Batt" }, { "name": "Charlotte Beaumont" }, { "name": "Nacho Vigalondo" }, { "name": "Larry Fessenden" }, { "name": "James Le Gros" }, { "name": "John Speredakos" }, { "name": "Phùng Văn Quyên" }, { "name": "Eddie Izzard" }, { "name": "Mckenna Grace" }, { "name": "Lindsay Duncan" }, { "name": "Spencer Grammer" }, { "name": "Louane Emera" }, { "name": "Vincent Lacoste" }, { "name": "Ramzy Bedia" }, { "name": "Trịnh Tháp Cương" }, { "name": "Lại Nhã Nghiên" }, { "name": "Hoàng Viễn" }, { "name": "Teri Reeves" }, { "name": "Sherri Eakin" }, { "name": "Aiden Longworth" }, { "name": "Grace Van Patten" }, { "name": "Michal Vondel" }, { "name": "Alina Babak" }, { "name": "Valeriya Dmitrieva" }, { "name": "Jeong Seo yoon" }, { "name": "Jeon Hyeon soo" }, { "name": "Julian Barratt" }, { "name": "Marko Zaror" }, { "name": "Juju Chan" }, { "name": "Kirsty Averton" }, { "name": "Nicky Henson" }, { "name": "Emma Davies" }, { "name": "Glen Powell" }, { "name": "Kanta Sato" }, { "name": "Reina Visa" }, { "name": "Takanori Jinnai" }, { "name": "Hidehiko Ishizuka" }, { "name": "Hikari Ishida" }, { "name": "Shimon Okura" }, { "name": "Nonoka Yamaguchi" }, { "name": "Atsuki Tomori" }, { "name": "Trình Dục" }, { "name": "Nguyên Thu" }, { "name": "Vyacheslav Chepurchenko" }, { "name": "Aleksandra Rebenok" }, { "name": "Aaron Poole" }, { "name": "Kenneth Welsh" }, { "name": "Đường Yên" }, { "name": "Bạch Băng" }, { "name": "Jung Yong Hwa" }, { "name": "Cát Ưu" }, { "name": "Will Dalton" }, { "name": "Phượng Tiểu Nhạc" }, { "name": "Lưu Bội Kỳ" }, { "name": "Ha Joo Hee" }, { "name": "Hong Seok Cheon" }, { "name": "Sonakshi Sinha" }, { "name": "Tahir Raj Bhasin" }, { "name": "Kim Hong Fa" }, { "name": "Callan McAuliffe" }, { "name": "Lý Xán Sâm" }, { "name": "Trần Dĩ Mạn" }, { "name": "Jordan Alex" }, { "name": "James Tyler Brown" }, { "name": "Martin Byrne" }, { "name": "Jared Colson" }, { "name": "Yoon So Yi" }, { "name": "Kim Hyuk" }, { "name": "Nick Swardson" }, { "name": "Jennifer Hudson" }, { "name": "Colin Quinn" }, { "name": "Jackie Sandler" }, { "name": "David Denman" }, { "name": "Naomi Scott" }, { "name": "Bradley Whitford" }, { "name": "Allison Williams" }, { "name": "Ken'ichi Matsuyama" }, { "name": "Kitu Gidwani" }, { "name": "Jasmeet Singh Bhatia" }, { "name": "Allegra Masters" }, { "name": "Aimee McKay" }, { "name": "Ashley Key" }, { "name": "Autumn Federici" }, { "name": "Bill Lewis" }, { "name": "TaoTsuchiya" }, { "name": "RyumaTakeuchi" }, { "name": "ShonoHayama" }, { "name": "MiraiShida" }, { "name": "ArataHorii" }, { "name": "FujikoKojima" }, { "name": "AiriMatsui" }, { "name": "YunaTaira" }, { "name": "YukiYamada" }, { "name": "JuriUeno" }, { "name": "EriIkeda" }, { "name": "Cổ Lực Na Trát" }, { "name": "Clara" }, { "name": "Yan Ni" }, { "name": "Joe Cheng" }, { "name": "Kyoko Yoshine" }, { "name": "Teruyuki Kagawa" }, { "name": "Kenichi Endo" }, { "name": "Hitori Gekidan" }, { "name": "Toshiaki Karasawa" }, { "name": "Montage Live Action" }, { "name": "Hổ Hổ" }, { "name": "Mã Mộng Kiều" }, { "name": "Nhan Đan" }, { "name": "Oguri Shun" }, { "name": "Nomura Shuhei" }, { "name": "Ono Machiko" }, { "name": "Maruyama Tomomi" }, { "name": "Nick Offerman" }, { "name": "John Carroll Lynch" }, { "name": "Peter O'toole" }, { "name": "Armand Assante" }, { "name": "Olivier Gruner" }, { "name": "Samantha Barks" }, { "name": "Maddie Ziegler" }, { "name": "Gemma Chan" }, { "name": "Wren Walker" }, { "name": "Caz Odin Darko" }, { "name": "Madison J. Loos" }, { "name": "Dan Green" }, { "name": "Rina Endo" }, { "name": "Kenjirô Tsuda" }, { "name": "Peyton Meyer" }, { "name": "Crystal the Monkey" }, { "name": "Cửu Khổng" }, { "name": "Hoàng Nhất Lâm" }, { "name": "Don Johnson" }, { "name": "Anna Hutchison" }, { "name": "Talitha Bateman" }, { "name": "Lữ Vũ" }, { "name": "Hàn Giai Lam" }, { "name": "Gong Hyo Jin" }, { "name": "Sohee" }, { "name": "Charles Shaughnessy" }, { "name": "Damon Dayoub" }, { "name": "Adrian Schiller" }, { "name": "Lục Tiểu Linh Đồng" }, { "name": "Vikramjeet Virk" }, { "name": "Tatiana Maslany" }, { "name": "Tom Cullen" }, { "name": "Henry Czerny" }, { "name": "Diana Bentley" }, { "name": "Mark Rendall" }, { "name": "Aaron Costa Ganis" }, { "name": "Monica West" }, { "name": "Christopher Redman" }, { "name": "Jenny Sterlin" }, { "name": "Michael Benyaer" }, { "name": "Paulino Partida" }, { "name": "Ji Chang Wook" }, { "name": "Ahn Jae Hong" }, { "name": "Dương Dương" }, { "name": "Vernon Wells" }, { "name": "Matthew Willig" }, { "name": "Costas Mandylor" }, { "name": "Peter DaCunha" }, { "name": "Natalie Brown" }, { "name": "Jonathan Watton" }, { "name": "Peyton Kennedy" }, { "name": "Amy Johnston" }, { "name": "Muriel Hofmann" }, { "name": "Jenny Wu" }, { "name": "Kristina Klebe" }, { "name": "Elissa Dowling" }, { "name": "Erika Kaar" }, { "name": "Saurabh Shukla" }, { "name": "Anna Dawson" }, { "name": "Michaela Longden" }, { "name": "Daniel Thrace" }, { "name": "Gregg Sulkin" }, { "name": "Garrett Clayton" }, { "name": "Bella Dayne" }, { "name": "Jack Brett Anderson" }, { "name": "Dominic Monaghan" }, { "name": "Jennette McCurdy" }, { "name": "Ksenia Solo" }, { "name": "Da'Vone McDonald" }, { "name": "Nathan Parsons" }, { "name": "IRINA STARSHENBAUM" }, { "name": "ALEXANDER PETROV" }, { "name": "RINAL MUKHAMETOV" }, { "name": "OLEG MENSHIKOV" }, { "name": "COLONEL LEBEDEV" }, { "name": "SERGEY GARMASH" }, { "name": "VICE PRIME MINISTER" }, { "name": "NIKITA KUKUSHKIN" }, { "name": "Will Townsend" }, { "name": "Melissa Sturm" }, { "name": "Trevor Devall" }, { "name": "Lee Jun Ki" }, { "name": "Caitlin Gerard" }, { "name": "Yoona" }, { "name": "Kim Joo hyuk" }, { "name": "Yoo Hae jin" }, { "name": "Haylie Duff" }, { "name": "Norm MacDonald" }, { "name": "Gang Dong Won" }, { "name": "Shin Eun Soo" }, { "name": "Ivan Yankovskiy" }, { "name": "Leonid Yarmolnik" }, { "name": "Lyubov Aksyonova" }, { "name": "Stephen Merchant" }, { "name": "Dafne Keen" }, { "name": "Elizabeth Rodriguez" }, { "name": "Lois Robbins" }, { "name": "Vương Thủy Lâm" }, { "name": "Clint Dyer" }, { "name": "Kasumi Arimura" }, { "name": "Kaoru Kobayashi" }, { "name": "Asuka Kudo" }, { "name": "Ken Mitsuishi" }, { "name": "Melanie Lynskey" }, { "name": "Chris Doubek" }, { "name": "Marilyn Faith Hickey" }, { "name": "Jared Roylance" }, { "name": "Rachael Taylor" }, { "name": "Robbie Amell" }, { "name": "Amy Ryan" }, { "name": "Rob Lowe" }, { "name": "Miranda Richardson" }, { "name": "Rory Kinnear" }, { "name": "Shariff Earp" }, { "name": "Duan Sanderson" }, { "name": "Angelique Rivera" }, { "name": "Cameron Jebo" }, { "name": "Kenny Johnson" }, { "name": "Chris Sullivan" }, { "name": "Guillermo Romero" }, { "name": "José Mota" }, { "name": "Kaiwi Lyman Mersereau" }, { "name": "Leo Staar" }, { "name": "Shaun Dingwall" }, { "name": "Brian Austin Green" }, { "name": "Sunny Pawar" }, { "name": "Abhishek Bharate" }, { "name": "Priyanka Bose" }, { "name": "Tannishtha Chatterjee" }, { "name": "Vương Khải" }, { "name": "Garik Kharlamov" }, { "name": "Ivan Okhlobystin" }, { "name": "Chun Jung Myung" }, { "name": "Yoon So Hee" }, { "name": "Chen Bolin" }, { "name": "Song Min Jung" }, { "name": "Jung Hae Kyun" }, { "name": "Matt Ryan" }, { "name": "Ray Chase" }, { "name": "Roger Cross" }, { "name": "Chris Jai Alex" }, { "name": "Saori Hayami" }, { "name": "Vương Tuấn Khải" }, { "name": "Lộc Hàm" }, { "name": "Jung Jin Young" }, { "name": "Maksim Abrosimov" }, { "name": "Sergey Agafonov" }, { "name": "Maksim Belborodov" }, { "name": "Aishwarya Rai Bachchan" }, { "name": "Aimee Teegarden" }, { "name": "Laura Wiggins" }, { "name": "Johnny Galecki" }, { "name": "Lê Diệu Tường" }, { "name": "Trương Triệu Huy" }, { "name": "Byun Yo Han" }, { "name": "Kim Hyun Seok" }, { "name": "Kim Yoo Jung" }, { "name": "Melissa Benoist" }, { "name": "Rachel Brosnahan" }, { "name": "Dư An An" }, { "name": "Thái Hạn Ức" }, { "name": "Zhi Hui Chen" }, { "name": "Hao Ran Sun" }, { "name": "Mou Li" }, { "name": "Joo Ji Hoon" }, { "name": "Lim Ji Yeon" }, { "name": "Cheo Ho Jin" }, { "name": "Alan Tudyk" }, { "name": "Jerry Lewis" }, { "name": "Kara Tointon" }, { "name": "Elizabeth Morris" }, { "name": "Uriah Shelton" }, { "name": "Dakota Daulby" }, { "name": "Byron Gibson" }, { "name": "Joel Adrian" }, { "name": "Svitlana Zavialova" }, { "name": "Henry Mah" }, { "name": "Lydia Hull" }, { "name": "Jo Jung seok" }, { "name": "Jade Tailor" }, { "name": "Tommy Flanagan" }, { "name": "Glenn Close" }, { "name": "Dominique Tipper" }, { "name": "Hoài Linh" }, { "name": "Hoài Lâm" }, { "name": "Việt Hương" }, { "name": "Ngô Kiến Huy" }, { "name": "Ái Phương" }, { "name": "Yu Dương" }, { "name": "Khả Như" }, { "name": "Cát Tường" }, { "name": "ca sĩ Lâm Chấn Khang" }, { "name": "nghệ sĩ hải ngoại Bảo Chung" }, { "name": "nghệ sĩ hài Hứa Minh Đạt" }, { "name": "nghệ sĩ hài Tấn Bo Tấn Bin" }, { "name": "diễn viên điện ảnh / ca sĩ Kim Jun See" }, { "name": "diễn viên điện ảnh Kiều Tuấn" }, { "name": "nghệ sĩ Hoa Trần" }, { "name": "Duy Khánh Zhou Zhou" }, { "name": "Trần Xuân Tiến" }, { "name": "Dũng Minhon" }, { "name": "Ngọc Tâm Anh" }, { "name": "Nguyên Đạt" }, { "name": "Oris Phạm" }, { "name": "Sally Trần" }, { "name": "bé Bích Châu" }, { "name": "Nguyễn Tiến" }, { "name": "Kim Nguyễn" }, { "name": "cùng tập thể anh em Khang Mã Địa" }, { "name": "Manu Bennett" }, { "name": "Mạch Trường Thanh" }, { "name": "Sầm Lệ Hương" }, { "name": "Dương Tư Kỳ" }, { "name": "Trịnh Hân Nghi" }, { "name": "Aaron Behr" }, { "name": "John Colella" }, { "name": "Jun Cao" }, { "name": "Mei Ying Wang" }, { "name": "Tôn kiên" }, { "name": "Yousef Erakat" }, { "name": "Lele Pons" }, { "name": "Justin Dobies" }, { "name": "Anton Vinogradov" }, { "name": "Vadim Bochanov" }, { "name": "Sergey Mardar" }, { "name": "Griffin Gluck" }, { "name": "Thomas Barbusca" }, { "name": "Tạ Đình Đình" }, { "name": "Vương Phi" }, { "name": "Zijian Dong" }, { "name": "Cherry Ngan" }, { "name": "Stacy Martin" }, { "name": "Violleta Getmanskaya" }, { "name": "Vadim Tsallati" }, { "name": "Andrey Chadov" }, { "name": "Rila Fukushima" }, { "name": "Michael Pitt" }, { "name": "Parkinson" }, { "name": "George Takei" }, { "name": "Lulu Wilson" }, { "name": "Lisa Kudrow" }, { "name": "Edgar Ramírez" }, { "name": "Usher Raymond" }, { "name": "Osamu Adachi" }, { "name": "Hirofumi Arai" }, { "name": "Narushi Ikeda" }, { "name": "Steve Lantz" }, { "name": "Lisa Eichhorn" }, { "name": "Angela Dixon" }, { "name": "Nigel Whitmey" }, { "name": "Gil Birmingham" }, { "name": "Thái Thiếu Phân" }, { "name": "Robert LaSardo" }, { "name": "Sara Fabel" }, { "name": "Jordan James Smith" }, { "name": "Arak Amornsupasiri" }, { "name": "Pachrapa Chaichua" }, { "name": "Auli’i Cravalho" }, { "name": "Alondra Hidalgo" }, { "name": "Alistair Abell" }, { "name": "Iris Apatow" }, { "name": "Sugar Lyn Beard" }, { "name": "Ian James Corlett" }, { "name": "Michael Daingerfield" }, { "name": "Brian Dobson" }, { "name": "Evan Jonigkeit" }, { "name": "Richard Kind" }, { "name": "David Zayas" }, { "name": "Stef Dawson" }, { "name": "Ashlie Atkinson" }, { "name": "Amy Landecker" }, { "name": "Virginia Gardner" }, { "name": "Tracy Letts" }, { "name": "Penelope Wilton" }, { "name": "Ruby Barnhill" }];
 
 /***/ }),
-/* 30 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1226,7 +1380,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = [{ name: 'Afghanistan', code: 'AF' }, { name: 'Åland Islands', code: 'AX' }, { name: 'Albania', code: 'AL' }, { name: 'Algeria', code: 'DZ' }, { name: 'American Samoa', code: 'AS' }, { name: 'AndorrA', code: 'AD' }, { name: 'Angola', code: 'AO' }, { name: 'Anguilla', code: 'AI' }, { name: 'Antarctica', code: 'AQ' }, { name: 'Antigua and Barbuda', code: 'AG' }, { name: 'Argentina', code: 'AR' }, { name: 'Armenia', code: 'AM' }, { name: 'Aruba', code: 'AW' }, { name: 'Australia', code: 'AU' }, { name: 'Austria', code: 'AT' }, { name: 'Azerbaijan', code: 'AZ' }, { name: 'Bahamas', code: 'BS' }, { name: 'Bahrain', code: 'BH' }, { name: 'Bangladesh', code: 'BD' }, { name: 'Barbados', code: 'BB' }, { name: 'Belarus', code: 'BY' }, { name: 'Belgium', code: 'BE' }, { name: 'Belize', code: 'BZ' }, { name: 'Benin', code: 'BJ' }, { name: 'Bermuda', code: 'BM' }, { name: 'Bhutan', code: 'BT' }, { name: 'Bolivia', code: 'BO' }, { name: 'Bosnia and Herzegovina', code: 'BA' }, { name: 'Botswana', code: 'BW' }, { name: 'Bouvet Island', code: 'BV' }, { name: 'Brazil', code: 'BR' }, { name: 'British Indian Ocean Territory', code: 'IO' }, { name: 'Brunei Darussalam', code: 'BN' }, { name: 'Bulgaria', code: 'BG' }, { name: 'Burkina Faso', code: 'BF' }, { name: 'Burundi', code: 'BI' }, { name: 'Cambodia', code: 'KH' }, { name: 'Cameroon', code: 'CM' }, { name: 'Canada', code: 'CA' }, { name: 'Cape Verde', code: 'CV' }, { name: 'Cayman Islands', code: 'KY' }, { name: 'Central African Republic', code: 'CF' }, { name: 'Chad', code: 'TD' }, { name: 'Chile', code: 'CL' }, { name: 'China', code: 'CN' }, { name: 'Christmas Island', code: 'CX' }, { name: 'Cocos (Keeling) Islands', code: 'CC' }, { name: 'Colombia', code: 'CO' }, { name: 'Comoros', code: 'KM' }, { name: 'Congo', code: 'CG' }, { name: 'Congo, The Democratic Republic of the', code: 'CD' }, { name: 'Cook Islands', code: 'CK' }, { name: 'Costa Rica', code: 'CR' }, { name: 'Cote D\'Ivoire', code: 'CI' }, { name: 'Croatia', code: 'HR' }, { name: 'Cuba', code: 'CU' }, { name: 'Cyprus', code: 'CY' }, { name: 'Czech Republic', code: 'CZ' }, { name: 'Denmark', code: 'DK' }, { name: 'Djibouti', code: 'DJ' }, { name: 'Dominica', code: 'DM' }, { name: 'Dominican Republic', code: 'DO' }, { name: 'Ecuador', code: 'EC' }, { name: 'Egypt', code: 'EG' }, { name: 'El Salvador', code: 'SV' }, { name: 'Equatorial Guinea', code: 'GQ' }, { name: 'Eritrea', code: 'ER' }, { name: 'Estonia', code: 'EE' }, { name: 'Ethiopia', code: 'ET' }, { name: 'Falkland Islands (Malvinas)', code: 'FK' }, { name: 'Faroe Islands', code: 'FO' }, { name: 'Fiji', code: 'FJ' }, { name: 'Finland', code: 'FI' }, { name: 'France', code: 'FR' }, { name: 'French Guiana', code: 'GF' }, { name: 'French Polynesia', code: 'PF' }, { name: 'French Southern Territories', code: 'TF' }, { name: 'Gabon', code: 'GA' }, { name: 'Gambia', code: 'GM' }, { name: 'Georgia', code: 'GE' }, { name: 'Germany', code: 'DE' }, { name: 'Ghana', code: 'GH' }, { name: 'Gibraltar', code: 'GI' }, { name: 'Greece', code: 'GR' }, { name: 'Greenland', code: 'GL' }, { name: 'Grenada', code: 'GD' }, { name: 'Guadeloupe', code: 'GP' }, { name: 'Guam', code: 'GU' }, { name: 'Guatemala', code: 'GT' }, { name: 'Guernsey', code: 'GG' }, { name: 'Guinea', code: 'GN' }, { name: 'Guinea-Bissau', code: 'GW' }, { name: 'Guyana', code: 'GY' }, { name: 'Haiti', code: 'HT' }, { name: 'Heard Island and Mcdonald Islands', code: 'HM' }, { name: 'Holy See (Vatican City State)', code: 'VA' }, { name: 'Honduras', code: 'HN' }, { name: 'Hong Kong', code: 'HK' }, { name: 'Hungary', code: 'HU' }, { name: 'Iceland', code: 'IS' }, { name: 'India', code: 'IN' }, { name: 'Indonesia', code: 'ID' }, { name: 'Iran, Islamic Republic Of', code: 'IR' }, { name: 'Iraq', code: 'IQ' }, { name: 'Ireland', code: 'IE' }, { name: 'Isle of Man', code: 'IM' }, { name: 'Israel', code: 'IL' }, { name: 'Italy', code: 'IT' }, { name: 'Jamaica', code: 'JM' }, { name: 'Japan', code: 'JP' }, { name: 'Jersey', code: 'JE' }, { name: 'Jordan', code: 'JO' }, { name: 'Kazakhstan', code: 'KZ' }, { name: 'Kenya', code: 'KE' }, { name: 'Kiribati', code: 'KI' }, { name: 'Korea, Democratic People\'S Republic of', code: 'KP' }, { name: 'Korea, Republic of', code: 'KR' }, { name: 'Kuwait', code: 'KW' }, { name: 'Kyrgyzstan', code: 'KG' }, { name: 'Lao People\'S Democratic Republic', code: 'LA' }, { name: 'Latvia', code: 'LV' }, { name: 'Lebanon', code: 'LB' }, { name: 'Lesotho', code: 'LS' }, { name: 'Liberia', code: 'LR' }, { name: 'Libyan Arab Jamahiriya', code: 'LY' }, { name: 'Liechtenstein', code: 'LI' }, { name: 'Lithuania', code: 'LT' }, { name: 'Luxembourg', code: 'LU' }, { name: 'Macao', code: 'MO' }, { name: 'Macedonia, The Former Yugoslav Republic of', code: 'MK' }, { name: 'Madagascar', code: 'MG' }, { name: 'Malawi', code: 'MW' }, { name: 'Malaysia', code: 'MY' }, { name: 'Maldives', code: 'MV' }, { name: 'Mali', code: 'ML' }, { name: 'Malta', code: 'MT' }, { name: 'Marshall Islands', code: 'MH' }, { name: 'Martinique', code: 'MQ' }, { name: 'Mauritania', code: 'MR' }, { name: 'Mauritius', code: 'MU' }, { name: 'Mayotte', code: 'YT' }, { name: 'Mexico', code: 'MX' }, { name: 'Micronesia, Federated States of', code: 'FM' }, { name: 'Moldova, Republic of', code: 'MD' }, { name: 'Monaco', code: 'MC' }, { name: 'Mongolia', code: 'MN' }, { name: 'Montserrat', code: 'MS' }, { name: 'Morocco', code: 'MA' }, { name: 'Mozambique', code: 'MZ' }, { name: 'Myanmar', code: 'MM' }, { name: 'Namibia', code: 'NA' }, { name: 'Nauru', code: 'NR' }, { name: 'Nepal', code: 'NP' }, { name: 'Netherlands', code: 'NL' }, { name: 'Netherlands Antilles', code: 'AN' }, { name: 'New Caledonia', code: 'NC' }, { name: 'New Zealand', code: 'NZ' }, { name: 'Nicaragua', code: 'NI' }, { name: 'Niger', code: 'NE' }, { name: 'Nigeria', code: 'NG' }, { name: 'Niue', code: 'NU' }, { name: 'Norfolk Island', code: 'NF' }, { name: 'Northern Mariana Islands', code: 'MP' }, { name: 'Norway', code: 'NO' }, { name: 'Oman', code: 'OM' }, { name: 'Pakistan', code: 'PK' }, { name: 'Palau', code: 'PW' }, { name: 'Palestinian Territory, Occupied', code: 'PS' }, { name: 'Panama', code: 'PA' }, { name: 'Papua New Guinea', code: 'PG' }, { name: 'Paraguay', code: 'PY' }, { name: 'Peru', code: 'PE' }, { name: 'Philippines', code: 'PH' }, { name: 'Pitcairn', code: 'PN' }, { name: 'Poland', code: 'PL' }, { name: 'Portugal', code: 'PT' }, { name: 'Puerto Rico', code: 'PR' }, { name: 'Qatar', code: 'QA' }, { name: 'Reunion', code: 'RE' }, { name: 'Romania', code: 'RO' }, { name: 'Russian Federation', code: 'RU' }, { name: 'RWANDA', code: 'RW' }, { name: 'Saint Helena', code: 'SH' }, { name: 'Saint Kitts and Nevis', code: 'KN' }, { name: 'Saint Lucia', code: 'LC' }, { name: 'Saint Pierre and Miquelon', code: 'PM' }, { name: 'Saint Vincent and the Grenadines', code: 'VC' }, { name: 'Samoa', code: 'WS' }, { name: 'San Marino', code: 'SM' }, { name: 'Sao Tome and Principe', code: 'ST' }, { name: 'Saudi Arabia', code: 'SA' }, { name: 'Senegal', code: 'SN' }, { name: 'Serbia and Montenegro', code: 'CS' }, { name: 'Seychelles', code: 'SC' }, { name: 'Sierra Leone', code: 'SL' }, { name: 'Singapore', code: 'SG' }, { name: 'Slovakia', code: 'SK' }, { name: 'Slovenia', code: 'SI' }, { name: 'Solomon Islands', code: 'SB' }, { name: 'Somalia', code: 'SO' }, { name: 'South Africa', code: 'ZA' }, { name: 'South Georgia and the South Sandwich Islands', code: 'GS' }, { name: 'Spain', code: 'ES' }, { name: 'Sri Lanka', code: 'LK' }, { name: 'Sudan', code: 'SD' }, { name: 'Suriname', code: 'SR' }, { name: 'Svalbard and Jan Mayen', code: 'SJ' }, { name: 'Swaziland', code: 'SZ' }, { name: 'Sweden', code: 'SE' }, { name: 'Switzerland', code: 'CH' }, { name: 'Syrian Arab Republic', code: 'SY' }, { name: 'Taiwan, Province of China', code: 'TW' }, { name: 'Tajikistan', code: 'TJ' }, { name: 'Tanzania, United Republic of', code: 'TZ' }, { name: 'Thailand', code: 'TH' }, { name: 'Timor-Leste', code: 'TL' }, { name: 'Togo', code: 'TG' }, { name: 'Tokelau', code: 'TK' }, { name: 'Tonga', code: 'TO' }, { name: 'Trinidad and Tobago', code: 'TT' }, { name: 'Tunisia', code: 'TN' }, { name: 'Turkey', code: 'TR' }, { name: 'Turkmenistan', code: 'TM' }, { name: 'Turks and Caicos Islands', code: 'TC' }, { name: 'Tuvalu', code: 'TV' }, { name: 'Uganda', code: 'UG' }, { name: 'Ukraine', code: 'UA' }, { name: 'United Arab Emirates', code: 'AE' }, { name: 'United Kingdom', code: 'GB' }, { name: 'United States', code: 'US' }, { name: 'United States Minor Outlying Islands', code: 'UM' }, { name: 'Uruguay', code: 'UY' }, { name: 'Uzbekistan', code: 'UZ' }, { name: 'Vanuatu', code: 'VU' }, { name: 'Venezuela', code: 'VE' }, { name: 'Viet Nam', code: 'VN' }, { name: 'Virgin Islands, British', code: 'VG' }, { name: 'Virgin Islands, U.S.', code: 'VI' }, { name: 'Wallis and Futuna', code: 'WF' }, { name: 'Western Sahara', code: 'EH' }, { name: 'Yemen', code: 'YE' }, { name: 'Zambia', code: 'ZM' }, { name: 'Zimbabwe', code: 'ZW' }];
 
 /***/ }),
-/* 31 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1235,10 +1389,57 @@ exports.default = [{ name: 'Afghanistan', code: 'AF' }, { name: 'Åland Islands'
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.default = [{ name: 'Phim Hài Hước' }, { name: 'Phim Viễn Tưởng' }, { name: 'Phim Hành Động' }, { name: 'Phim Phiêu Lưu' }, { name: 'Phim Tâm Lý' }, { name: 'Phim Hình Sự' }, { name: 'Phim Kinh Dị' }, { name: 'Phim Bí Mật Điện Ảnh' }, { name: 'Phim Âm Nhạc' }, { name: 'Phim Khoa học Tài liệu' }, { name: 'Phim Võ Thuật' }, { name: 'Phim Chiến Tranh' }, { name: 'Phim Hoạt Hình' }, { name: 'Phim Thần Thoại' }, { name: 'Phim Cổ Trang' }, { name: 'Phim Thuyết Minh' }, { name: 'Phim Thiếu nhi' }, { name: 'Phim Hài Việt' }, { name: 'Phim TV Show' }];
+exports.default = [{ name: 'Hài Hước' }, { name: 'Viễn Tưởng' }, { name: 'Hành Động' }, { name: 'Phiêu Lưu' }, { name: 'Tâm Lý' }, { name: 'Hình Sự' }, { name: 'Kinh Dị' }, { name: 'Điện Ảnh' }, { name: 'Âm Nhạc' }, { name: 'Khoa học Tài liệu' }, { name: 'Võ Thuật' }, { name: 'Chiến Tranh' }, { name: 'Hoạt Hình' }, { name: 'Thần Thoại' }, { name: 'Cổ Trang' }, { name: 'Thuyết Minh' }, { name: 'Thiếu nhi' }, { name: 'Hài Việt' }, { name: 'TV Show' }];
 
 /***/ }),
-/* 32 */
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.getUser = getUser;
+
+var _constants = __webpack_require__(12);
+
+var _constants2 = _interopRequireDefault(_constants);
+
+var _jsonwebtoken = __webpack_require__(25);
+
+var _jsonwebtoken2 = _interopRequireDefault(_jsonwebtoken);
+
+var _userModel = __webpack_require__(14);
+
+var _userModel2 = _interopRequireDefault(_userModel);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+async function getUser(req, res, next) {
+	req.user = {};
+	await _jsonwebtoken2.default.verify(extractToken(req.headers.authorization), _constants2.default.JWT_SECRET, async function (err, decoded) {
+		if (err) {
+			req.user = {
+				role: 'viewer'
+			};
+			next();
+		} else {
+			const user = await _userModel2.default.findById(decoded._id);
+			req.user = user;
+			req.token = req.headers.authorization;
+			next();
+		}
+	});
+}
+
+function extractToken(authorization = '') {
+	return authorization.replace('JWT ', '');
+}
+
+/***/ }),
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1253,7 +1454,7 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _movieModel = __webpack_require__(18);
+var _movieModel = __webpack_require__(19);
 
 var _movieModel2 = _interopRequireDefault(_movieModel);
 
@@ -1275,7 +1476,7 @@ async function ownMovie(req, res, next) {
 }
 
 /***/ }),
-/* 33 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1291,7 +1492,7 @@ exports.createActor = createActor;
 exports.updateActor = updateActor;
 exports.deleteActor = deleteActor;
 
-var _actorModel = __webpack_require__(34);
+var _actorModel = __webpack_require__(38);
 
 var _actorModel2 = _interopRequireDefault(_actorModel);
 
@@ -1299,11 +1500,11 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _actorUtil = __webpack_require__(36);
+var _actorUtil = __webpack_require__(40);
 
 var util = _interopRequireWildcard(_actorUtil);
 
-var _actors = __webpack_require__(29);
+var _actors = __webpack_require__(32);
 
 var _actors2 = _interopRequireDefault(_actors);
 
@@ -1408,7 +1609,7 @@ async function deleteActor(req, res, next) {
 }
 
 /***/ }),
-/* 34 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1418,7 +1619,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _validator = __webpack_require__(8);
+var _validator = __webpack_require__(9);
 
 var _validator2 = _interopRequireDefault(_validator);
 
@@ -1426,11 +1627,11 @@ var _mongoose = __webpack_require__(2);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _mongoosePaginate = __webpack_require__(5);
+var _mongoosePaginate = __webpack_require__(6);
 
 var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
 
-var _mongooseAutopopulate = __webpack_require__(6);
+var _mongooseAutopopulate = __webpack_require__(5);
 
 var _mongooseAutopopulate2 = _interopRequireDefault(_mongooseAutopopulate);
 
@@ -1442,7 +1643,7 @@ var _pluginService = __webpack_require__(11);
 
 var pluginService = _interopRequireWildcard(_pluginService);
 
-var _actorValidation = __webpack_require__(15);
+var _actorValidation = __webpack_require__(17);
 
 var myValid = _interopRequireWildcard(_actorValidation);
 
@@ -1494,7 +1695,7 @@ actorSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Actor' });
 exports.default = _mongoose2.default.model('Actor', actorSchema);
 
 /***/ }),
-/* 35 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1514,15 +1715,15 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _actorController = __webpack_require__(33);
+var _actorController = __webpack_require__(37);
 
 var actorController = _interopRequireWildcard(_actorController);
 
-var _actorValidation = __webpack_require__(15);
+var _actorValidation = __webpack_require__(17);
 
 var _actorValidation2 = _interopRequireDefault(_actorValidation);
 
-var _authService = __webpack_require__(9);
+var _authService = __webpack_require__(8);
 
 var authService = _interopRequireWildcard(_authService);
 
@@ -1582,7 +1783,7 @@ router.get('/stats', (0, _expressValidation2.default)(_actorValidation2.default.
 exports.default = router;
 
 /***/ }),
-/* 36 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1598,7 +1799,7 @@ function debug(obj) {
 }
 
 /***/ }),
-/* 37 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1615,7 +1816,7 @@ exports.createCountry = createCountry;
 exports.updateCountry = updateCountry;
 exports.deleteCountry = deleteCountry;
 
-var _countryModel = __webpack_require__(38);
+var _countryModel = __webpack_require__(42);
 
 var _countryModel2 = _interopRequireDefault(_countryModel);
 
@@ -1623,11 +1824,11 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _countryUtil = __webpack_require__(40);
+var _countryUtil = __webpack_require__(44);
 
 var util = _interopRequireWildcard(_countryUtil);
 
-var _countries = __webpack_require__(30);
+var _countries = __webpack_require__(33);
 
 var _countries2 = _interopRequireDefault(_countries);
 
@@ -1732,7 +1933,7 @@ async function deleteCountry(req, res, next) {
 }
 
 /***/ }),
-/* 38 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1742,7 +1943,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _validator = __webpack_require__(8);
+var _validator = __webpack_require__(9);
 
 var _validator2 = _interopRequireDefault(_validator);
 
@@ -1750,11 +1951,11 @@ var _mongoose = __webpack_require__(2);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _mongoosePaginate = __webpack_require__(5);
+var _mongoosePaginate = __webpack_require__(6);
 
 var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
 
-var _mongooseAutopopulate = __webpack_require__(6);
+var _mongooseAutopopulate = __webpack_require__(5);
 
 var _mongooseAutopopulate2 = _interopRequireDefault(_mongooseAutopopulate);
 
@@ -1762,7 +1963,7 @@ var _mongooseUniqueValidator = __webpack_require__(7);
 
 var _mongooseUniqueValidator2 = _interopRequireDefault(_mongooseUniqueValidator);
 
-var _slugify = __webpack_require__(12);
+var _slugify = __webpack_require__(13);
 
 var _slugify2 = _interopRequireDefault(_slugify);
 
@@ -1770,7 +1971,7 @@ var _pluginService = __webpack_require__(11);
 
 var pluginService = _interopRequireWildcard(_pluginService);
 
-var _regex = __webpack_require__(14);
+var _regex = __webpack_require__(15);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -1814,7 +2015,7 @@ countrySchema.plugin(pluginService.setSlugUrl, { schemaName: 'Country' });
 exports.default = _mongoose2.default.model('Country', countrySchema);
 
 /***/ }),
-/* 39 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1834,15 +2035,15 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _countryController = __webpack_require__(37);
+var _countryController = __webpack_require__(41);
 
 var countryController = _interopRequireWildcard(_countryController);
 
-var _countryValidation = __webpack_require__(41);
+var _countryValidation = __webpack_require__(45);
 
 var _countryValidation2 = _interopRequireDefault(_countryValidation);
 
-var _authService = __webpack_require__(9);
+var _authService = __webpack_require__(8);
 
 var authService = _interopRequireWildcard(_authService);
 
@@ -1902,7 +2103,7 @@ router.get('/stats', (0, _expressValidation2.default)(_countryValidation2.defaul
 exports.default = router;
 
 /***/ }),
-/* 40 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1918,7 +2119,7 @@ function debug(obj) {
 }
 
 /***/ }),
-/* 41 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1944,7 +2145,7 @@ exports.default = {
 }; /* eslint-disable no-unused-vars */
 
 /***/ }),
-/* 42 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1961,7 +2162,7 @@ exports.createDirector = createDirector;
 exports.updateDirector = updateDirector;
 exports.deleteDirector = deleteDirector;
 
-var _directorModel = __webpack_require__(43);
+var _directorModel = __webpack_require__(47);
 
 var _directorModel2 = _interopRequireDefault(_directorModel);
 
@@ -1969,7 +2170,7 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _directorUtil = __webpack_require__(45);
+var _directorUtil = __webpack_require__(49);
 
 var util = _interopRequireWildcard(_directorUtil);
 
@@ -2078,7 +2279,7 @@ async function deleteDirector(req, res, next) {
 }
 
 /***/ }),
-/* 43 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2088,7 +2289,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _validator = __webpack_require__(8);
+var _validator = __webpack_require__(9);
 
 var _validator2 = _interopRequireDefault(_validator);
 
@@ -2096,11 +2297,11 @@ var _mongoose = __webpack_require__(2);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _mongoosePaginate = __webpack_require__(5);
+var _mongoosePaginate = __webpack_require__(6);
 
 var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
 
-var _mongooseAutopopulate = __webpack_require__(6);
+var _mongooseAutopopulate = __webpack_require__(5);
 
 var _mongooseAutopopulate2 = _interopRequireDefault(_mongooseAutopopulate);
 
@@ -2108,7 +2309,7 @@ var _mongooseUniqueValidator = __webpack_require__(7);
 
 var _mongooseUniqueValidator2 = _interopRequireDefault(_mongooseUniqueValidator);
 
-var _slugify = __webpack_require__(12);
+var _slugify = __webpack_require__(13);
 
 var _slugify2 = _interopRequireDefault(_slugify);
 
@@ -2171,7 +2372,7 @@ directorSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Director' });
 exports.default = _mongoose2.default.model('Director', directorSchema);
 
 /***/ }),
-/* 44 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2191,15 +2392,15 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _directorController = __webpack_require__(42);
+var _directorController = __webpack_require__(46);
 
 var directorController = _interopRequireWildcard(_directorController);
 
-var _directorValidation = __webpack_require__(46);
+var _directorValidation = __webpack_require__(50);
 
 var _directorValidation2 = _interopRequireDefault(_directorValidation);
 
-var _authService = __webpack_require__(9);
+var _authService = __webpack_require__(8);
 
 var authService = _interopRequireWildcard(_authService);
 
@@ -2259,7 +2460,7 @@ router.get('/stats', (0, _expressValidation2.default)(_directorValidation2.defau
 exports.default = router;
 
 /***/ }),
-/* 45 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2275,7 +2476,7 @@ function debug(obj) {
 }
 
 /***/ }),
-/* 46 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2301,7 +2502,7 @@ exports.default = {
 }; /* eslint-disable no-unused-vars */
 
 /***/ }),
-/* 47 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2317,7 +2518,7 @@ exports.createFollow = createFollow;
 exports.updateFollow = updateFollow;
 exports.deleteFollow = deleteFollow;
 
-var _followModel = __webpack_require__(48);
+var _followModel = __webpack_require__(52);
 
 var _followModel2 = _interopRequireDefault(_followModel);
 
@@ -2325,7 +2526,7 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _followUtil = __webpack_require__(50);
+var _followUtil = __webpack_require__(54);
 
 var util = _interopRequireWildcard(_followUtil);
 
@@ -2418,7 +2619,7 @@ async function deleteFollow(req, res, next) {
 }
 
 /***/ }),
-/* 48 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2428,7 +2629,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _validator = __webpack_require__(8);
+var _validator = __webpack_require__(9);
 
 var _validator2 = _interopRequireDefault(_validator);
 
@@ -2436,11 +2637,11 @@ var _mongoose = __webpack_require__(2);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _mongoosePaginate = __webpack_require__(5);
+var _mongoosePaginate = __webpack_require__(6);
 
 var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
 
-var _mongooseAutopopulate = __webpack_require__(6);
+var _mongooseAutopopulate = __webpack_require__(5);
 
 var _mongooseAutopopulate2 = _interopRequireDefault(_mongooseAutopopulate);
 
@@ -2448,7 +2649,7 @@ var _mongooseUniqueValidator = __webpack_require__(7);
 
 var _mongooseUniqueValidator2 = _interopRequireDefault(_mongooseUniqueValidator);
 
-var _slugify = __webpack_require__(12);
+var _slugify = __webpack_require__(13);
 
 var _slugify2 = _interopRequireDefault(_slugify);
 
@@ -2496,7 +2697,7 @@ followSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Follow' });
 exports.default = _mongoose2.default.model('Follow', followSchema);
 
 /***/ }),
-/* 49 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2516,15 +2717,15 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _followController = __webpack_require__(47);
+var _followController = __webpack_require__(51);
 
 var followController = _interopRequireWildcard(_followController);
 
-var _followValidation = __webpack_require__(51);
+var _followValidation = __webpack_require__(55);
 
 var _followValidation2 = _interopRequireDefault(_followValidation);
 
-var _authService = __webpack_require__(9);
+var _authService = __webpack_require__(8);
 
 var authService = _interopRequireWildcard(_authService);
 
@@ -2579,7 +2780,7 @@ router.get('/stats', (0, _expressValidation2.default)(_followValidation2.default
 exports.default = router;
 
 /***/ }),
-/* 50 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2595,7 +2796,7 @@ function debug(obj) {
 }
 
 /***/ }),
-/* 51 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2621,7 +2822,7 @@ exports.default = {
 }; /* eslint-disable no-unused-vars */
 
 /***/ }),
-/* 52 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2638,7 +2839,7 @@ exports.createGenre = createGenre;
 exports.updateGenre = updateGenre;
 exports.deleteGenre = deleteGenre;
 
-var _genreModel = __webpack_require__(53);
+var _genreModel = __webpack_require__(57);
 
 var _genreModel2 = _interopRequireDefault(_genreModel);
 
@@ -2646,11 +2847,11 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _genreUtil = __webpack_require__(55);
+var _genreUtil = __webpack_require__(59);
 
 var util = _interopRequireWildcard(_genreUtil);
 
-var _genres = __webpack_require__(31);
+var _genres = __webpack_require__(34);
 
 var _genres2 = _interopRequireDefault(_genres);
 
@@ -2755,7 +2956,7 @@ async function deleteGenre(req, res, next) {
 }
 
 /***/ }),
-/* 53 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2765,7 +2966,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _validator = __webpack_require__(8);
+var _validator = __webpack_require__(9);
 
 var _validator2 = _interopRequireDefault(_validator);
 
@@ -2773,11 +2974,11 @@ var _mongoose = __webpack_require__(2);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _mongoosePaginate = __webpack_require__(5);
+var _mongoosePaginate = __webpack_require__(6);
 
 var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
 
-var _mongooseAutopopulate = __webpack_require__(6);
+var _mongooseAutopopulate = __webpack_require__(5);
 
 var _mongooseAutopopulate2 = _interopRequireDefault(_mongooseAutopopulate);
 
@@ -2789,7 +2990,7 @@ var _pluginService = __webpack_require__(11);
 
 var pluginService = _interopRequireWildcard(_pluginService);
 
-var _genreValidation = __webpack_require__(16);
+var _genreValidation = __webpack_require__(18);
 
 var myValid = _interopRequireWildcard(_genreValidation);
 
@@ -2839,7 +3040,7 @@ genreSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Genre' });
 exports.default = _mongoose2.default.model('Genre', genreSchema);
 
 /***/ }),
-/* 54 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2859,15 +3060,15 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _genreController = __webpack_require__(52);
+var _genreController = __webpack_require__(56);
 
 var genreController = _interopRequireWildcard(_genreController);
 
-var _genreValidation = __webpack_require__(16);
+var _genreValidation = __webpack_require__(18);
 
 var _genreValidation2 = _interopRequireDefault(_genreValidation);
 
-var _authService = __webpack_require__(9);
+var _authService = __webpack_require__(8);
 
 var authService = _interopRequireWildcard(_authService);
 
@@ -2892,9 +3093,7 @@ const router = new _express.Router();
 
 // More router
 /* eslint-disable no-unused-vars */
-router.get('/init',
-// authService.authJwt,
-genreController.initGenres, function (req, res, next) {
+router.get('/init', authService.authJwt, genreController.initGenres, function (req, res, next) {
 	return res.status(_httpStatus2.default.OK).json({
 		genres: res.genres
 	});
@@ -2929,7 +3128,7 @@ router.get('/stats', (0, _expressValidation2.default)(_genreValidation2.default.
 exports.default = router;
 
 /***/ }),
-/* 55 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2945,7 +3144,7 @@ function debug(obj) {
 }
 
 /***/ }),
-/* 56 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2961,7 +3160,7 @@ exports.createGroup = createGroup;
 exports.updateGroup = updateGroup;
 exports.deleteGroup = deleteGroup;
 
-var _groupModel = __webpack_require__(57);
+var _groupModel = __webpack_require__(61);
 
 var _groupModel2 = _interopRequireDefault(_groupModel);
 
@@ -2969,7 +3168,7 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _groupUtil = __webpack_require__(59);
+var _groupUtil = __webpack_require__(63);
 
 var util = _interopRequireWildcard(_groupUtil);
 
@@ -3064,7 +3263,7 @@ async function deleteGroup(req, res, next) {
 }
 
 /***/ }),
-/* 57 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3074,7 +3273,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _validator = __webpack_require__(8);
+var _validator = __webpack_require__(9);
 
 var _validator2 = _interopRequireDefault(_validator);
 
@@ -3082,11 +3281,11 @@ var _mongoose = __webpack_require__(2);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _mongoosePaginate = __webpack_require__(5);
+var _mongoosePaginate = __webpack_require__(6);
 
 var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
 
-var _mongooseAutopopulate = __webpack_require__(6);
+var _mongooseAutopopulate = __webpack_require__(5);
 
 var _mongooseAutopopulate2 = _interopRequireDefault(_mongooseAutopopulate);
 
@@ -3097,10 +3296,6 @@ var _mongooseUniqueValidator2 = _interopRequireDefault(_mongooseUniqueValidator)
 var _pluginService = __webpack_require__(11);
 
 var pluginService = _interopRequireWildcard(_pluginService);
-
-var _groupValidation = __webpack_require__(17);
-
-var myValid = _interopRequireWildcard(_groupValidation);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -3121,7 +3316,6 @@ let groupSchema = new _mongoose.Schema({
 	name: {
 		type: String,
 		required: [true, 'Name is required!'],
-		unique: true,
 		trim: true
 	},
 	slug: {
@@ -3191,7 +3385,7 @@ groupSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Group' });
 exports.default = _mongoose2.default.model('Group', groupSchema);
 
 /***/ }),
-/* 58 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3211,15 +3405,15 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _groupController = __webpack_require__(56);
+var _groupController = __webpack_require__(60);
 
 var groupController = _interopRequireWildcard(_groupController);
 
-var _groupValidation = __webpack_require__(17);
+var _groupValidation = __webpack_require__(64);
 
 var _groupValidation2 = _interopRequireDefault(_groupValidation);
 
-var _authService = __webpack_require__(9);
+var _authService = __webpack_require__(8);
 
 var _paramService = __webpack_require__(10);
 
@@ -3270,7 +3464,7 @@ router.get('/stats', (0, _expressValidation2.default)(_groupValidation2.default.
 exports.default = router;
 
 /***/ }),
-/* 59 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3286,7 +3480,33 @@ function debug(obj) {
 }
 
 /***/ }),
-/* 60 */
+/* 64 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _joi = __webpack_require__(4);
+
+var _joi2 = _interopRequireDefault(_joi);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+	stats: {},
+	index: {},
+	show: {},
+	create: {},
+	update: {},
+	delete: {}
+}; /* eslint-disable no-unused-vars */
+
+/***/ }),
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3302,7 +3522,7 @@ exports.createLike = createLike;
 exports.updateLike = updateLike;
 exports.deleteLike = deleteLike;
 
-var _likeModel = __webpack_require__(61);
+var _likeModel = __webpack_require__(66);
 
 var _likeModel2 = _interopRequireDefault(_likeModel);
 
@@ -3310,7 +3530,7 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _likeUtil = __webpack_require__(63);
+var _likeUtil = __webpack_require__(68);
 
 var util = _interopRequireWildcard(_likeUtil);
 
@@ -3403,7 +3623,7 @@ async function deleteLike(req, res, next) {
 }
 
 /***/ }),
-/* 61 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3413,7 +3633,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _validator = __webpack_require__(8);
+var _validator = __webpack_require__(9);
 
 var _validator2 = _interopRequireDefault(_validator);
 
@@ -3421,11 +3641,11 @@ var _mongoose = __webpack_require__(2);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _mongoosePaginate = __webpack_require__(5);
+var _mongoosePaginate = __webpack_require__(6);
 
 var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
 
-var _mongooseAutopopulate = __webpack_require__(6);
+var _mongooseAutopopulate = __webpack_require__(5);
 
 var _mongooseAutopopulate2 = _interopRequireDefault(_mongooseAutopopulate);
 
@@ -3433,7 +3653,7 @@ var _mongooseUniqueValidator = __webpack_require__(7);
 
 var _mongooseUniqueValidator2 = _interopRequireDefault(_mongooseUniqueValidator);
 
-var _slugify = __webpack_require__(12);
+var _slugify = __webpack_require__(13);
 
 var _slugify2 = _interopRequireDefault(_slugify);
 
@@ -3481,7 +3701,7 @@ likeSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Like' });
 exports.default = _mongoose2.default.model('Like', likeSchema);
 
 /***/ }),
-/* 62 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3501,15 +3721,15 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _likeController = __webpack_require__(60);
+var _likeController = __webpack_require__(65);
 
 var likeController = _interopRequireWildcard(_likeController);
 
-var _likeValidation = __webpack_require__(64);
+var _likeValidation = __webpack_require__(69);
 
 var _likeValidation2 = _interopRequireDefault(_likeValidation);
 
-var _authService = __webpack_require__(9);
+var _authService = __webpack_require__(8);
 
 var authService = _interopRequireWildcard(_authService);
 
@@ -3564,7 +3784,7 @@ router.get('/stats', (0, _expressValidation2.default)(_likeValidation2.default.s
 exports.default = router;
 
 /***/ }),
-/* 63 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3580,7 +3800,7 @@ function debug(obj) {
 }
 
 /***/ }),
-/* 64 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3606,7 +3826,7 @@ exports.default = {
 }; /* eslint-disable no-unused-vars */
 
 /***/ }),
-/* 65 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3622,7 +3842,7 @@ exports.createMember = createMember;
 exports.updateMember = updateMember;
 exports.deleteMember = deleteMember;
 
-var _memberModel = __webpack_require__(66);
+var _memberModel = __webpack_require__(71);
 
 var _memberModel2 = _interopRequireDefault(_memberModel);
 
@@ -3630,7 +3850,7 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _memberUtil = __webpack_require__(68);
+var _memberUtil = __webpack_require__(73);
 
 var util = _interopRequireWildcard(_memberUtil);
 
@@ -3723,7 +3943,7 @@ async function deleteMember(req, res, next) {
 }
 
 /***/ }),
-/* 66 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3733,7 +3953,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _validator = __webpack_require__(8);
+var _validator = __webpack_require__(9);
 
 var _validator2 = _interopRequireDefault(_validator);
 
@@ -3741,11 +3961,11 @@ var _mongoose = __webpack_require__(2);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _mongoosePaginate = __webpack_require__(5);
+var _mongoosePaginate = __webpack_require__(6);
 
 var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
 
-var _mongooseAutopopulate = __webpack_require__(6);
+var _mongooseAutopopulate = __webpack_require__(5);
 
 var _mongooseAutopopulate2 = _interopRequireDefault(_mongooseAutopopulate);
 
@@ -3753,7 +3973,7 @@ var _mongooseUniqueValidator = __webpack_require__(7);
 
 var _mongooseUniqueValidator2 = _interopRequireDefault(_mongooseUniqueValidator);
 
-var _slugify = __webpack_require__(12);
+var _slugify = __webpack_require__(13);
 
 var _slugify2 = _interopRequireDefault(_slugify);
 
@@ -3801,7 +4021,7 @@ memberSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Member' });
 exports.default = _mongoose2.default.model('Member', memberSchema);
 
 /***/ }),
-/* 67 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3821,15 +4041,15 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _memberController = __webpack_require__(65);
+var _memberController = __webpack_require__(70);
 
 var memberController = _interopRequireWildcard(_memberController);
 
-var _memberValidation = __webpack_require__(69);
+var _memberValidation = __webpack_require__(74);
 
 var _memberValidation2 = _interopRequireDefault(_memberValidation);
 
-var _authService = __webpack_require__(9);
+var _authService = __webpack_require__(8);
 
 var authService = _interopRequireWildcard(_authService);
 
@@ -3884,7 +4104,7 @@ router.get('/stats', (0, _expressValidation2.default)(_memberValidation2.default
 exports.default = router;
 
 /***/ }),
-/* 68 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3900,7 +4120,7 @@ function debug(obj) {
 }
 
 /***/ }),
-/* 69 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3926,7 +4146,7 @@ exports.default = {
 }; /* eslint-disable no-unused-vars */
 
 /***/ }),
-/* 70 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3935,20 +4155,27 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+exports.initMovies = initMovies;
+exports.getOwnMovies = getOwnMovies;
 exports.getMoviesStats = getMoviesStats;
 exports.getMovies = getMovies;
 exports.getMovieById = getMovieById;
 exports.createMovie = createMovie;
+exports.updateMovieByVoiceover = updateMovieByVoiceover;
 exports.updateMovie = updateMovie;
 exports.deleteMovie = deleteMovie;
 
-var _movieModel = __webpack_require__(18);
+var _movieModel = __webpack_require__(19);
 
 var _movieModel2 = _interopRequireDefault(_movieModel);
 
 var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
+
+var _movies = __webpack_require__(96);
+
+var _movies2 = _interopRequireDefault(_movies);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3959,6 +4186,37 @@ function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in ob
  * @group movies - Operations about movies
  *
  */
+
+async function initMovies(req, res, next) {
+	try {
+		await _movieModel2.default.deleteMany();
+		await _movieModel2.default.insertMany(_movies2.default);
+		res.movies = _movies2.default;
+
+		next();
+	} catch (e) {
+		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
+	}
+}
+
+async function getOwnMovies(req, res, next) {
+	try {
+		// let { docs, ...moviesMeta } = await Movie.paginate(
+		// 	{ uploader: req.user._id },
+		// 	req.parsedParams
+		// )
+		let _ref = await _movieModel2.default.paginate({}, req.parsedParams),
+		    { docs } = _ref,
+		    moviesMeta = _objectWithoutProperties(_ref, ['docs']);
+
+		res.movies = docs;
+		res.moviesMeta = moviesMeta;
+
+		next();
+	} catch (e) {
+		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
+	}
+}
 
 async function getMoviesStats(req, res, next) {
 	try {
@@ -3974,9 +4232,9 @@ async function getMoviesStats(req, res, next) {
 
 async function getMovies(req, res, next) {
 	try {
-		let _ref = await _movieModel2.default.paginate({}, req.parsedParams),
-		    { docs } = _ref,
-		    moviesMeta = _objectWithoutProperties(_ref, ['docs']);
+		let _ref2 = await _movieModel2.default.paginate({ share: 'public' }, req.parsedParams),
+		    { docs } = _ref2,
+		    moviesMeta = _objectWithoutProperties(_ref2, ['docs']);
 
 		res.movies = docs;
 		res.moviesMeta = moviesMeta;
@@ -3989,7 +4247,7 @@ async function getMovies(req, res, next) {
 
 async function getMovieById(req, res, next) {
 	try {
-		res.movie = await _movieModel2.default.findById(req.params.id);
+		res.movie = await _movieModel2.default.incViewsCount(req.params.id);
 
 		next();
 	} catch (e) {
@@ -4009,13 +4267,33 @@ async function createMovie(req, res, next) {
 	}
 }
 
+async function updateMovieByVoiceover(req, res, next) {
+	// had res.voiceover
+	try {
+		let movie = await _movieModel2.default.findById(res.voiceover.movie);
+
+		if (movie.voiceovers && movie.voiceovers[movie.voiceovers.lenght - 1] === res.voiceover._id && res.voiceover.status === 'done' && res.voiceover.embedUrl) {
+			movie.status = 'done';
+		}
+
+		await movie.save();
+		res.movie = req.movie;
+
+		next();
+	} catch (e) {
+		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
+	}
+}
+
 async function updateMovie(req, res, next) {
 	try {
+		let movie = await _movieModel2.default.findById(req.params.id);
+
 		Object.keys(req.body).forEach(key => {
-			req.movie[key] = req.body[key];
+			movie[key] = req.body[key];
 		});
-		await req.movie.save();
-		res.movie = req.movie;
+		await movie.save();
+		res.movie = movie;
 
 		next();
 	} catch (e) {
@@ -4034,7 +4312,7 @@ async function deleteMovie(req, res, next) {
 }
 
 /***/ }),
-/* 71 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4054,15 +4332,15 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _movieController = __webpack_require__(70);
+var _movieController = __webpack_require__(75);
 
 var movieController = _interopRequireWildcard(_movieController);
 
-var _movieValidation = __webpack_require__(72);
+var _movieValidation = __webpack_require__(77);
 
 var _movieValidation2 = _interopRequireDefault(_movieValidation);
 
-var _authService = __webpack_require__(9);
+var _authService = __webpack_require__(8);
 
 var authService = _interopRequireWildcard(_authService);
 
@@ -4070,9 +4348,15 @@ var _paramService = __webpack_require__(10);
 
 var paramService = _interopRequireWildcard(_paramService);
 
-var _ownMiddleware = __webpack_require__(32);
+var _ownMiddleware = __webpack_require__(36);
 
 var ownMiddleware = _interopRequireWildcard(_ownMiddleware);
+
+var _roleMiddleware = __webpack_require__(16);
+
+var _roleService = __webpack_require__(22);
+
+var _roleService2 = _interopRequireDefault(_roleService);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -4089,6 +4373,25 @@ const router = new _express.Router();
  * PATCH/PUT /items/:id => update
  * DELETE /items/:id => remove
  */
+
+// More router
+router.get('/init',
+// authService.authJwt,
+movieController.initMovies, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK).json({
+		movies: res.movies
+	});
+});
+
+router.get('/own', function (req, res, next) {
+	req.permission = _roleService2.default.can(req.user.role).updateOwn('movie');
+	next();
+}, _roleMiddleware.checkPermission, movieController.getOwnMovies, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK).json({
+		movies: res.movies,
+		moviesMeta: res.moviesMeta
+	});
+});
 
 //  Default router
 router.get('/stats', (0, _expressValidation2.default)(_movieValidation2.default.stats), movieController.getMoviesStats, function (req, res, next) {
@@ -4116,12 +4419,10 @@ router.get('/stats', (0, _expressValidation2.default)(_movieValidation2.default.
 	return res.sendStatus(_httpStatus2.default.OK);
 });
 
-// More router
-
 exports.default = router;
 
 /***/ }),
-/* 72 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4147,7 +4448,7 @@ exports.default = {
 }; /* eslint-disable no-unused-vars */
 
 /***/ }),
-/* 73 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4163,7 +4464,7 @@ exports.createPost = createPost;
 exports.updatePost = updatePost;
 exports.deletePost = deletePost;
 
-var _postModel = __webpack_require__(74);
+var _postModel = __webpack_require__(79);
 
 var _postModel2 = _interopRequireDefault(_postModel);
 
@@ -4171,7 +4472,7 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _postUtil = __webpack_require__(76);
+var _postUtil = __webpack_require__(81);
 
 var util = _interopRequireWildcard(_postUtil);
 
@@ -4264,7 +4565,7 @@ async function deletePost(req, res, next) {
 }
 
 /***/ }),
-/* 74 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4274,7 +4575,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _validator = __webpack_require__(8);
+var _validator = __webpack_require__(9);
 
 var _validator2 = _interopRequireDefault(_validator);
 
@@ -4282,11 +4583,11 @@ var _mongoose = __webpack_require__(2);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _mongoosePaginate = __webpack_require__(5);
+var _mongoosePaginate = __webpack_require__(6);
 
 var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
 
-var _mongooseAutopopulate = __webpack_require__(6);
+var _mongooseAutopopulate = __webpack_require__(5);
 
 var _mongooseAutopopulate2 = _interopRequireDefault(_mongooseAutopopulate);
 
@@ -4294,7 +4595,7 @@ var _mongooseUniqueValidator = __webpack_require__(7);
 
 var _mongooseUniqueValidator2 = _interopRequireDefault(_mongooseUniqueValidator);
 
-var _postValidation = __webpack_require__(19);
+var _postValidation = __webpack_require__(20);
 
 var myValid = _interopRequireWildcard(_postValidation);
 
@@ -4348,7 +4649,7 @@ postSchema.plugin(_mongooseAutopopulate2.default);
 exports.default = _mongoose2.default.model('Post', postSchema);
 
 /***/ }),
-/* 75 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4368,11 +4669,11 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _postController = __webpack_require__(73);
+var _postController = __webpack_require__(78);
 
 var postController = _interopRequireWildcard(_postController);
 
-var _postValidation = __webpack_require__(19);
+var _postValidation = __webpack_require__(20);
 
 var _postValidation2 = _interopRequireDefault(_postValidation);
 
@@ -4423,7 +4724,7 @@ router.get('/stats', (0, _expressValidation2.default)(_postValidation2.default.s
 exports.default = router;
 
 /***/ }),
-/* 76 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4439,7 +4740,7 @@ function debug(obj) {
 }
 
 /***/ }),
-/* 77 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4455,7 +4756,7 @@ exports.createRate = createRate;
 exports.updateRate = updateRate;
 exports.deleteRate = deleteRate;
 
-var _rateModel = __webpack_require__(78);
+var _rateModel = __webpack_require__(83);
 
 var _rateModel2 = _interopRequireDefault(_rateModel);
 
@@ -4463,7 +4764,7 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _rateUtil = __webpack_require__(80);
+var _rateUtil = __webpack_require__(85);
 
 var util = _interopRequireWildcard(_rateUtil);
 
@@ -4556,7 +4857,7 @@ async function deleteRate(req, res, next) {
 }
 
 /***/ }),
-/* 78 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4566,7 +4867,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _validator = __webpack_require__(8);
+var _validator = __webpack_require__(9);
 
 var _validator2 = _interopRequireDefault(_validator);
 
@@ -4574,11 +4875,11 @@ var _mongoose = __webpack_require__(2);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _mongoosePaginate = __webpack_require__(5);
+var _mongoosePaginate = __webpack_require__(6);
 
 var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
 
-var _mongooseAutopopulate = __webpack_require__(6);
+var _mongooseAutopopulate = __webpack_require__(5);
 
 var _mongooseAutopopulate2 = _interopRequireDefault(_mongooseAutopopulate);
 
@@ -4586,7 +4887,7 @@ var _mongooseUniqueValidator = __webpack_require__(7);
 
 var _mongooseUniqueValidator2 = _interopRequireDefault(_mongooseUniqueValidator);
 
-var _slugify = __webpack_require__(12);
+var _slugify = __webpack_require__(13);
 
 var _slugify2 = _interopRequireDefault(_slugify);
 
@@ -4634,7 +4935,7 @@ rateSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Rate' });
 exports.default = _mongoose2.default.model('Rate', rateSchema);
 
 /***/ }),
-/* 79 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4654,15 +4955,15 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _rateController = __webpack_require__(77);
+var _rateController = __webpack_require__(82);
 
 var rateController = _interopRequireWildcard(_rateController);
 
-var _rateValidation = __webpack_require__(81);
+var _rateValidation = __webpack_require__(86);
 
 var _rateValidation2 = _interopRequireDefault(_rateValidation);
 
-var _authService = __webpack_require__(9);
+var _authService = __webpack_require__(8);
 
 var authService = _interopRequireWildcard(_authService);
 
@@ -4711,478 +5012,6 @@ router.get('/stats', (0, _expressValidation2.default)(_rateValidation2.default.s
 		rate: res.rate
 	});
 }).delete('/:id', (0, _expressValidation2.default)(_rateValidation2.default.delete), rateController.deleteRate, function (req, res, next) {
-	return res.sendStatus(_httpStatus2.default.OK);
-});
-
-exports.default = router;
-
-/***/ }),
-/* 80 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.debug = debug;
-/* eslint-disable no-console */
-function debug(obj) {
-	console.log(obj);
-}
-
-/***/ }),
-/* 81 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _joi = __webpack_require__(4);
-
-var _joi2 = _interopRequireDefault(_joi);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-	stats: {},
-	index: {},
-	show: {},
-	create: {},
-	update: {},
-	delete: {}
-}; /* eslint-disable no-unused-vars */
-
-/***/ }),
-/* 82 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.getSeriesesStats = getSeriesesStats;
-exports.getSerieses = getSerieses;
-exports.getSeriesById = getSeriesById;
-exports.createSeries = createSeries;
-exports.updateSeries = updateSeries;
-exports.deleteSeries = deleteSeries;
-
-var _seriesModel = __webpack_require__(83);
-
-var _seriesModel2 = _interopRequireDefault(_seriesModel);
-
-var _httpStatus = __webpack_require__(0);
-
-var _httpStatus2 = _interopRequireDefault(_httpStatus);
-
-var _seriesUtil = __webpack_require__(85);
-
-var util = _interopRequireWildcard(_seriesUtil);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-// eslint-disable-next-line no-unused-vars
-
-
-/**
- * @group serieses - Operations about serieses
- *
- */
-
-async function getSeriesesStats(req, res, next) {
-	try {
-		res.seriesesStats = {
-			count: await _seriesModel2.default.estimatedDocumentCount()
-		};
-
-		next();
-	} catch (e) {
-		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
-	}
-}
-
-async function getSerieses(req, res, next) {
-	try {
-		let _ref = await _seriesModel2.default.paginate({}, req.parsedParams),
-		    { docs } = _ref,
-		    seriesesMeta = _objectWithoutProperties(_ref, ['docs']);
-
-		res.serieses = docs;
-		res.seriesesMeta = seriesesMeta;
-
-		next();
-	} catch (e) {
-		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
-	}
-}
-
-async function getSeriesById(req, res, next) {
-	try {
-		res.series = await _seriesModel2.default.findById(req.params.id);
-
-		next();
-	} catch (e) {
-		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
-	}
-}
-
-async function createSeries(req, res, next) {
-	try {
-		res.series = await _seriesModel2.default.create(req.body);
-
-		next();
-	} catch (e) {
-		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
-	}
-}
-
-async function updateSeries(req, res, next) {
-	try {
-		let series = await _seriesModel2.default.findById(req.params.id);
-
-		Object.keys(req.body).forEach(key => {
-			series[key] = req.body[key];
-		});
-		await series.save();
-		res.series = series;
-
-		next();
-	} catch (e) {
-		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
-	}
-}
-
-async function deleteSeries(req, res, next) {
-	try {
-		const series = await _seriesModel2.default.findById(req.params.id);
-
-		await series.remove();
-
-		next();
-	} catch (e) {
-		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
-	}
-}
-
-/***/ }),
-/* 83 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _validator = __webpack_require__(8);
-
-var _validator2 = _interopRequireDefault(_validator);
-
-var _mongoose = __webpack_require__(2);
-
-var _mongoose2 = _interopRequireDefault(_mongoose);
-
-var _mongooseFloat = __webpack_require__(22);
-
-var _mongooseFloat2 = _interopRequireDefault(_mongooseFloat);
-
-var _mongoosePaginate = __webpack_require__(5);
-
-var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
-
-var _mongooseAutopopulate = __webpack_require__(6);
-
-var _mongooseAutopopulate2 = _interopRequireDefault(_mongooseAutopopulate);
-
-var _mongooseUniqueValidator = __webpack_require__(7);
-
-var _mongooseUniqueValidator2 = _interopRequireDefault(_mongooseUniqueValidator);
-
-var _slugify = __webpack_require__(12);
-
-var _slugify2 = _interopRequireDefault(_slugify);
-
-var _pluginService = __webpack_require__(11);
-
-var pluginService = _interopRequireWildcard(_pluginService);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/* eslint-disable no-unused-vars */
-const ObjectId = _mongoose2.default.Schema.Types.ObjectId;
-
-const Float = _mongooseFloat2.default.loadType(_mongoose2.default);
-
-
-let seriesSchema = new _mongoose.Schema({
-	name: {
-		type: String,
-		unique: true,
-		required: [true, 'Movie name is required!'],
-		trim: true
-	},
-	nameOrigin: {
-		type: String,
-		trim: true
-	},
-	part: {
-		type: Number,
-		trim: true
-	},
-	desc: {
-		type: String,
-		trim: true
-	},
-	imdb: {
-		id: {
-			type: String,
-			trim: true
-		},
-		ratesAvg: {
-			type: Float,
-			trim: true
-		},
-		ratesCount: {
-			type: Number,
-			trim: true
-		}
-	},
-	country: {
-		type: ObjectId,
-		ref: 'Country',
-		autopopulate: true,
-		trim: true
-	},
-	uploader: {
-		type: ObjectId,
-		ref: 'User',
-		autopopulate: true,
-		required: [true, 'Uploader is required!'],
-		trim: true
-	},
-	url: {
-		type: String,
-		trim: true
-	},
-	trailerUrl: {
-		type: String,
-		trim: true
-	},
-	thumbnails: {
-		small: {
-			type: String,
-			trim: true
-		},
-		medium: {
-			type: String,
-			trim: true
-		},
-		large: {
-			type: String,
-			trim: true
-		}
-	},
-	photos: [{
-		type: String,
-		trim: true
-	}],
-	slug: {
-		type: String,
-		unique: true,
-		trim: true
-	},
-	slugOrigin: {
-		type: String,
-		unique: true,
-		trim: true
-	},
-	genres: [{
-		type: ObjectId,
-		ref: 'Genre',
-		autopopulate: true,
-		trim: true
-	}],
-	status: {
-		type: String,
-		enum: ['pending', 'updating', 'done'],
-		default: 'pending',
-		trim: true
-	},
-	share: {
-		type: String,
-		enum: ['private', 'friend', 'public'],
-		default: 'public',
-		trim: true
-	},
-	releaseDate: {
-		type: Date,
-		trim: true
-	},
-	episodes: [{
-		type: ObjectId,
-		ref: 'Movie',
-		trim: true
-	}],
-	year: {
-		type: Number,
-		trim: true
-	},
-	series: {
-		type: ObjectId,
-		ref: 'Series',
-		trim: true
-	},
-	isAdult: {
-		type: Boolean,
-		default: false
-	},
-	actors: [{
-		type: ObjectId,
-		ref: 'Actor',
-		trim: true
-	}],
-	directors: {
-		type: Array,
-		trim: true
-	},
-	quality: {
-		type: String,
-		enum: ['CAM', 'HD', 'FULL HD'],
-		default: 'HD',
-		trim: true
-	},
-	viewsCount: {
-		type: Number,
-		trim: true
-	},
-	likesCount: {
-		type: Number,
-		trim: true
-	},
-	favoritesCount: {
-		type: Number,
-		trim: true
-	},
-	ratesAvg: {
-		type: Number,
-		trim: true
-	},
-	ratesCount: {
-		type: Number,
-		trim: true
-	}
-}, {
-	timestamps: true
-});
-
-seriesSchema.statics = {};
-
-seriesSchema.pre('save', function (next) {
-	return next();
-});
-
-seriesSchema.plugin(_mongooseUniqueValidator2.default, {
-	message: '{VALUE} already taken!'
-});
-seriesSchema.plugin(_mongoosePaginate2.default);
-seriesSchema.plugin(_mongooseAutopopulate2.default);
-seriesSchema.plugin(pluginService.logPost, { schemaName: 'Series' });
-seriesSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Series' });
-
-exports.default = _mongoose2.default.model('Series', seriesSchema);
-
-/***/ }),
-/* 84 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _express = __webpack_require__(1);
-
-var _expressValidation = __webpack_require__(3);
-
-var _expressValidation2 = _interopRequireDefault(_expressValidation);
-
-var _httpStatus = __webpack_require__(0);
-
-var _httpStatus2 = _interopRequireDefault(_httpStatus);
-
-var _seriesController = __webpack_require__(82);
-
-var seriesController = _interopRequireWildcard(_seriesController);
-
-var _seriesValidation = __webpack_require__(86);
-
-var _seriesValidation2 = _interopRequireDefault(_seriesValidation);
-
-var _authService = __webpack_require__(9);
-
-var authService = _interopRequireWildcard(_authService);
-
-var _paramService = __webpack_require__(10);
-
-var paramService = _interopRequireWildcard(_paramService);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const router = new _express.Router();
-
-/**
- * GET /items/stats => getSeriesesStats
- * GET /items => getSerieses
- * GET /items/:id => getSeriesById
- * POST /items/ => createSeries
- * PATCH/PUT /items/:id => updateSeries
- * DELETE /items/:id => deleteSeries
- */
-
-// More router
-
-// Default Rest router
-/* eslint-disable no-unused-vars */
-router.get('/stats', (0, _expressValidation2.default)(_seriesValidation2.default.stats), seriesController.getSeriesesStats, function (req, res, next) {
-	return res.status(_httpStatus2.default.OK).json({
-		seriesesStats: res.seriesesStats
-	});
-}).get('/', paramService.parseParam, (0, _expressValidation2.default)(_seriesValidation2.default.index), seriesController.getSerieses, function (req, res, next) {
-	return res.status(_httpStatus2.default.OK).json({
-		serieses: res.serieses,
-		seriesesMeta: res.seriesesMeta
-	});
-}).get('/:id', (0, _expressValidation2.default)(_seriesValidation2.default.show), seriesController.getSeriesById, function (req, res, next) {
-	return res.status(_httpStatus2.default.OK).json({
-		series: res.series
-	});
-}).post('/', authService.authJwt, (0, _expressValidation2.default)(_seriesValidation2.default.create), seriesController.createSeries, function (req, res, next) {
-	return res.status(_httpStatus2.default.OK).json({
-		series: res.series
-	});
-}).put('/:id', (0, _expressValidation2.default)(_seriesValidation2.default.update), seriesController.updateSeries, function (req, res, next) {
-	return res.status(_httpStatus2.default.OK).json({
-		series: res.series
-	});
-}).delete('/:id', (0, _expressValidation2.default)(_seriesValidation2.default.delete), seriesController.deleteSeries, function (req, res, next) {
 	return res.sendStatus(_httpStatus2.default.OK);
 });
 
@@ -5250,7 +5079,7 @@ exports.deleteUser = deleteUser;
 exports.localLogin = localLogin;
 exports.facebookLogin = facebookLogin;
 
-var _userModel = __webpack_require__(20);
+var _userModel = __webpack_require__(14);
 
 var _userModel2 = _interopRequireDefault(_userModel);
 
@@ -5399,7 +5228,13 @@ var _userValidation = __webpack_require__(90);
 
 var _userValidation2 = _interopRequireDefault(_userValidation);
 
-var _authService = __webpack_require__(9);
+var _authService = __webpack_require__(8);
+
+var _roleMiddleware = __webpack_require__(16);
+
+var _roleService = __webpack_require__(22);
+
+var _roleService2 = _interopRequireDefault(_roleService);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -5418,7 +5253,10 @@ const router = new _express.Router();
  */
 
 // More router
-router.get('/current', _authService.authJwt, userController.getProfile, function (req, res, next) {
+router.get('/current', function (req, res, next) {
+	req.permission = _roleService2.default.can(req.user.role).readOwn('user');
+	next();
+}, _roleMiddleware.checkPermission, userController.getProfile, function (req, res, next) {
 	return res.status(_httpStatus2.default.OK).json({
 		user: req.user
 	});
@@ -5513,6 +5351,8 @@ exports.getVoiceoverById = getVoiceoverById;
 exports.createVoiceover = createVoiceover;
 exports.updateVoiceover = updateVoiceover;
 exports.deleteVoiceover = deleteVoiceover;
+exports.checkSynthesis = checkSynthesis;
+exports.callbackSynthesis = callbackSynthesis;
 
 var _voiceoverModel = __webpack_require__(92);
 
@@ -5522,6 +5362,18 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
+var _synthesisService = __webpack_require__(23);
+
+var synthesisService = _interopRequireWildcard(_synthesisService);
+
+var _fileService = __webpack_require__(94);
+
+var fileService = _interopRequireWildcard(_fileService);
+
+var _helper = __webpack_require__(24);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
@@ -5529,7 +5381,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  */
 
-/* eslint-disable no-unused-vars */
 async function getVoiceoversStats(req, res, next) {
 	try {
 		res.voiceoversStats = {
@@ -5540,8 +5391,7 @@ async function getVoiceoversStats(req, res, next) {
 	} catch (e) {
 		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
 	}
-}
-
+} /* eslint-disable no-unused-vars */
 async function getVoiceovers(req, res, next) {
 	const limit = parseInt(req.query.limit, 0);
 	const skip = parseInt(req.query.skip, 0);
@@ -5567,7 +5417,9 @@ async function getVoiceoverById(req, res, next) {
 
 async function createVoiceover(req, res, next) {
 	try {
-		res.voiceover = await _voiceoverModel2.default.create(req.body);
+		res.voiceover = await _voiceoverModel2.default.create(Object.assign({}, req.body, {
+			uploader: req.user._id || ''
+		}));
 
 		next();
 	} catch (e) {
@@ -5603,6 +5455,59 @@ async function deleteVoiceover(req, res, next) {
 	}
 }
 
+async function checkSynthesis(req, res, next) {
+	try {
+		let voiceoverChecked = await synthesisService.checkSynthesis(req.query.requestId);
+
+		let voiceover = await _voiceoverModel2.default.find({
+			requestId: voiceoverChecked.requestId
+		});
+
+		if (voiceover.status !== 'done' && voiceoverChecked && voiceoverChecked.status == 'done') {
+			voiceover = Object.assign(voiceover, voiceoverChecked);
+			await voiceover.save();
+			res.voiceover = voiceover;
+		} else {
+			res.voiceover = voiceoverChecked;
+		}
+
+		let file = await fileService.uploadFile('test', false, 'https://i.vimeocdn.com/portrait/25122243_300x300');
+		console.log(file);
+		next();
+	} catch (e) {
+		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
+	}
+}
+
+async function callbackSynthesis(req, res, next) {
+	try {
+		(0, _helper.log)(JSON.stringify(req.body), 'voiceover-callback.log');
+
+		let voiceoverChecked = req.body;
+
+		let file = await fileService.uploadFile('test', false, voiceoverChecked.downloadUrl
+		// 'https://i.vimeocdn.com/portrait/25122243_300x300'
+		);
+
+		let voiceover = await _voiceoverModel2.default.find({
+			requestId: req.body.requestId
+		});
+		voiceover.fileFormat = voiceoverChecked.fileFormat;
+		voiceover.embedUrl = file.url;
+
+		await voiceover.save();
+		res.voiceover = voiceover;
+
+		(0, _helper.log)(JSON.stringify(file));
+		(0, _helper.log)('--', 'voiceover-callback.log');
+
+		next();
+	} catch (e) {
+		console.log(e);
+		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
+	}
+}
+
 /***/ }),
 /* 92 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -5614,7 +5519,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _validator = __webpack_require__(8);
+var _validator = __webpack_require__(9);
 
 var _validator2 = _interopRequireDefault(_validator);
 
@@ -5626,9 +5531,21 @@ var _mongoose = __webpack_require__(2);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _mongoosePaginate = __webpack_require__(5);
+var _mongoosePaginate = __webpack_require__(6);
 
 var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
+
+var _mongooseAutopopulate = __webpack_require__(5);
+
+var _mongooseAutopopulate2 = _interopRequireDefault(_mongooseAutopopulate);
+
+var _mongooseUniqueValidator = __webpack_require__(7);
+
+var _mongooseUniqueValidator2 = _interopRequireDefault(_mongooseUniqueValidator);
+
+var _pluginService = __webpack_require__(11);
+
+var pluginService = _interopRequireWildcard(_pluginService);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -5644,7 +5561,7 @@ const ObjectId = _mongoose2.default.Schema.Types.ObjectId; /* eslint-disable no-
 let voiceoverSchema = new _mongoose.Schema({
 	requestId: {
 		type: String,
-		required: [true, 'Request indentifier is required!'],
+		required: [true, 'Request ID is required!'],
 		unique: true,
 		trim: true
 	},
@@ -5670,12 +5587,21 @@ let voiceoverSchema = new _mongoose.Schema({
 	uploader: {
 		type: ObjectId,
 		ref: 'User',
+		required: [true, 'Uploader is required!'],
 		trim: true
 	}
 }, {
 	timestamps: true
 });
+
+voiceoverSchema.plugin(_mongooseUniqueValidator2.default, {
+	message: '{VALUE} already taken!'
+});
+
 voiceoverSchema.plugin(_mongoosePaginate2.default);
+voiceoverSchema.plugin(_mongooseAutopopulate2.default);
+voiceoverSchema.plugin(pluginService.logPost, { schemaName: 'Voiceover' });
+voiceoverSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Voiceover' });
 
 exports.default = _mongoose2.default.model('Voiceover', voiceoverSchema);
 
@@ -5708,10 +5634,23 @@ var _voiceoverValidation = __webpack_require__(21);
 
 var _voiceoverValidation2 = _interopRequireDefault(_voiceoverValidation);
 
+var _authService = __webpack_require__(8);
+
+var authService = _interopRequireWildcard(_authService);
+
+var _paramService = __webpack_require__(10);
+
+var paramService = _interopRequireWildcard(_paramService);
+
+var _synthesisService = __webpack_require__(23);
+
+var synthesisService = _interopRequireWildcard(_synthesisService);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/* eslint-disable no-unused-vars */
 const router = new _express.Router();
 
 /**
@@ -5723,22 +5662,38 @@ const router = new _express.Router();
  * DELETE /items/:id => remove
  */
 
+// More router
+router.get('/check', // with req.query.requestId
+(0, _expressValidation2.default)(_voiceoverValidation2.default.checkSynthesis), voiceoverController.checkSynthesis, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK).json({
+		voiceover: res.voiceover
+	});
+});
+
+router.post('/callback', // with req.query.requestId
+(0, _expressValidation2.default)(_voiceoverValidation2.default.callbackSynthesis), voiceoverController.callbackSynthesis, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK).json({
+		voiceover: res.voiceover
+	});
+});
+
 //  Default router
-/* eslint-disable no-unused-vars */
 router.get('/stats', (0, _expressValidation2.default)(_voiceoverValidation2.default.stats), voiceoverController.getVoiceoversStats, function (req, res, next) {
 	return res.status(_httpStatus2.default.OK).json({
 		voiceoversStats: res.voiceoversStats
 	});
-}).get('/', (0, _expressValidation2.default)(_voiceoverValidation2.default.index), voiceoverController.getVoiceoversStats, voiceoverController.getVoiceovers, function (req, res, next) {
+}).get('/', (0, _expressValidation2.default)(_voiceoverValidation2.default.index), paramService.parseParam, voiceoverController.getVoiceovers, function (req, res, next) {
 	return res.status(_httpStatus2.default.OK).json({
 		voiceovers: res.voiceovers,
-		voiceoversStats: res.voiceoversStats
+		voiceoversMeta: res.voiceoversMeta
 	});
 }).get('/:id', (0, _expressValidation2.default)(_voiceoverValidation2.default.show), voiceoverController.getVoiceoverById, function (req, res, next) {
 	return res.status(_httpStatus2.default.OK).json({
 		voiceover: res.voiceover
 	});
-}).post('/', (0, _expressValidation2.default)(_voiceoverValidation2.default.create), voiceoverController.createVoiceover, function (req, res, next) {
+}).post('/',
+// validate(voiceoverValidation.create),
+authService.authJwt, voiceoverController.createVoiceover, function (req, res, next) {
 	return res.status(_httpStatus2.default.OK).json({
 		voiceover: res.voiceover
 	});
@@ -5749,8 +5704,6 @@ router.get('/stats', (0, _expressValidation2.default)(_voiceoverValidation2.defa
 }).delete('/:id', (0, _expressValidation2.default)(_voiceoverValidation2.default.delete), voiceoverController.deleteVoiceover, function (req, res, next) {
 	return res.sendStatus(_httpStatus2.default.OK);
 });
-
-// More router
 
 exports.default = router;
 
@@ -5764,11 +5717,41 @@ exports.default = router;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.genderToNumber = genderToNumber;
-function genderToNumber(gender) {
-	if (gender == 'male') return 1;
-	if (gender == 'female') return 2;
-	return 0;
+exports.uploadFile = uploadFile;
+
+var _request = __webpack_require__(111);
+
+var _request2 = _interopRequireDefault(_request);
+
+var _constants = __webpack_require__(12);
+
+var _constants2 = _interopRequireDefault(_constants);
+
+var _fs = __webpack_require__(102);
+
+var _fs2 = _interopRequireDefault(_fs);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+async function uploadFile(path = 'default', overwrite = false, fileUrl) {
+	await _request2.default.post({
+		url: 'https://upload.vbee.vn/api/v1/upload/file',
+		headers: {
+			'content-type': '*/*',
+			authorization: _constants2.default.UPLOAD_VBEE_TOKEN
+		},
+		formData: {
+			path: path,
+			overwrite: overwrite,
+			file: (0, _request2.default)(fileUrl)
+		}
+	}, (error, res, body) => {
+		if (error) {
+			throw error;
+		}
+		// console.log(JSON.parse(body))
+		return JSON.parse(body);
+	});
 }
 
 /***/ }),
@@ -5781,61 +5764,97 @@ module.exports = [{"name":"Hao Ning"},{"name":"Duncan Jones"},{"name":"Jesse V. 
 /* 96 */
 /***/ (function(module, exports) {
 
-module.exports = require("bcrypt-nodejs");
+module.exports = [{"name":"Cơ Trưởng Sully","viewUrl":"https://phim3s.pw/phim-le/co-truong-sully_9407/xem-phim/","nameOrigin":"Sully","thumbailSmallUrl":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fco-truong-sully-sully-2016.jpg%3Fsize%3D300","resolutionText":"Bản Đẹp","directors":["Clint Eastwood"],"actors":["Tom Hanks"],"genres":["Phim Chiến Tranh","Phim Phiêu Lưu","Phim Khoa học Tài liệu","Phim Thuyết Minh"],"country":{"name":"Mỹ"},"duration":100,"viewsCount":5312235,"uploaderName":"Ong Thi Van","desc":"Phim Cơ Trưởng Sully - Sully xoang quanh câu truyện cơ trưởng \"Sully\" Sullenberger đáp chiếc máy bay trong tình trạng động cơ tê liệt hoàn toàn xuống con sông Hudson mà hơn 150 hành khách không một ai bị thiệt mạng . Tuy nhiên, trong khi Sully được công chúng và truyền thông tung hô như một anh hùng bởi tài nghệ chưa từng thấy từ trước đến nay, thì một cuộc điều tra được tiến hành có khả năng hủy hoại hoàn toàn danh tiếng cũng như sự nghiệp của ông.","tags":["cơ trưởng sully","phim cơ trưởng sully","xem phim cơ trưởng sully","cơ trưởng sully 2016","cơ trưởng sully vietsub","cơ trưởng sully thuyết minh","cơ trưởng sully phụ đề","cơ trưởng sully full hd","cơ trưởng sully trọn bộ","cơ trưởng sully bản đẹp","sully","phim sully","sully 2016","xem phim sully","sully vietsub","sully thuyết minh","sully phụ đề","sully full hd","sully trọn bộ","sully bản đẹp"],"embeds":[{"label":"360p","file":"https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=13&ct=1554389633&rver=6.7.6643.0&wp=MBI_SSL_SHARED&wreply=https:%2F%2Fonedrive.live.com%2Fdownload%3Fcid%3D375CDB1B890B3A36%26resid%3D375CDB1B890B3A36%252152385%26authkey%3DANWZfSEQu1YS76Q&lc=1033&id=250206&cbcxt=sky&cbcxt=sky","file_o":"https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=13&ct=1554389633&rver=6.7.6643.0&wp=MBI_SSL_SHARED&wreply=https:%2F%2Fonedrive.live.com%2Fdownload%3Fcid%3D375CDB1B890B3A36%26resid%3D375CDB1B890B3A36%252152385%26authkey%3DANWZfSEQu1YS76Q&lc=1033&id=250206&cbcxt=sky&cbcxt=sky","type":"mp4","default":"true"}],"backups":["http://topanimehd.com/getid.php?id=MXhKNjFJMG01ckJfek44VGZ0bTFBOXFSSlUxa1I1R1UwOXBQamVF&sub=http://topphimhd.com/wp-content/uploads/2018/11/Sully.2016.1080p.BluRay.x264-SPARKS.srt"],"subUrl":"http://topphimhd.com/wp-content/uploads/2018/11/Sully.2016.1080p.BluRay.x264-SPARKS.srt"},{"name":"Ám Ảnh Kinh Hoàng 2","viewUrl":"https://phim3s.pw/phim-le/am-anh-kinh-hoang-2_9155/xem-phim/","nameOrigin":"The Conjuring 2","thumbailSmallUrl":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fam-anh-kinh-hoang-2-the-conjuring-2-2016.jpg%3Fsize%3D300","resolutionText":"HD VietSub + Thuyết Minh","directors":["James Wan"],"actors":["Vera Farmiga","Patrick Wilson","Frances O'Connor","Madison Wolfe","Simon McBurney","Franka Potente"],"genres":["Phim Kinh Dị","Phim Tâm Lý","Phim Thuyết Minh"],"country":{"name":"Mỹ"},"duration":110,"viewsCount":9710505,"uploaderName":"Ong Thi Van","desc":"The Conjuring 2: The Enfield Poltergeist tiếp tục dựa trên một trong 10000 hồ sơ điều tra của cặp vợ chồng Warren. Đây là vụ án kỳ bí nhất được ghi nhận trong lịch sử siêu nhiên.Chuyện phim diễn ra vào cuối thập niên 70 tại vùng Enfield nước Anh. Nơi mà người mẹ đơn thân Hodgson sống cùng 4 đứa con gái của mình. Bọn trẻ bị các thế lực siêu nhiên tà ác ác quấy nhiễu liên tục. Bà mẹ đành phải nhờ đến sự giúp đỡ của hai nhà ngoại cảm Ed và Lorraine Warren đến điều tra để giải cứu con mình.","tags":["the conjuring","ám ảnh kinh hoàng 2","the conjuring 2","xem phim ám ảnh kinh hoàng 2","ám ảnh kinh hoàng 2 bản đẹp","ám ảnh kinh hoàng 2 vietsub","ám ảnh kinh hoàng 2 2016","ám ảnh kinh hoàng 2 phụ đề","ám ảnh kinh hoàng 2 thuyết minh","xem phim the conjuring 2","the conjuring 2 2016","the conjuring 2 vietsub","the conjuring 2 thuyết minh","the conjuring 2full hd","the conjuring 2 bản đẹp","the conjuring 2 phụ đê"],"backups":["http://topanimehd.com/getid.php?id=MVBobGdQMzk1U2h4UFpjSmVoTHBFdWhabkpxckRmaW1ZRzVtOExr&sub=http://topphimhd.com/wp-content/uploads/2018/06/The-Conjuring-2-2016-AllBluray-WorldSubTeam.com_.srt"],"subUrl":"http://topphimhd.com/wp-content/uploads/2018/06/The-Conjuring-2-2016-AllBluray-WorldSubTeam.com_.srt"},{"name":"Anh Hùng Cương Dương","viewUrl":"https://phim3s.pw/phim-le/anh-hung-cuong-duong_9185/xem-phim/","nameOrigin":"The Virgin Psychics","thumbailSmallUrl":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fanh-hung-cuong-duong-the-virgin-psychics-2015.jpg%3Fsize%3D300","resolutionText":"Bản Đẹp","directors":["Sion Sono"],"actors":["Motoki Fukami","Elaiza Ikeda","Megumi Kagurazaka"],"genres":["Phim Hài Hước"],"country":{"name":"Nhật Bản"},"duration":114,"viewsCount":5852940,"uploaderName":"Nguyen tan trung","desc":"The Virgin PsychicsCâu chuyện hài giả tưởng này kể về một nam sinh trung học (còn nguyên tem) bình thường tên là Yoshiro “Yocchan” Kamogawa (do Sometani thủ vai). Cuộc đời cậu đã thay đổi hoàn toàn sau một đêm, khi cậu thức dậy với khả năng đọc được suy nghĩ của người khác. Yoshiro không phải người duy nhất trong thị trấn có siêu năng lực.Teru-oichan (hẳn nhiên là vẫn chưa bị bóc mác), nhân viên của một tiệm cà phê gần trường Yoshiro, có được khả năng di chuyển đồ vật, nhưng anh chỉ toàn dùng để di chuyển sex toy. Yosuke Enomoto (chắc là vẫn còn tem), học sinh năm cuối và là cựu thành viên của đội bóng rổ, cùng trường Yoshiro, có được khả năng dịch chuyển tức thời, nhưng chỉ khi đang trong trạng thái không mảnh vải che thân.","tags":["the virgin psychics","anh hùng cương dương"],"embeds":"<iframe width=\"100%\" height=\"100%\" src=\"https://drive.google.com/file/d/0Bwkrc-cZmu4bUDNETE01aXNfTkU/preview\" frameborder=\"0\" allowfullscreen></iframe>","backups":["http://topanimehd.com/getid.php?id=MUhIalVUcWJTc0YwOFNoZktGVUE5bVNxdUZOU0tMNklMYkd6aHBk&sub=http://topphimhd.com/wp-content/uploads/2018/08/The.Virgin.Psychics.2015.720p.BluRay.x264-WiKi.srt"],"subUrl":"http://topphimhd.com/wp-content/uploads/2018/08/The.Virgin.Psychics.2015.720p.BluRay.x264-WiKi.srt"},{"name":"Người Vận Chuyển 2","viewUrl":"https://phim3s.pw/phim-le/nguoi-van-chuyen-2_437/xem-phim/","nameOrigin":"The Transporter 2","thumbailSmallUrl":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fnguoi-van-chuyen-2-the-transporter-2-2005.jpg%3Fsize%3D300","resolutionText":"Bản Đẹp","directors":["Louis Leterrier"],"actors":["Jason Stathammber Valletta"],"genres":["Phim Hành Động","Phim Thuyết Minh"],"country":{"name":"Mỹ"},"duration":88,"viewsCount":11556390,"uploaderName":"dung","desc":"Sau khi nghỉ hưu ở Miami, cưu nhân viên của Lực lượng đặc biệt, Frank Martin hành nghề tài xế cho gia đình giàu có Billings. Frank được 2 cậu nhóc của gia đình đó rất thần tượng và yêu mến. Khi 2 cậu bé bị bắt cóc tống tiền anh đã 1 mình hành động mà không báo cảnh sát để giải cứu 2 người bạn nhỏ đó.","tags":["người vận chuyển","the transporter","người vận chuyển 2","the transporter 2","jason statham","trọn bộ người vận chuyển phim người vận chuyển","thuyết minh người vận chuyển","phim lẻ","phim hành động mỹ","phim lẻ hay"],"backups":["http://topanimehd.com/getid.php?id=MW5uMElpaFJDaDZ0SVhfVjRCM1JWdXFSMTkyOGhzMXJJRTQwOWJL&sub=http://topphimhd.com/wp-content/uploads/2018/04/Transporter.2.2005.1080p.BluRay.DTS_.x264-xander.srt"],"subUrl":"http://topphimhd.com/wp-content/uploads/2018/04/Transporter.2.2005.1080p.BluRay.DTS_.x264-xander.srt"},{"name":"Người Vận Chuyển 3","viewUrl":"https://phim3s.pw/phim-le/nguoi-van-chuyen-3_438/xem-phim/","nameOrigin":"The Transporter 3","thumbailSmallUrl":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fnguoi-van-chuyen-3-the-transporter-3.jpg%3Fsize%3D300","resolutionText":"Bản Đẹp","directors":["Olivier Megaton"],"actors":["Jason Statham","Robert Knepper","Mike Powers"],"genres":["Phim Hành Động","Phim Thuyết Minh"],"country":{"name":"Mỹ"},"duration":110,"viewsCount":12317745,"uploaderName":"tran quang ha","desc":"Trong Transporter 3, Frank Martin chịu nhiều sức ép trong việc hộ tống Valentina, cô con gái bị bắt cóc của Leonid Vasilev, người đứng đầu Cơ Quan Bảo Vệ Môi Trường của Ukraine, suốt chặng đường dài từ Marseilles đến Stuttgart và Budapest, trước khi dừng lại ở Odessa, Biển Đen.Suốt quãng đường đi, dù nhận được sự giúp đỡ của Thanh tra Tarconi, Frank liên tục phải đấu tranh với những người đã ép buộc anh phải nhận lấy công việc này, những tay chân của Vasilev được gửi đến để ngăn cản anh cùng sự bất hợp tác của Valentina. Bất chấp thái độ hoài nghi của Valentina, Frank và cô gái cuối cùng cũng đã chịu kết hợp cùng nhau trong lúc cả hai đang cố gắng thoát khỏi những tình huống đe dọa tính mạng của chính mình liên tiếp ập đến.","tags":["người vận chuyển","the transporter","người vận chuyển 3","the transporter 3","jason statham","trọn bộ người vận chuyển phim người vận chuyển","thuyết minh người vận chuyển","phim lẻ","phim hành động mỹ","phim lẻ hay"],"embeds":[],"backups":["http://topanimehd.com/getid.php?id=MUNETnVoUjc1SDVoVkVadEk5WU1WbFJkbmhaTTB6b3R4aTZJRGt3&sub=http://topphimhd.com/wp-content/uploads/2018/04/Transporter.3.2008.1080p.BluRay.DTS_.x264-xander.srt"],"subUrl":"http://topphimhd.com/wp-content/uploads/2018/04/Transporter.3.2008.1080p.BluRay.DTS_.x264-xander.srt"},{"name":"Phù Thủy","viewUrl":"https://phim3s.pw/phim-le/phu-thuy_9128/xem-phim/","nameOrigin":"The Witch","thumbailSmallUrl":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fphu-thuy-the-witch-2017.jpg%3Fsize%3D300","resolutionText":"Bản Đẹp","directors":["Robert Eggers"],"actors":["Anya Taylor Joy","Ralph Ineson","Kate Dickie"],"genres":["Phim Kinh Dị","Phim Thuyết Minh"],"country":{"name":"Mỹ"},"duration":92,"viewsCount":6049335,"uploaderName":"nguyen an binh","desc":"","tags":["the witch","phù thủy","phù thủy 2015","phù thủy 2016"],"backups":["http://topanimehd.com/getid.php?id=MWVwR3YwUUFuc1daaXBwYk84ZFZ0a2RhM1N4NjR6T1c1MkZYazFs&sub=http://topphimhd.com/wp-content/uploads/2018/06/The.Witch_.2015.720p.BluRay.x264-DRONES.srt"],"subUrl":"http://topphimhd.com/wp-content/uploads/2018/06/The.Witch_.2015.720p.BluRay.x264-DRONES.srt"},{"name":"Lão Pháo Nhi","viewUrl":"https://phim3s.pw/phim-le/lao-phao-nhi_8910/xem-phim/","nameOrigin":"Mr.Six","thumbailSmallUrl":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Flao-phao-nhi-mrsix-2015.jpg%3Fsize%3D300","resolutionText":"HD Thuyết Minh","directors":["Guan Hu"],"actors":["Trương Hàm Dư","Lý Dịch Phong","Hứa Tình","Ngô Diệc Phàm","Phùng Tiểu Cương"],"genres":["Phim Hành Động","Phim Phiêu Lưu"],"country":{"name":"Trung Quốc"},"duration":136,"viewsCount":6406935,"uploaderName":"K-Drama","desc":"Phim Lã Pháo Nhi khai thác đề tài thế lực mafia, xã hội đen ngầm tại Trung Quốc. Phim kể về cuộc đối chọi giữa những thế lực ngầm với nhau. Trong đó, Lục Gia là trùm thế lực ngầm cũ tại Bắc Kinh. Sau nhiều năm lăn lộn, ông không thích ứng được với sự thay đổi của thời thế nên đã chọn một cuộc sống an nhàn. Nào ngờ, người con trai độc nhất của Lục Gia là Hiểu Ba (Lý Dịch Phong) lại có xích mích với người cầm đầu thế lực mới Tiểu Phi (Ngô Diệc Phàm).","tags":["lão pháo nhi","mr six"],"embeds":"<iframe width=\"100%\" height=\"100%\" src=\"https://drive.google.com/file/d/0B_gEN6DEGR8JZHp1T3hnUWRjVTQ/preview\" frameborder=\"0\" allowfullscreen></iframe>","backups":["http://topanimehd.com/getid.php?id=MXM5NjNRQVYzdW9WQ0FDMXlKdnVWSnFmLUdrWTVVdF9BbHhja1pa&sub=http://topphimhd.com/wp-content/uploads/2018/11/Mr-Six-2015-720p-BluRay-x264-WiKi.srt"],"subUrl":"http://topphimhd.com/wp-content/uploads/2018/11/Mr-Six-2015-720p-BluRay-x264-WiKi.srt"},{"name":"Tinh Võ Anh Hùng","viewUrl":"https://phim3s.pw/phim-le/tinh-vo-anh-hung_201/xem-phim/","nameOrigin":"Fist of Legend","thumbailSmallUrl":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Ftinh-vo-anh-hung-fist-of-legend-1994.jpg%3Fsize%3D300","resolutionText":"Trần Gia Thượng","directors":["Lý Liên Kiệt"],"actors":["Phim Võ Thuật"],"genres":[""],"country":{"name":"Trung Quốc"},"duration":103,"viewsCount":9508950,"uploaderName":"Nguyễn Thị Sa","desc":"Tác phẩm được làm lại từ bộ phim kinh điển \"Fist of Fury\" của Lý Tiểu Long. Lấy bối cảnh vào những năm 1930, Lý Liên Kiệt vào vai một học sinh trở về sau những năm du học tại Nhật để điều tra những kẻ đã giết sư phụ mình. Năm 1937, Chen Zhen (Lý Liên Kiệt), một sinh viênTrung Quốc trở về từ Tokyo, nơi mà chủ nghĩa phát xít đã trở nên cuồng bạo. Anh tìm về trường võ thuật của mình trước kia tại Thượng Hải và anh được báo tin rằng người thầy dạy của mình là Huo Yuan Jia đã bị giết chết trong một trận đấu với một trường dạy võ karate cạnh tranh.Chen Zhen biết rất rõ khả năng và sức mạnh của sư phụvà chắc chắn rằng ông không thể bị giết chết một cách dễ dàng, nếu nhưkhông có những thủ đoạn xấu xa ẩn giấu sau cuộc chiến này. Anh quyếttâm tìm cho ra những kẻ đã giết chết sư phụ. Trong quá trình điều tra,Chen Zhen đã phát hiện ra rằng kẻ cầm đầu băng nhóm kia chính là GoFujita (Billy Chow), một quân nhân người Nhật, cùng với một nhóm võsinh của trường võ thuật đối thủ.Chen Zhen yêu cầu khám nghiệm lại xác của sư phụ và phát hiện ra dấu vết của chất độc tồn tại trong gan chứng tỏ những nghi ngờ của anh là có cơ sở. Với sự trợ giúp của võ sư người Nhật FumioFunakoshi (Yasuaki Kurata), con trai của sư phụ là Huo Ting En (ChinSiu Hou), cũng như sự giúp đỡ tận tâm của cô bạn gái người Nhật MitsukoYamada (Shinobu Nakayama), Chen Zhen đã hoàn thành nhiệm vụ báo thù chothày dạy của mình.Khi thực hiện bộ phim này, đạo diễn Gordon Chan đãnói rằng: “Cũng như rất nhiều người, tôi là một fan của Lý Tiểu Long.Việc so sánh Lý Liên Kiệt với huyền thoại võ thuật này là một điều thú vị. Nhưng dù sao thì đây cũng không thực sự là một sự so sánh vì hai bộphim không cùng một kịch bản. Mà kịch bản gốc đã được sửa đổi khá nhiềuđể phù hợp hơn với Lý Liên Kiệt. Đó là một công việc rất lý thú.”Báo thù, một nền tảng chắc chắn của một kịch bản tuy không sáng giá nhưng rõ ràng là rất hiệu quả. Mặt khác, tình yêu khókhăn giữa Chen Zhen và cô gái người Nhật trong một hoàn cảnh đầy bất trắc và hiểm nguy càng khiến cho bộ phim thêm kịch tính. Đặc biệt, với một bộ phim có sự góp mặt của Lý Liên Kiệt, sự chú ý luôn nằm trongnhững pha hành động đẹp mắt và rất thuyết phục. Những trận đấu trongphim là sự pha trộn giữa thể loại wushu khó nhằn và môn karate năngđộng đầy ấn tượng.Nhưng vẫn có những lỗi dễ nhận thấy gây hạn chế phầnnào cho thành công của bộ phim: việc lồng tiếng đã thổi phồng quá mứchiệu quả tiếng động của những cú đấm, hình ảnh thiếu độ nét, những tình tiết hài hước xen kẽ thiếu thuyết phục. Mặc dù vậy Fist of Legend vẫn là một bộ phim hành động đáng xem dành cho các fan của thể loại nàycũng như những ai hâm mộ tài năng của Lý Liên Kiệt. Đặc biệt, phim cònnằm trong danh sách 10 bộ phim võ thuật kung fu hay nhất của màn ảnhHoa ngữ cùng với những bộ phim đình đám như Ngọa hổ tàng long hay Police Story.Đánh giá khác:Không giống như những bộ phim được thực hiện tại Hollywood, những bộ phim của Lý Liên Kiệt tại Hong Kong được đánh giá rất cao. Một trong số này là Fist of legend (Tinh võ môn). Đây là bộ phim là lại từ tác phẩm Fist of fury nổi danh của Lý Tử Long và nó được coi là một trong những bộ phim võ thuật hay nhất mọi thời đại cũng như là hay nhất của Lý Liên Kiệt.Bối cảnh của phim là thành phố Thượng Hải năm 1937 trong thời kì chiến tranh Trung-Nhật lần thứ 2. Lúc này Thượng Hải đang bị quân Nhật chiếm đóng. Trần Chân (Lý Liên Kiệt), một công dân Thượng Hải, đang học tại Nhật thì nghe tin sư phụ của mình là Hoắc Nguyên Giáp, người đứng đầu Tinh võ môn, bị giết chết trong một trận thách đấu với một võ sĩ Nhật Bản. Trần Chân ngay lập tức trở về nước chịu tang thầy và tìm hiểu rõ sự việc.Tại Thượng Hải, sau khi về trường Tinh võ để chịu tang thầy, Trần Chân tìm tới nơi dạy võ của Akutagawa Ryoichi, võ sĩ Nhật đã giết chết Hoắc Nguyên Giáp. Sau khi giao đấu, Trần Chân nhận thấy trình độ của Ryoichi không thể là đối thủ của thầy mình vì thế anh cho khai quật mộ của thầy và nhờ bác sĩ khám nghiệm tử thi. Qua xét nghiệm, bác sĩ kết luận Hoắc Nguyên Giáp bị đầu độc. Kết luận này khiến nội bộ Tinh võ môn nảy sinh nghi ngờ lẫn nhau.Cùng lúc đó, biết trận đấu của mình với Hoắc Nguyên Giáp đã bị dàn xếp, Ryoichi phản ứng với Fujta, một sĩ quan quân tội và là kẻ chủ mưu, và bị Fujita giết chết. Để dẹp yên mọi chuyện, Fujita đổ vấy cho Trần Chân tội sát hại Ryoichi. Trần Chân bị bắt vào tù và bị đem ra xét xử. Quá trình điều tra kẻ thực sự giết hại sư phụ của Trần Chân xuất hiện nhiều tình huống mới…Kịch bản của Fist of legend không quá phức tạp nhưng nó vẫn có những yếu tố hấp dẫn, những đoạn cao trào, những nút thắt mở. Ví dụ như khi Trần Chân phải ra tòa thì đúng lúc đó cô bạn gái người Nhật xuất hiện, khai man trước tòa để Trần Chân thoát tội. Không chỉ là sự báo thù của Trần Chân trước cái chết của thầy mình mà ẩn đằng sau đó là tinh thần kháng Nhật của người Trung Quốc trong thời kì này. Đan xen trong đó là mối tình ngang trái giữa Trần Chân và một cô gái Nhật khi mà Trần Chân phải lựa chọn cô gái và Tinh võ môn và khi mà anh bị tẩy chay ở mọi nơi vì có bạn gái là người Nhật. Trong phim cũng có một vài tình huống và nhân vật hài hước trong nhiều phim võ thuật khác của Hong Kong như nhân vật đội trưởng cảnh sát hay chi tiết bác sĩ pháp y lại sợ tiếp xúc với tử thi.Vì là phim hành động võ thuật nên phần quan trọng nhất là các cảnh đánh nhau, đấu võ. Với tài chỉ đạo võ thuật của Yuen Woo Ping cộng với khả năng của các diễn viên, đặc biệt là Lý Liên Kiệt, những cảnh đánh võ trong phim rất chân thực và sống động. Thêm vào đó là góc độ và việc dừng máy đúng lúc khiến các cảnh đấu võ gần như là hoàn hảo.Trong các bộ phim kiểu như thế này, diễn xuất của các diễn viên không được chú ý quá nhiều và không bị đòi hỏi cao. Lý Liên Kiệt vẫn yêu trong những cảnh đòi hỏi nhiều diễn xuất nội tâm, nhưng ở các cảnh cần sự cương nghị, căm giận, dũng mãnh anh lại diễn rất khá. Các diễn viên khác tròn vai, không có gì đáng kể. Ngoài ra, Lý Liên Kiệt trông điển trai hơn chứ không xù xì nhưng nhiều vai diễn gần đây khi mà dấn ấn tuổi tác đã hiện rõ (đặc biệt là gương mặt).Nói tóm lại, đây là một bộ phim mà những fan phim võ thuật và phim Hong Kong không thể bỏ qua.Screens:","tags":["lý liên kiệt","jet li","tinh võ anh hùng","fist of legend"],"embeds":"Die","backups":["http://topanimehd.com/getid.php?id=MWlhRDQ3ZklPdEZ2QW1yUGVKczJ1OHRGMmNzeDVWLUFkSVVuTmtX&sub=http://topphimhd.com/wp-content/uploads/2018/09/Fist-Of-Legend-1994-1080p-UK-Blu-ray-AVC-DTS-HD-MA-5.1.srt"],"subUrl":"http://topphimhd.com/wp-content/uploads/2018/09/Fist-Of-Legend-1994-1080p-UK-Blu-ray-AVC-DTS-HD-MA-5.1.srt"},{"name":"Chiến Binh Săn Phù Thủy","viewUrl":"https://phim3s.pw/phim-le/chien-binh-san-phu-thuy_8746/xem-phim/","nameOrigin":"The Last Witch Hunter","thumbailSmallUrl":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fchien-binh-san-phu-thuy-the-last-witch-hunter-2016.jpg%3Fsize%3D300","resolutionText":"HD Vietsub + Thuyết Minh","directors":["Breck Eisner"],"actors":["Vin Diesel","Rose Leslie","Elijah Wood"],"genres":["Phim Hành Động","Phim Phiêu Lưu","Phim Thuyết Minh"],"country":{"name":"Mỹ"},"duration":106,"viewsCount":10420470,"uploaderName":"trantuankhoa","desc":"Dựa trên một trong những kịch bản chuyển thể hấp dẫn nhất do trang web uy tín Blacklist bình chọn năm 2010, CHIẾN BINH SĂN PHÙ THỦY (THE LAST WITCH HUNTER) là sản phẩm mới nhất của hãng Summit, được nhào nặn dưới bàn tay đạo diễn “The Crazies” – Breck Eisner. Bộ phim đặt người xem vào bối cảnh thế giới bị lũng đoạn bởi sự hiện diện của tộc phù thuỷ. Cuộc chiến giữa chúng và những người thợ săn kéo dài hàng bao thế kỷ cho kết khi Kaulder (Vin Diesel) tiêu diệt được Nữ Hoàng (Julie Engelbrecht). Trước khi chết, mụ đã kịp nguyền rủa Kaulder với sự bất tử của chính mình, khiến anh mãi mãi rời xa vợ con, sống một cuộc sống cô độc kiếp này qua kiếp khác. Trở về với thế kỷ 21, Kaulder là thợ săn phù thuỷ duy nhất còn sót lại, vẫn tiếp tục tìm kiếm và tiêu diệt những sinh vật siêu nhiên chết người kia. Nhưng, anh không thể ngờ rằng, thủ lĩnh của chúng – Nữ Hoàng đã được hồi sinh và đang tìm cách trả thù loài người.Cùng góp mặt trong phim bên cạnh Vin Diesel là kiều nữ “Games of Throne” – Rose Leslie, ngôi sao “The Lords of The Ring” – Elijah Wood và nam diễn viên từng 2 lần giành tượng vàng Oscar – Michael Caine.","tags":["the last witch hunter","chiến binh săn phù thủy","thợ săn phù thuỷ","chiến binh săn phù thủy 2015"],"embeds":[],"backups":["http://topanimehd.com/getid.php?id=MXdvenNmM1QyOTlFTE1BdzZMaVhUbE9qM0dHcVZQelUzQTVpRHRC&sub=http://topphimhd.com/wp-content/uploads/2018/07/The.Last_.Witch_.Hunter.2015.720p.BluRay.DTS_.x264-HiDt.srt"],"subUrl":"http://topphimhd.com/wp-content/uploads/2018/07/The.Last_.Witch_.Hunter.2015.720p.BluRay.DTS_.x264-HiDt.srt"},{"name":"Gương Quỷ","viewUrl":"https://phim3s.pw/phim-le/guong-quy_8721/xem-phim/","nameOrigin":"The Mirror","thumbailSmallUrl":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fguong-quy-the-mirror-2015.jpg%3Fsize%3D300","resolutionText":"Bản Đẹp","directors":["Pakphum Wonjinda"],"actors":["Hong Zhou","Eunsung Kim","Lee Chae young"],"genres":["Phim Kinh Dị","Phim Thuyết Minh"],"country":{"name":"Thái Lan"},"duration":101,"viewsCount":6398070,"uploaderName":"long ngu","desc":"Gương Quỷ 3D - Bộ phim là dự án hợp tác giữa Thái Lan, Hồng Kông và Hàn Quốc, ba ông trùm phim kinh dị châu Á.  Phim Gương Quỷ 3D kể kề câu chuyện diễn ra trong một căn hộ chung cư bí ẩn rùng rợn với những hình ảnh đáng sợ về số phận của một người phụ nữ đơn thân cô độc cùng một đứa trẻ côi cút.  Gương Quỷ được sáng tạo dựa trên quan niệm về mọi vật đều có một phản chiếu của chính mình bên kia tấm gương, chính vì vậy, những điều quỷ quyệt nhất, xấu xa nhất cũng cũng từ đó mà ra.  Từ yếu tố kinh dị dựa trên không gian ma mị kiểu Hồng Kông cho đến kiểu ám ảnh mang màu sắc tín ngưỡng của Thái Lan, và cuối cùng là hiệu ứng hồi hộp thót tim dựa trên sức ép tâm lí mà các nhà làm phim Hàn hay sử dụng, tất cả đều được thể hiện chân thực đến lạnh người trong Gương Quỷ.","tags":["phim tết","gương quỷ","the mirror","phim tết 2017","phim hay","phim tet","phim kinh dị","gương quỷ thuyết minh","thuyết minh gương quỷ","gương quỷ hd","gương quỷ vietsub","phim ma","phim gương quỷ","phim thái lan"],"backups":["http://topanimehd.com/getid.php?id=MURBY3ptS0ttSmRPbnBmR1o0cUZhS1pmTHQ3VWIwZDA2TTFITWo0&sub=http://topphimhd.com/wp-content/uploads/2018/07/Mirrors.2008.UNRATED.720p.BluRay.DTS_.x264-DON.srt"],"subUrl":"http://topphimhd.com/wp-content/uploads/2018/07/Mirrors.2008.UNRATED.720p.BluRay.DTS_.x264-DON.srt"},{"name":"Người Giải Mã","viewUrl":"https://phim3s.pw/phim-le/nguoi-giai-ma_8341/xem-phim/","nameOrigin":"The Imitation Game","thumbailSmallUrl":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fnguoi-giai-ma-the-imitation-game-2014.jpg%3Fsize%3D300","resolutionText":"Bản Đẹp","directors":["Morten Tyldum"],"actors":["Benedict Cumberbatch","Keira Knightley","Matthew Goode"],"genres":["Phim Kinh Dị","Phim Tâm Lý","Phim Thuyết Minh"],"country":{"name":"Mỹ"},"duration":114,"viewsCount":9618735,"uploaderName":"Pham Quoc Dung","desc":"Trong thời kỳ Thế chiến II, quân Đức sử dụng máy Enigma để liên lạc nhờ sự bảo mật tối ưu của loại máy mã hóa ưu việt này. Từ những thông tin cơ bản như dự báo thời tiết trong ngày cho tới những thông điệp quan trọng như ý đồ tác chiến, vị trí đặt tàu, thời gian tiến hành chiến dịch… đều được phe Đức trao đổi sau khi đã mã hóa qua máy Enigma.Để có thể chiến thắng cuộc chiến này, việc giải mã Enigma là một nhiệm vụ tối quan trọng đối với phe Đồng Minh. Tại Anh, “điệp vụ bất khả thi” ấy được giao cho một nhóm nhà toán học, giải mật mã và kỳ thủ cờ vua tại trung tâm Bletchley Park. Tâm điểm của dự án tuyệt mật ấy là nhà toán học thiên tài lập dị Alan Turing (Benedict Cumberbatch thủ vai). The Imitation Game kể về cuộc đời của nhân vật được xem như cha đẻ của trí thông minh nhân tạo và khoa học máy tính hiện đại song lại có một kết cục bi thảm.Không đi theo tuyến tính thông thường, câu chuyện trong The Imitation Game là những lát cắt đan xen giữa ba thời điểm trong cuộc đời của Turing. Tác phẩm mở đầu vào năm 1952, khi cuộc chiến kết thúc và Turing bị bắt giam do có quan hệ đồng tính – một việc bị xem như phạm pháp lúc ấy. Trong cuộc hỏi cung, những mảnh ghép bí ẩn từ quá khứ của ông bắt đầu được ráp lại để vẽ nên chân dung về thiên tài không gặp thời này, từ khi ông còn là một cậu nhóc thường xuyên bị bắt nạt tại trường tư tới khi gia nhập đội giải mã tại Bletchley Park và trở thành “cá nhân có đóng góp lớn nhất giúp quân Đồng Minh có được chiến thắng” như nhận định của Churchill.","tags":["the imitation game","người giải mã"],"embeds":"Die","backups":["http://topanimehd.com/getid.php?id=MXc1V2ZZU0J6ZnNIZExQbDR4R0pYaExmNno5ci10QklsTG1SdnRj&sub=http://topphimhd.com/wp-content/uploads/2018/07/The.Imitation.Game_.2014.720p.BluRay.x264.YIFY_.srt"],"subUrl":"http://topphimhd.com/wp-content/uploads/2018/07/The.Imitation.Game_.2014.720p.BluRay.x264.YIFY_.srt"},{"name":"Tay Trống Cự Phách","viewUrl":"https://phim3s.pw/phim-le/tay-trong-cu-phach_8265/xem-phim/","nameOrigin":"Whiplash","thumbailSmallUrl":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Ftay-trong-cu-phach-whiplash-2014.jpg%3Fsize%3D300","resolutionText":"Damien Chazelle","directors":["Miles Teller","J.K. Simmons","Melissa Benoist"],"actors":["Phim Tâm Lý","Phim Âm Nhạc"],"genres":[""],"country":{"name":"Mỹ"},"duration":107,"viewsCount":6588705,"uploaderName":"Muk","desc":"Chàng trai Andrew (Miles Teller) được nhận vào trường Shaffer, trường nhạc đỉnh nhất nước Mĩ. Tại đây, anh tham gia ban nhạc jazz của trường và phải đối mặt với Fletcher (Terence Fletcher), một chỉ huy dàn nhạc với yêu cầu cực kì khắt khe.","tags":["whiplash","tay trống cự phách"],"embeds":"Die","backups":["http://topanimehd.com/getid.php?id=MWtNS3pDc1gtc1FwN2Q4d1ZxQUNEMkNUdTdtMHo0LURCUTNYc0xT&sub=http://topphimhd.com/wp-content/uploads/2018/07/Whiplash.2014.720p.BluRay.x264.YIFY_.srt"],"subUrl":"http://topphimhd.com/wp-content/uploads/2018/07/Whiplash.2014.720p.BluRay.x264.YIFY_.srt"},{"name":"Nòng Súng Trên Tay","viewUrl":"https://phim3s.pw/phim-le/nong-sung-tren-tay_8237/xem-phim/","nameOrigin":"By the Gun","thumbailSmallUrl":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fnong-sung-tren-tay-by-the-gun-2014.jpg%3Fsize%3D300","resolutionText":"Bản Đẹp","directors":["James Mottern"],"actors":["Tully Banta Cain","Ben Barnes","Paul Ben Victo"],"genres":["Phim Hình Sự","Phim Tâm Lý"],"country":{"name":"Mỹ"},"duration":110,"viewsCount":6932970,"uploaderName":"lehoangtan","desc":"","tags":["by the gun","nòng súng trên tay"],"embeds":"Die","backups":["http://topanimehd.com/getid.php?id=MTZVRXlycmVEWjFKMkxsUXlfZUl3cEczbUlsQWhCNGpNZXdZMVQw&sub=http://topphimhd.com/wp-content/uploads/2018/07/By_the_Gun_2014_1080p_BluRay_AC3_S_ViE_VIE.srt"],"subUrl":"http://topphimhd.com/wp-content/uploads/2018/07/By_the_Gun_2014_1080p_BluRay_AC3_S_ViE_VIE.srt"},{"name":"Cuồng Nộ","viewUrl":"https://phim3s.pw/phim-le/cuong-no_8184/xem-phim/","nameOrigin":"Fury","thumbailSmallUrl":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fcuong-no-fury-2014.jpg%3Fsize%3D300","resolutionText":"Bản Đẹp","directors":["David Ayer"],"actors":["Brad Pitt","Shia LaBeouf","Logan Lerman"],"genres":["Phim Hành Động","Phim Chiến Tranh"],"country":{"name":"Mỹ"},"duration":134,"viewsCount":15788685,"uploaderName":"ho anh khoa","desc":"Đặt bối cảnh vào giai đoạn cuối của cuộc Chiến tranh Thế giới lần thứ II, 04/1945, “Fury” theo chân chiến binh dày dạn kinh nghiệm chiến trường Wardaddy (Brad Pitt), người chỉ huy một chiếc xe tăng chủ lực Sherman của Anh và đội hình chiến đấu 5 người trong một nhiệm vụ cực kỳ nguy hiểm luồn sâu tập kích đằng sau chiến tuyến của quân thù. Bị áp đảo bởi số lượng và hỏa lực từ kẻ thù, Wardaddy và các đồng đội phải đối mặt với vô vàn khó khăn nguy hiểm bằng một cố gắng phi thường nhằm đánh thẳng vào trái tim của Đức Quốc Xã.","tags":["fury","cuồng nộ"],"backups":["http://topanimehd.com/getid.php?id=MXZpSjQzWWp2dDYtUGhLVWw2RmNvcXZIdTJXdzg2elRyMjc2ODNS&sub=http://topphimhd.com/wp-content/uploads/2018/07/Fury-2014-Vie-All-Bluray.srt"],"subUrl":"http://topphimhd.com/wp-content/uploads/2018/07/Fury-2014-Vie-All-Bluray.srt"},{"name":"Cô Gái Mất Tích","viewUrl":"https://phim3s.pw/phim-le/co-gai-mat-tich_8160/xem-phim/","nameOrigin":"Gone Girl","thumbailSmallUrl":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fco-gai-mat-tich-gone-girl-2014.jpg%3Fsize%3D300","resolutionText":"Bản Đẹp","directors":["David Fincher"],"actors":["Ben Affleck","Rosamund Pike","Neil Patrick Harris"],"genres":["Phim Phiêu Lưu","Phim Kinh Dị","Phim Tâm Lý"],"country":{"name":"Mỹ"},"duration":149,"viewsCount":8507385,"uploaderName":"nam","desc":"","tags":["gone girl","cô gái mất tích"],"backups":["http://topanimehd.com/getid.php?id=MVhMQkczakc5UG9KNUlYNHV5OVZTMkZUaWh5ejZvNTBESEVHY09U&sub=http://topphimhd.com/wp-content/uploads/2018/07/Gone.Girl_.2014.720p.BluRay.x264.DTS-WiKi.srt"],"subUrl":"http://topphimhd.com/wp-content/uploads/2018/07/Gone.Girl_.2014.720p.BluRay.x264.DTS-WiKi.srt"},{"name":"Khách Sạn Huyền Bí 3: Kỳ Nghỉ Ma Cà Rồng","viewUrl":"https://phim3s.pw/phim-le/khach-san-huyen-bi-3-ky-nghi-ma-ca-rong_11298/xem-phim/","nameOrigin":"Hotel Transylvania 3: Summer Vacation","thumbailSmallUrl":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fkhach-san-huyen-bi-3-ky-nghi-ma-ca-rong-hotel-transylvania-3-summer-vacation-2018.jpg%3Fsize%3D300","resolutionText":"HD Vietsub + Thuyết Minh","directors":["Genndy Tartakovsky"],"actors":["Steve Buscemi","Selena Gomez","Adam Sandler","Kevin James","Andy Samberg"],"genres":["Phim Hài Hước","Phim Hoạt Hình","Phim Viễn Tưởng","Phim Thiếu nhi"],"country":{"name":"Mỹ"},"duration":99,"viewsCount":581400,"uploaderName":"đạt","desc":"Phim Khách Sạn Huyền Bí 3: Kỳ Nghỉ Ma Cà Rồng lần này sẽ là “cuộc chơi lớn” với một phen tiệc tùng sang chảnh hết nấc của gia đình Dracula. Đã quá “ngán” với cường độ làm việc chăm chỉ 365 ngày không nghỉ, bá tước Dracula quyết định đòi “đình công”. Để khai sáng cho người cha trăm tuổi chưa bao giờ bước ra khỏi “lũy tre làng”, vợ chồng nhà Jonathan – Mavis lập một kế hoạch xả hơi táo bạo: Thuê đứt một du thuyền du lịch hạng sang để đưa tất thảy bộ xậu quái vật già trẻ lớn bé làm một chuyến ra khơi nhớ đời.Xem Khách Sạn Huyền Bí 1xem Khách Sạn Huyền Bí 2","tags":["khách sạn huyền bí","khách sạn huyền bí 3 kỳ nghỉ ma cà rồng","hotel transylvania 3 summer vacation","khách sạn huyền bí 3"],"embeds":[],"backups":["http://topanimehd.com/getid.php?id=MVVPZHZHRmZSWTdSTFV3LXhpQVZ2UkxsYTR0ZmtlSUszTVV1SWdB&sub=http://topphimhd.com/wp-content/uploads/2018/08/Hotel.Transylvania.3.Summer.Vacation.2018.1080p.BluRay.x264.DTS-HD.MA_.5.1-FGT-Topphimhd.com_.srt"],"subUrl":"http://topphimhd.com/wp-content/uploads/2018/08/Hotel.Transylvania.3.Summer.Vacation.2018.1080p.BluRay.x264.DTS-HD.MA_.5.1-FGT-Topphimhd.com_.srt"},{"name":"Toà Tháp Chọc Trời","viewUrl":"https://phim3s.pw/phim-le/toa-thap-choc-troi_11119/xem-phim/","nameOrigin":"Skyscraper","thumbailSmallUrl":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Ftoa-thap-choc-troi-skyscraper-2018.jpg%3Fsize%3D300","resolutionText":"HD Vietsub + Thuyết Minh","directors":["Rawson Marshall Thurber"],"actors":["Dwayne Johnson","Roland Møller"],"genres":["Phim Hành Động","Phim Phiêu Lưu","Phim Viễn Tưởng","Phim Thuyết Minh"],"country":{"name":"Mỹ"},"duration":120,"viewsCount":1539525,"uploaderName":"nguyen trung hieu","desc":"Phim Toà Tháp Chọc Trời Dwayne Johnson (The Rock) sẽ vào vai cựu quân nhân và cựu trưởng nhóm đặc nhiệm giải cứu của FBI Will Ford đầy dũng cảm. Không may trong một nhiệm vụ nguy hiểm, tai nạn khủng khiếp xảy đến với Will làm anh mất đi chân trái của mình. Kể từ đó, Will Ford từ bỏ công việc tại FBI và trở thành chuyên gia đánh giá an ninh cho các tòa nhà. Trong một lần làm việc, Tòa nhà cao 240 tầng với hệ thống an ninh tối tân đột nhiên bị cháy lớn ở tầng 96. Những con người, cạm bẫy và thế lực nào đứng sau thảm họa này chắc chắn đang nhắm vào cựu quân nhân và lấy gia đình anh ra làm con tin. Với kinh nghiệm, sự gan dạ của một người lính cùng tình yêu gia đình mãnh liệt, liệu Will Ford có tìm ra được kẻ chủ mưu và cứu lấy gia đình của anh?","tags":["toà tháp chọc trời","skyscraper","bilutv phim lẻ"],"embeds":[{"file":"https://r3---sn-4g5e6nld.googlevideo.com/videoplayback?id=e9657aebb074396b&itag=18&source=picasa&begin=0&requiressl=yes&mm=30&mn=sn-4g5e6nld&ms=nxu&mv=u&pl=25&sc=yes&ei=COGlXLCjEp7X1wLZhqPwAw&susc=ph&app=fife&mime=video/mp4&dur=6144.301&lmt=1548770273295018&mt=1554373853&ipbits=0&cms_redirect=yes&keepalive=yes&ratebypass=yes&ip=116.203.31.227&expire=1554382120&sparams=ip,ipbits,expire,id,itag,source,requiressl,mm,mn,ms,mv,pl,sc,ei,susc,app,mime,dur,lmt&signature=6C3DB85FBA82FE2B2A330AE817F5220CA9C2FE0B9BD12D7363A32A598A73BA5A.B7F3116BF05050F1CBF6A64B7F25E17916D1FA3EE8498F9CF412FB912DE9A75B&key=us0","label":"360p","type":"video/mp4"},{"file":"https://r3---sn-4g5edns6.googlevideo.com/videoplayback?id=e9657aebb074396b&itag=22&source=picasa&begin=0&requiressl=yes&mm=30&mn=sn-4g5edns6&ms=nxu&mv=u&pl=25&sc=yes&ei=COGlXM_BEsbG1wL0rqHwBg&susc=ph&app=fife&mime=video/mp4&cnr=14&dur=6144.301&lmt=1548773145247011&mt=1554373853&ipbits=0&cms_redirect=yes&keepalive=yes&ratebypass=yes&ip=116.203.31.227&expire=1554382120&sparams=ip,ipbits,expire,id,itag,source,requiressl,mm,mn,ms,mv,pl,sc,ei,susc,app,mime,cnr,dur,lmt&signature=0E9B7A0EE3449DDD458894B83A1A24D5711F1241F48C1AE850DF93763C42319C.AFD5767F33EBB20A3B97983E7B2EDB21835961D5EA51E110CD4CD25FFFD35E14&key=us0","label":"720p","type":"video/mp4","default":"true"}],"backups":["http://topanimehd.com/getid.php?id=MTFTck5aN1FNWUVKVzUwTnVqaDhQUVBHU2VEZUgtWU1qbjh4R2JR&sub=http://topphimhd.com/wp-content/uploads/2018/06/Skyscraper.Vietsub.HD_.Cam_.Ass_.New_.srt"],"subUrl":"http://topphimhd.com/wp-content/uploads/2018/06/Skyscraper.Vietsub.HD_.Cam_.Ass_.New_.srt"},{"name":"Tay Lái Siêu Hạng","viewUrl":"https://phim3s.pw/phim-le/tay-lai-sieu-hang_711/xem-phim/","nameOrigin":"Drive","thumbailSmallUrl":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fdrive-2011tay-lai-sieu-hang-drive-2011.jpg%3Fsize%3D300","resolutionText":"Nicolas Winding Refn","directors":["Ryan Gosling","Carey Mulligan","Bryan Cranston"],"actors":["Phim Hành Động"],"genres":[""],"country":{"name":"Mỹ"},"duration":100,"viewsCount":5961900,"uploaderName":"nguyễn biên","desc":"Drive là câu chuyện ở Hollywood về một diễn viên đóng thế (Gosling) các cảnh đua xe trong phim hành động. Cuộc sống của anh cũng bình lặng như những diễn viên hạng thường ở Hollywood, một căn hộ nhỏ và mối tình với cô gái hàng xóm. Nhưng thật ra nghề tay phải của anh là lái thuê cho bọn tội phạm trong các phi vụ đánh cướp. Cho đến khi thực hiện một hợp đồng lái thuê, anh nhận ra mình bị dính vào một vụ án nguy hiểm có thể hại cả anh và người yêu. Điều duy nhất có thể cứu cả hai là anh phải ngồi sau vô lăng và đạp ga tăng hết tốc lực.","tags":["tay lái siêu hạng","drive"],"embeds":"Die","backups":["http://topanimehd.com/getid.php?id=MVZIQ1dfRFZXQlZ2M0RDWVhVWU5TSTU4WjU0RlBWb2dqZDdaN2ha&sub=http://topphimhd.com/wp-content/uploads/2018/07/Drive.2011.mHD_.R5.BluRay.DD5_.1.x264-EPiK.srt"],"subUrl":"http://topphimhd.com/wp-content/uploads/2018/07/Drive.2011.mHD_.R5.BluRay.DD5_.1.x264-EPiK.srt"},{"name":"Cơ Trưởng Sully","nameOrigin":"Sully","desc":"Phim Cơ Trưởng Sully - Sully xoang quanh câu truyện cơ trưởng \"Sully\" Sullenberger đáp chiếc máy bay trong tình trạng động cơ tê liệt hoàn toàn xuống con sông Hudson mà hơn 150 hành khách không một ai bị thiệt mạng . Tuy nhiên, trong khi Sully được công chúng và truyền thông tung hô như một anh hùng bởi tài nghệ chưa từng thấy từ trước đến nay, thì một cuộc điều tra được tiến hành có khả năng hủy hoại hoàn toàn danh tiếng cũng như sự nghiệp của ông.","duration":100,"thumbnails":{"small":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fco-truong-sully-sully-2016.jpg%3Fsize%3D300"},"actors":["Tom Hanks"],"genres":["Phim Chiến Tranh","Phim Phiêu Lưu","Phim Khoa học Tài liệu","Phim Thuyết Minh"],"countries":[{"name":"Mỹ"}],"embeds":[{"label":"360p","file":"https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=13&ct=1554389633&rver=6.7.6643.0&wp=MBI_SSL_SHARED&wreply=https:%2F%2Fonedrive.live.com%2Fdownload%3Fcid%3D375CDB1B890B3A36%26resid%3D375CDB1B890B3A36%252152385%26authkey%3DANWZfSEQu1YS76Q&lc=1033&id=250206&cbcxt=sky&cbcxt=sky","file_o":"https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=13&ct=1554389633&rver=6.7.6643.0&wp=MBI_SSL_SHARED&wreply=https:%2F%2Fonedrive.live.com%2Fdownload%3Fcid%3D375CDB1B890B3A36%26resid%3D375CDB1B890B3A36%252152385%26authkey%3DANWZfSEQu1YS76Q&lc=1033&id=250206&cbcxt=sky&cbcxt=sky","type":"mp4","default":"true"}],"backups":["http://topanimehd.com/getid.php?id=MXhKNjFJMG01ckJfek44VGZ0bTFBOXFSSlUxa1I1R1UwOXBQamVF&sub=http://topphimhd.com/wp-content/uploads/2018/11/Sully.2016.1080p.BluRay.x264-SPARKS.srt"],"status":"updating","viewsCount":5312235,"directors":["Clint Eastwood"],"quality":"HD","subUrl":"http://topphimhd.com/wp-content/uploads/2018/11/Sully.2016.1080p.BluRay.x264-SPARKS.srt","isAdult":false},{"name":"Ám Ảnh Kinh Hoàng 2","nameOrigin":"The Conjuring 2","desc":"The Conjuring 2: The Enfield Poltergeist tiếp tục dựa trên một trong 10000 hồ sơ điều tra của cặp vợ chồng Warren. Đây là vụ án kỳ bí nhất được ghi nhận trong lịch sử siêu nhiên.Chuyện phim diễn ra vào cuối thập niên 70 tại vùng Enfield nước Anh. Nơi mà người mẹ đơn thân Hodgson sống cùng 4 đứa con gái của mình. Bọn trẻ bị các thế lực siêu nhiên tà ác ác quấy nhiễu liên tục. Bà mẹ đành phải nhờ đến sự giúp đỡ của hai nhà ngoại cảm Ed và Lorraine Warren đến điều tra để giải cứu con mình.","duration":110,"thumbnails":{"small":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fam-anh-kinh-hoang-2-the-conjuring-2-2016.jpg%3Fsize%3D300"},"actors":["Vera Farmiga","Patrick Wilson","Frances O'Connor","Madison Wolfe","Simon McBurney","Franka Potente"],"genres":["Phim Kinh Dị","Phim Tâm Lý","Phim Thuyết Minh"],"countries":[{"name":"Mỹ"}],"backups":["http://topanimehd.com/getid.php?id=MVBobGdQMzk1U2h4UFpjSmVoTHBFdWhabkpxckRmaW1ZRzVtOExr&sub=http://topphimhd.com/wp-content/uploads/2018/06/The-Conjuring-2-2016-AllBluray-WorldSubTeam.com_.srt"],"status":"updating","viewsCount":9710505,"directors":["James Wan"],"quality":"HD","subUrl":"http://topphimhd.com/wp-content/uploads/2018/06/The-Conjuring-2-2016-AllBluray-WorldSubTeam.com_.srt","isAdult":false},{"name":"Anh Hùng Cương Dương","nameOrigin":"The Virgin Psychics","desc":"The Virgin PsychicsCâu chuyện hài giả tưởng này kể về một nam sinh trung học (còn nguyên tem) bình thường tên là Yoshiro “Yocchan” Kamogawa (do Sometani thủ vai). Cuộc đời cậu đã thay đổi hoàn toàn sau một đêm, khi cậu thức dậy với khả năng đọc được suy nghĩ của người khác. Yoshiro không phải người duy nhất trong thị trấn có siêu năng lực.Teru-oichan (hẳn nhiên là vẫn chưa bị bóc mác), nhân viên của một tiệm cà phê gần trường Yoshiro, có được khả năng di chuyển đồ vật, nhưng anh chỉ toàn dùng để di chuyển sex toy. Yosuke Enomoto (chắc là vẫn còn tem), học sinh năm cuối và là cựu thành viên của đội bóng rổ, cùng trường Yoshiro, có được khả năng dịch chuyển tức thời, nhưng chỉ khi đang trong trạng thái không mảnh vải che thân.","duration":114,"thumbnails":{"small":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fanh-hung-cuong-duong-the-virgin-psychics-2015.jpg%3Fsize%3D300"},"actors":["Motoki Fukami","Elaiza Ikeda","Megumi Kagurazaka"],"genres":["Phim Hài Hước"],"countries":[{"name":"Nhật Bản"}],"embeds":"<iframe width=\"100%\" height=\"100%\" src=\"https://drive.google.com/file/d/0Bwkrc-cZmu4bUDNETE01aXNfTkU/preview\" frameborder=\"0\" allowfullscreen></iframe>","backups":["http://topanimehd.com/getid.php?id=MUhIalVUcWJTc0YwOFNoZktGVUE5bVNxdUZOU0tMNklMYkd6aHBk&sub=http://topphimhd.com/wp-content/uploads/2018/08/The.Virgin.Psychics.2015.720p.BluRay.x264-WiKi.srt"],"status":"updating","viewsCount":5852940,"directors":["Sion Sono"],"quality":"HD","subUrl":"http://topphimhd.com/wp-content/uploads/2018/08/The.Virgin.Psychics.2015.720p.BluRay.x264-WiKi.srt","isAdult":false},{"name":"Người Vận Chuyển 2","nameOrigin":"The Transporter 2","desc":"Sau khi nghỉ hưu ở Miami, cưu nhân viên của Lực lượng đặc biệt, Frank Martin hành nghề tài xế cho gia đình giàu có Billings. Frank được 2 cậu nhóc của gia đình đó rất thần tượng và yêu mến. Khi 2 cậu bé bị bắt cóc tống tiền anh đã 1 mình hành động mà không báo cảnh sát để giải cứu 2 người bạn nhỏ đó.","duration":88,"thumbnails":{"small":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fnguoi-van-chuyen-2-the-transporter-2-2005.jpg%3Fsize%3D300"},"actors":["Jason Stathammber Valletta"],"genres":["Phim Hành Động","Phim Thuyết Minh"],"countries":[{"name":"Mỹ"}],"backups":["http://topanimehd.com/getid.php?id=MW5uMElpaFJDaDZ0SVhfVjRCM1JWdXFSMTkyOGhzMXJJRTQwOWJL&sub=http://topphimhd.com/wp-content/uploads/2018/04/Transporter.2.2005.1080p.BluRay.DTS_.x264-xander.srt"],"status":"updating","viewsCount":11556390,"directors":["Louis Leterrier"],"quality":"HD","subUrl":"http://topphimhd.com/wp-content/uploads/2018/04/Transporter.2.2005.1080p.BluRay.DTS_.x264-xander.srt","isAdult":false},{"name":"Người Vận Chuyển 3","nameOrigin":"The Transporter 3","desc":"Trong Transporter 3, Frank Martin chịu nhiều sức ép trong việc hộ tống Valentina, cô con gái bị bắt cóc của Leonid Vasilev, người đứng đầu Cơ Quan Bảo Vệ Môi Trường của Ukraine, suốt chặng đường dài từ Marseilles đến Stuttgart và Budapest, trước khi dừng lại ở Odessa, Biển Đen.Suốt quãng đường đi, dù nhận được sự giúp đỡ của Thanh tra Tarconi, Frank liên tục phải đấu tranh với những người đã ép buộc anh phải nhận lấy công việc này, những tay chân của Vasilev được gửi đến để ngăn cản anh cùng sự bất hợp tác của Valentina. Bất chấp thái độ hoài nghi của Valentina, Frank và cô gái cuối cùng cũng đã chịu kết hợp cùng nhau trong lúc cả hai đang cố gắng thoát khỏi những tình huống đe dọa tính mạng của chính mình liên tiếp ập đến.","duration":110,"thumbnails":{"small":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fnguoi-van-chuyen-3-the-transporter-3.jpg%3Fsize%3D300"},"actors":["Jason Statham","Robert Knepper","Mike Powers"],"genres":["Phim Hành Động","Phim Thuyết Minh"],"countries":[{"name":"Mỹ"}],"embeds":[],"backups":["http://topanimehd.com/getid.php?id=MUNETnVoUjc1SDVoVkVadEk5WU1WbFJkbmhaTTB6b3R4aTZJRGt3&sub=http://topphimhd.com/wp-content/uploads/2018/04/Transporter.3.2008.1080p.BluRay.DTS_.x264-xander.srt"],"status":"updating","viewsCount":12317745,"directors":["Olivier Megaton"],"quality":"HD","subUrl":"http://topphimhd.com/wp-content/uploads/2018/04/Transporter.3.2008.1080p.BluRay.DTS_.x264-xander.srt","isAdult":false},{"name":"Phù Thủy","nameOrigin":"The Witch","desc":"","duration":92,"thumbnails":{"small":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fphu-thuy-the-witch-2017.jpg%3Fsize%3D300"},"actors":["Anya Taylor Joy","Ralph Ineson","Kate Dickie"],"genres":["Phim Kinh Dị","Phim Thuyết Minh"],"countries":[{"name":"Mỹ"}],"backups":["http://topanimehd.com/getid.php?id=MWVwR3YwUUFuc1daaXBwYk84ZFZ0a2RhM1N4NjR6T1c1MkZYazFs&sub=http://topphimhd.com/wp-content/uploads/2018/06/The.Witch_.2015.720p.BluRay.x264-DRONES.srt"],"status":"updating","viewsCount":6049335,"directors":["Robert Eggers"],"quality":"HD","subUrl":"http://topphimhd.com/wp-content/uploads/2018/06/The.Witch_.2015.720p.BluRay.x264-DRONES.srt","isAdult":false},{"name":"Lão Pháo Nhi","nameOrigin":"Mr.Six","desc":"Phim Lã Pháo Nhi khai thác đề tài thế lực mafia, xã hội đen ngầm tại Trung Quốc. Phim kể về cuộc đối chọi giữa những thế lực ngầm với nhau. Trong đó, Lục Gia là trùm thế lực ngầm cũ tại Bắc Kinh. Sau nhiều năm lăn lộn, ông không thích ứng được với sự thay đổi của thời thế nên đã chọn một cuộc sống an nhàn. Nào ngờ, người con trai độc nhất của Lục Gia là Hiểu Ba (Lý Dịch Phong) lại có xích mích với người cầm đầu thế lực mới Tiểu Phi (Ngô Diệc Phàm).","duration":136,"thumbnails":{"small":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Flao-phao-nhi-mrsix-2015.jpg%3Fsize%3D300"},"actors":["Trương Hàm Dư","Lý Dịch Phong","Hứa Tình","Ngô Diệc Phàm","Phùng Tiểu Cương"],"genres":["Phim Hành Động","Phim Phiêu Lưu"],"countries":[{"name":"Trung Quốc"}],"embeds":"<iframe width=\"100%\" height=\"100%\" src=\"https://drive.google.com/file/d/0B_gEN6DEGR8JZHp1T3hnUWRjVTQ/preview\" frameborder=\"0\" allowfullscreen></iframe>","backups":["http://topanimehd.com/getid.php?id=MXM5NjNRQVYzdW9WQ0FDMXlKdnVWSnFmLUdrWTVVdF9BbHhja1pa&sub=http://topphimhd.com/wp-content/uploads/2018/11/Mr-Six-2015-720p-BluRay-x264-WiKi.srt"],"status":"updating","viewsCount":6406935,"directors":["Guan Hu"],"quality":"HD","subUrl":"http://topphimhd.com/wp-content/uploads/2018/11/Mr-Six-2015-720p-BluRay-x264-WiKi.srt","isAdult":false},{"name":"Tinh Võ Anh Hùng","nameOrigin":"Fist of Legend","desc":"Tác phẩm được làm lại từ bộ phim kinh điển \"Fist of Fury\" của Lý Tiểu Long. Lấy bối cảnh vào những năm 1930, Lý Liên Kiệt vào vai một học sinh trở về sau những năm du học tại Nhật để điều tra những kẻ đã giết sư phụ mình. Năm 1937, Chen Zhen (Lý Liên Kiệt), một sinh viênTrung Quốc trở về từ Tokyo, nơi mà chủ nghĩa phát xít đã trở nên cuồng bạo. Anh tìm về trường võ thuật của mình trước kia tại Thượng Hải và anh được báo tin rằng người thầy dạy của mình là Huo Yuan Jia đã bị giết chết trong một trận đấu với một trường dạy võ karate cạnh tranh.Chen Zhen biết rất rõ khả năng và sức mạnh của sư phụvà chắc chắn rằng ông không thể bị giết chết một cách dễ dàng, nếu nhưkhông có những thủ đoạn xấu xa ẩn giấu sau cuộc chiến này. Anh quyếttâm tìm cho ra những kẻ đã giết chết sư phụ. Trong quá trình điều tra,Chen Zhen đã phát hiện ra rằng kẻ cầm đầu băng nhóm kia chính là GoFujita (Billy Chow), một quân nhân người Nhật, cùng với một nhóm võsinh của trường võ thuật đối thủ.Chen Zhen yêu cầu khám nghiệm lại xác của sư phụ và phát hiện ra dấu vết của chất độc tồn tại trong gan chứng tỏ những nghi ngờ của anh là có cơ sở. Với sự trợ giúp của võ sư người Nhật FumioFunakoshi (Yasuaki Kurata), con trai của sư phụ là Huo Ting En (ChinSiu Hou), cũng như sự giúp đỡ tận tâm của cô bạn gái người Nhật MitsukoYamada (Shinobu Nakayama), Chen Zhen đã hoàn thành nhiệm vụ báo thù chothày dạy của mình.Khi thực hiện bộ phim này, đạo diễn Gordon Chan đãnói rằng: “Cũng như rất nhiều người, tôi là một fan của Lý Tiểu Long.Việc so sánh Lý Liên Kiệt với huyền thoại võ thuật này là một điều thú vị. Nhưng dù sao thì đây cũng không thực sự là một sự so sánh vì hai bộphim không cùng một kịch bản. Mà kịch bản gốc đã được sửa đổi khá nhiềuđể phù hợp hơn với Lý Liên Kiệt. Đó là một công việc rất lý thú.”Báo thù, một nền tảng chắc chắn của một kịch bản tuy không sáng giá nhưng rõ ràng là rất hiệu quả. Mặt khác, tình yêu khókhăn giữa Chen Zhen và cô gái người Nhật trong một hoàn cảnh đầy bất trắc và hiểm nguy càng khiến cho bộ phim thêm kịch tính. Đặc biệt, với một bộ phim có sự góp mặt của Lý Liên Kiệt, sự chú ý luôn nằm trongnhững pha hành động đẹp mắt và rất thuyết phục. Những trận đấu trongphim là sự pha trộn giữa thể loại wushu khó nhằn và môn karate năngđộng đầy ấn tượng.Nhưng vẫn có những lỗi dễ nhận thấy gây hạn chế phầnnào cho thành công của bộ phim: việc lồng tiếng đã thổi phồng quá mứchiệu quả tiếng động của những cú đấm, hình ảnh thiếu độ nét, những tình tiết hài hước xen kẽ thiếu thuyết phục. Mặc dù vậy Fist of Legend vẫn là một bộ phim hành động đáng xem dành cho các fan của thể loại nàycũng như những ai hâm mộ tài năng của Lý Liên Kiệt. Đặc biệt, phim cònnằm trong danh sách 10 bộ phim võ thuật kung fu hay nhất của màn ảnhHoa ngữ cùng với những bộ phim đình đám như Ngọa hổ tàng long hay Police Story.Đánh giá khác:Không giống như những bộ phim được thực hiện tại Hollywood, những bộ phim của Lý Liên Kiệt tại Hong Kong được đánh giá rất cao. Một trong số này là Fist of legend (Tinh võ môn). Đây là bộ phim là lại từ tác phẩm Fist of fury nổi danh của Lý Tử Long và nó được coi là một trong những bộ phim võ thuật hay nhất mọi thời đại cũng như là hay nhất của Lý Liên Kiệt.Bối cảnh của phim là thành phố Thượng Hải năm 1937 trong thời kì chiến tranh Trung-Nhật lần thứ 2. Lúc này Thượng Hải đang bị quân Nhật chiếm đóng. Trần Chân (Lý Liên Kiệt), một công dân Thượng Hải, đang học tại Nhật thì nghe tin sư phụ của mình là Hoắc Nguyên Giáp, người đứng đầu Tinh võ môn, bị giết chết trong một trận thách đấu với một võ sĩ Nhật Bản. Trần Chân ngay lập tức trở về nước chịu tang thầy và tìm hiểu rõ sự việc.Tại Thượng Hải, sau khi về trường Tinh võ để chịu tang thầy, Trần Chân tìm tới nơi dạy võ của Akutagawa Ryoichi, võ sĩ Nhật đã giết chết Hoắc Nguyên Giáp. Sau khi giao đấu, Trần Chân nhận thấy trình độ của Ryoichi không thể là đối thủ của thầy mình vì thế anh cho khai quật mộ của thầy và nhờ bác sĩ khám nghiệm tử thi. Qua xét nghiệm, bác sĩ kết luận Hoắc Nguyên Giáp bị đầu độc. Kết luận này khiến nội bộ Tinh võ môn nảy sinh nghi ngờ lẫn nhau.Cùng lúc đó, biết trận đấu của mình với Hoắc Nguyên Giáp đã bị dàn xếp, Ryoichi phản ứng với Fujta, một sĩ quan quân tội và là kẻ chủ mưu, và bị Fujita giết chết. Để dẹp yên mọi chuyện, Fujita đổ vấy cho Trần Chân tội sát hại Ryoichi. Trần Chân bị bắt vào tù và bị đem ra xét xử. Quá trình điều tra kẻ thực sự giết hại sư phụ của Trần Chân xuất hiện nhiều tình huống mới…Kịch bản của Fist of legend không quá phức tạp nhưng nó vẫn có những yếu tố hấp dẫn, những đoạn cao trào, những nút thắt mở. Ví dụ như khi Trần Chân phải ra tòa thì đúng lúc đó cô bạn gái người Nhật xuất hiện, khai man trước tòa để Trần Chân thoát tội. Không chỉ là sự báo thù của Trần Chân trước cái chết của thầy mình mà ẩn đằng sau đó là tinh thần kháng Nhật của người Trung Quốc trong thời kì này. Đan xen trong đó là mối tình ngang trái giữa Trần Chân và một cô gái Nhật khi mà Trần Chân phải lựa chọn cô gái và Tinh võ môn và khi mà anh bị tẩy chay ở mọi nơi vì có bạn gái là người Nhật. Trong phim cũng có một vài tình huống và nhân vật hài hước trong nhiều phim võ thuật khác của Hong Kong như nhân vật đội trưởng cảnh sát hay chi tiết bác sĩ pháp y lại sợ tiếp xúc với tử thi.Vì là phim hành động võ thuật nên phần quan trọng nhất là các cảnh đánh nhau, đấu võ. Với tài chỉ đạo võ thuật của Yuen Woo Ping cộng với khả năng của các diễn viên, đặc biệt là Lý Liên Kiệt, những cảnh đánh võ trong phim rất chân thực và sống động. Thêm vào đó là góc độ và việc dừng máy đúng lúc khiến các cảnh đấu võ gần như là hoàn hảo.Trong các bộ phim kiểu như thế này, diễn xuất của các diễn viên không được chú ý quá nhiều và không bị đòi hỏi cao. Lý Liên Kiệt vẫn yêu trong những cảnh đòi hỏi nhiều diễn xuất nội tâm, nhưng ở các cảnh cần sự cương nghị, căm giận, dũng mãnh anh lại diễn rất khá. Các diễn viên khác tròn vai, không có gì đáng kể. Ngoài ra, Lý Liên Kiệt trông điển trai hơn chứ không xù xì nhưng nhiều vai diễn gần đây khi mà dấn ấn tuổi tác đã hiện rõ (đặc biệt là gương mặt).Nói tóm lại, đây là một bộ phim mà những fan phim võ thuật và phim Hong Kong không thể bỏ qua.Screens:","duration":103,"thumbnails":{"small":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Ftinh-vo-anh-hung-fist-of-legend-1994.jpg%3Fsize%3D300"},"actors":["Phim Võ Thuật"],"genres":[""],"countries":[{"name":"Trung Quốc"}],"embeds":"Die","backups":["http://topanimehd.com/getid.php?id=MWlhRDQ3ZklPdEZ2QW1yUGVKczJ1OHRGMmNzeDVWLUFkSVVuTmtX&sub=http://topphimhd.com/wp-content/uploads/2018/09/Fist-Of-Legend-1994-1080p-UK-Blu-ray-AVC-DTS-HD-MA-5.1.srt"],"status":"updating","viewsCount":9508950,"directors":["Lý Liên Kiệt"],"quality":"HD","subUrl":"http://topphimhd.com/wp-content/uploads/2018/09/Fist-Of-Legend-1994-1080p-UK-Blu-ray-AVC-DTS-HD-MA-5.1.srt","isAdult":false},{"name":"Chiến Binh Săn Phù Thủy","nameOrigin":"The Last Witch Hunter","desc":"Dựa trên một trong những kịch bản chuyển thể hấp dẫn nhất do trang web uy tín Blacklist bình chọn năm 2010, CHIẾN BINH SĂN PHÙ THỦY (THE LAST WITCH HUNTER) là sản phẩm mới nhất của hãng Summit, được nhào nặn dưới bàn tay đạo diễn “The Crazies” – Breck Eisner. Bộ phim đặt người xem vào bối cảnh thế giới bị lũng đoạn bởi sự hiện diện của tộc phù thuỷ. Cuộc chiến giữa chúng và những người thợ săn kéo dài hàng bao thế kỷ cho kết khi Kaulder (Vin Diesel) tiêu diệt được Nữ Hoàng (Julie Engelbrecht). Trước khi chết, mụ đã kịp nguyền rủa Kaulder với sự bất tử của chính mình, khiến anh mãi mãi rời xa vợ con, sống một cuộc sống cô độc kiếp này qua kiếp khác. Trở về với thế kỷ 21, Kaulder là thợ săn phù thuỷ duy nhất còn sót lại, vẫn tiếp tục tìm kiếm và tiêu diệt những sinh vật siêu nhiên chết người kia. Nhưng, anh không thể ngờ rằng, thủ lĩnh của chúng – Nữ Hoàng đã được hồi sinh và đang tìm cách trả thù loài người.Cùng góp mặt trong phim bên cạnh Vin Diesel là kiều nữ “Games of Throne” – Rose Leslie, ngôi sao “The Lords of The Ring” – Elijah Wood và nam diễn viên từng 2 lần giành tượng vàng Oscar – Michael Caine.","duration":106,"thumbnails":{"small":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fchien-binh-san-phu-thuy-the-last-witch-hunter-2016.jpg%3Fsize%3D300"},"actors":["Vin Diesel","Rose Leslie","Elijah Wood"],"genres":["Phim Hành Động","Phim Phiêu Lưu","Phim Thuyết Minh"],"countries":[{"name":"Mỹ"}],"embeds":[],"backups":["http://topanimehd.com/getid.php?id=MXdvenNmM1QyOTlFTE1BdzZMaVhUbE9qM0dHcVZQelUzQTVpRHRC&sub=http://topphimhd.com/wp-content/uploads/2018/07/The.Last_.Witch_.Hunter.2015.720p.BluRay.DTS_.x264-HiDt.srt"],"status":"updating","viewsCount":10420470,"directors":["Breck Eisner"],"quality":"HD","subUrl":"http://topphimhd.com/wp-content/uploads/2018/07/The.Last_.Witch_.Hunter.2015.720p.BluRay.DTS_.x264-HiDt.srt","isAdult":false},{"name":"Gương Quỷ","nameOrigin":"The Mirror","desc":"Gương Quỷ 3D - Bộ phim là dự án hợp tác giữa Thái Lan, Hồng Kông và Hàn Quốc, ba ông trùm phim kinh dị châu Á.  Phim Gương Quỷ 3D kể kề câu chuyện diễn ra trong một căn hộ chung cư bí ẩn rùng rợn với những hình ảnh đáng sợ về số phận của một người phụ nữ đơn thân cô độc cùng một đứa trẻ côi cút.  Gương Quỷ được sáng tạo dựa trên quan niệm về mọi vật đều có một phản chiếu của chính mình bên kia tấm gương, chính vì vậy, những điều quỷ quyệt nhất, xấu xa nhất cũng cũng từ đó mà ra.  Từ yếu tố kinh dị dựa trên không gian ma mị kiểu Hồng Kông cho đến kiểu ám ảnh mang màu sắc tín ngưỡng của Thái Lan, và cuối cùng là hiệu ứng hồi hộp thót tim dựa trên sức ép tâm lí mà các nhà làm phim Hàn hay sử dụng, tất cả đều được thể hiện chân thực đến lạnh người trong Gương Quỷ.","duration":101,"thumbnails":{"small":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fguong-quy-the-mirror-2015.jpg%3Fsize%3D300"},"actors":["Hong Zhou","Eunsung Kim","Lee Chae young"],"genres":["Phim Kinh Dị","Phim Thuyết Minh"],"countries":[{"name":"Thái Lan"}],"backups":["http://topanimehd.com/getid.php?id=MURBY3ptS0ttSmRPbnBmR1o0cUZhS1pmTHQ3VWIwZDA2TTFITWo0&sub=http://topphimhd.com/wp-content/uploads/2018/07/Mirrors.2008.UNRATED.720p.BluRay.DTS_.x264-DON.srt"],"status":"updating","viewsCount":6398070,"directors":["Pakphum Wonjinda"],"quality":"HD","subUrl":"http://topphimhd.com/wp-content/uploads/2018/07/Mirrors.2008.UNRATED.720p.BluRay.DTS_.x264-DON.srt","isAdult":false},{"name":"Người Giải Mã","nameOrigin":"The Imitation Game","desc":"Trong thời kỳ Thế chiến II, quân Đức sử dụng máy Enigma để liên lạc nhờ sự bảo mật tối ưu của loại máy mã hóa ưu việt này. Từ những thông tin cơ bản như dự báo thời tiết trong ngày cho tới những thông điệp quan trọng như ý đồ tác chiến, vị trí đặt tàu, thời gian tiến hành chiến dịch… đều được phe Đức trao đổi sau khi đã mã hóa qua máy Enigma.Để có thể chiến thắng cuộc chiến này, việc giải mã Enigma là một nhiệm vụ tối quan trọng đối với phe Đồng Minh. Tại Anh, “điệp vụ bất khả thi” ấy được giao cho một nhóm nhà toán học, giải mật mã và kỳ thủ cờ vua tại trung tâm Bletchley Park. Tâm điểm của dự án tuyệt mật ấy là nhà toán học thiên tài lập dị Alan Turing (Benedict Cumberbatch thủ vai). The Imitation Game kể về cuộc đời của nhân vật được xem như cha đẻ của trí thông minh nhân tạo và khoa học máy tính hiện đại song lại có một kết cục bi thảm.Không đi theo tuyến tính thông thường, câu chuyện trong The Imitation Game là những lát cắt đan xen giữa ba thời điểm trong cuộc đời của Turing. Tác phẩm mở đầu vào năm 1952, khi cuộc chiến kết thúc và Turing bị bắt giam do có quan hệ đồng tính – một việc bị xem như phạm pháp lúc ấy. Trong cuộc hỏi cung, những mảnh ghép bí ẩn từ quá khứ của ông bắt đầu được ráp lại để vẽ nên chân dung về thiên tài không gặp thời này, từ khi ông còn là một cậu nhóc thường xuyên bị bắt nạt tại trường tư tới khi gia nhập đội giải mã tại Bletchley Park và trở thành “cá nhân có đóng góp lớn nhất giúp quân Đồng Minh có được chiến thắng” như nhận định của Churchill.","duration":114,"thumbnails":{"small":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fnguoi-giai-ma-the-imitation-game-2014.jpg%3Fsize%3D300"},"actors":["Benedict Cumberbatch","Keira Knightley","Matthew Goode"],"genres":["Phim Kinh Dị","Phim Tâm Lý","Phim Thuyết Minh"],"countries":[{"name":"Mỹ"}],"embeds":"Die","backups":["http://topanimehd.com/getid.php?id=MXc1V2ZZU0J6ZnNIZExQbDR4R0pYaExmNno5ci10QklsTG1SdnRj&sub=http://topphimhd.com/wp-content/uploads/2018/07/The.Imitation.Game_.2014.720p.BluRay.x264.YIFY_.srt"],"status":"updating","viewsCount":9618735,"directors":["Morten Tyldum"],"quality":"HD","subUrl":"http://topphimhd.com/wp-content/uploads/2018/07/The.Imitation.Game_.2014.720p.BluRay.x264.YIFY_.srt","isAdult":false},{"name":"Tay Trống Cự Phách","nameOrigin":"Whiplash","desc":"Chàng trai Andrew (Miles Teller) được nhận vào trường Shaffer, trường nhạc đỉnh nhất nước Mĩ. Tại đây, anh tham gia ban nhạc jazz của trường và phải đối mặt với Fletcher (Terence Fletcher), một chỉ huy dàn nhạc với yêu cầu cực kì khắt khe.","duration":107,"thumbnails":{"small":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Ftay-trong-cu-phach-whiplash-2014.jpg%3Fsize%3D300"},"actors":["Phim Tâm Lý","Phim Âm Nhạc"],"genres":[""],"countries":[{"name":"Mỹ"}],"embeds":"Die","backups":["http://topanimehd.com/getid.php?id=MWtNS3pDc1gtc1FwN2Q4d1ZxQUNEMkNUdTdtMHo0LURCUTNYc0xT&sub=http://topphimhd.com/wp-content/uploads/2018/07/Whiplash.2014.720p.BluRay.x264.YIFY_.srt"],"status":"updating","viewsCount":6588705,"directors":["Miles Teller","J.K. Simmons","Melissa Benoist"],"quality":"HD","subUrl":"http://topphimhd.com/wp-content/uploads/2018/07/Whiplash.2014.720p.BluRay.x264.YIFY_.srt","isAdult":false},{"name":"Nòng Súng Trên Tay","nameOrigin":"By the Gun","desc":"","duration":110,"thumbnails":{"small":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fnong-sung-tren-tay-by-the-gun-2014.jpg%3Fsize%3D300"},"actors":["Tully Banta Cain","Ben Barnes","Paul Ben Victo"],"genres":["Phim Hình Sự","Phim Tâm Lý"],"countries":[{"name":"Mỹ"}],"embeds":"Die","backups":["http://topanimehd.com/getid.php?id=MTZVRXlycmVEWjFKMkxsUXlfZUl3cEczbUlsQWhCNGpNZXdZMVQw&sub=http://topphimhd.com/wp-content/uploads/2018/07/By_the_Gun_2014_1080p_BluRay_AC3_S_ViE_VIE.srt"],"status":"updating","viewsCount":6932970,"directors":["James Mottern"],"quality":"HD","subUrl":"http://topphimhd.com/wp-content/uploads/2018/07/By_the_Gun_2014_1080p_BluRay_AC3_S_ViE_VIE.srt","isAdult":false},{"name":"Cuồng Nộ","nameOrigin":"Fury","desc":"Đặt bối cảnh vào giai đoạn cuối của cuộc Chiến tranh Thế giới lần thứ II, 04/1945, “Fury” theo chân chiến binh dày dạn kinh nghiệm chiến trường Wardaddy (Brad Pitt), người chỉ huy một chiếc xe tăng chủ lực Sherman của Anh và đội hình chiến đấu 5 người trong một nhiệm vụ cực kỳ nguy hiểm luồn sâu tập kích đằng sau chiến tuyến của quân thù. Bị áp đảo bởi số lượng và hỏa lực từ kẻ thù, Wardaddy và các đồng đội phải đối mặt với vô vàn khó khăn nguy hiểm bằng một cố gắng phi thường nhằm đánh thẳng vào trái tim của Đức Quốc Xã.","duration":134,"thumbnails":{"small":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fcuong-no-fury-2014.jpg%3Fsize%3D300"},"actors":["Brad Pitt","Shia LaBeouf","Logan Lerman"],"genres":["Phim Hành Động","Phim Chiến Tranh"],"countries":[{"name":"Mỹ"}],"backups":["http://topanimehd.com/getid.php?id=MXZpSjQzWWp2dDYtUGhLVWw2RmNvcXZIdTJXdzg2elRyMjc2ODNS&sub=http://topphimhd.com/wp-content/uploads/2018/07/Fury-2014-Vie-All-Bluray.srt"],"status":"updating","viewsCount":15788685,"directors":["David Ayer"],"quality":"HD","subUrl":"http://topphimhd.com/wp-content/uploads/2018/07/Fury-2014-Vie-All-Bluray.srt","isAdult":false},{"name":"Cô Gái Mất Tích","nameOrigin":"Gone Girl","desc":"","duration":149,"thumbnails":{"small":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fco-gai-mat-tich-gone-girl-2014.jpg%3Fsize%3D300"},"actors":["Ben Affleck","Rosamund Pike","Neil Patrick Harris"],"genres":["Phim Phiêu Lưu","Phim Kinh Dị","Phim Tâm Lý"],"countries":[{"name":"Mỹ"}],"backups":["http://topanimehd.com/getid.php?id=MVhMQkczakc5UG9KNUlYNHV5OVZTMkZUaWh5ejZvNTBESEVHY09U&sub=http://topphimhd.com/wp-content/uploads/2018/07/Gone.Girl_.2014.720p.BluRay.x264.DTS-WiKi.srt"],"status":"updating","viewsCount":8507385,"directors":["David Fincher"],"quality":"HD","subUrl":"http://topphimhd.com/wp-content/uploads/2018/07/Gone.Girl_.2014.720p.BluRay.x264.DTS-WiKi.srt","isAdult":false},{"name":"Khách Sạn Huyền Bí 3: Kỳ Nghỉ Ma Cà Rồng","nameOrigin":"Hotel Transylvania 3: Summer Vacation","desc":"Phim Khách Sạn Huyền Bí 3: Kỳ Nghỉ Ma Cà Rồng lần này sẽ là “cuộc chơi lớn” với một phen tiệc tùng sang chảnh hết nấc của gia đình Dracula. Đã quá “ngán” với cường độ làm việc chăm chỉ 365 ngày không nghỉ, bá tước Dracula quyết định đòi “đình công”. Để khai sáng cho người cha trăm tuổi chưa bao giờ bước ra khỏi “lũy tre làng”, vợ chồng nhà Jonathan – Mavis lập một kế hoạch xả hơi táo bạo: Thuê đứt một du thuyền du lịch hạng sang để đưa tất thảy bộ xậu quái vật già trẻ lớn bé làm một chuyến ra khơi nhớ đời.Xem Khách Sạn Huyền Bí 1xem Khách Sạn Huyền Bí 2","duration":99,"thumbnails":{"small":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fkhach-san-huyen-bi-3-ky-nghi-ma-ca-rong-hotel-transylvania-3-summer-vacation-2018.jpg%3Fsize%3D300"},"actors":["Steve Buscemi","Selena Gomez","Adam Sandler","Kevin James","Andy Samberg"],"genres":["Phim Hài Hước","Phim Hoạt Hình","Phim Viễn Tưởng","Phim Thiếu nhi"],"countries":[{"name":"Mỹ"}],"embeds":[],"backups":["http://topanimehd.com/getid.php?id=MVVPZHZHRmZSWTdSTFV3LXhpQVZ2UkxsYTR0ZmtlSUszTVV1SWdB&sub=http://topphimhd.com/wp-content/uploads/2018/08/Hotel.Transylvania.3.Summer.Vacation.2018.1080p.BluRay.x264.DTS-HD.MA_.5.1-FGT-Topphimhd.com_.srt"],"status":"updating","viewsCount":581400,"directors":["Genndy Tartakovsky"],"quality":"HD","subUrl":"http://topphimhd.com/wp-content/uploads/2018/08/Hotel.Transylvania.3.Summer.Vacation.2018.1080p.BluRay.x264.DTS-HD.MA_.5.1-FGT-Topphimhd.com_.srt","isAdult":false},{"name":"Toà Tháp Chọc Trời","nameOrigin":"Skyscraper","desc":"Phim Toà Tháp Chọc Trời Dwayne Johnson (The Rock) sẽ vào vai cựu quân nhân và cựu trưởng nhóm đặc nhiệm giải cứu của FBI Will Ford đầy dũng cảm. Không may trong một nhiệm vụ nguy hiểm, tai nạn khủng khiếp xảy đến với Will làm anh mất đi chân trái của mình. Kể từ đó, Will Ford từ bỏ công việc tại FBI và trở thành chuyên gia đánh giá an ninh cho các tòa nhà. Trong một lần làm việc, Tòa nhà cao 240 tầng với hệ thống an ninh tối tân đột nhiên bị cháy lớn ở tầng 96. Những con người, cạm bẫy và thế lực nào đứng sau thảm họa này chắc chắn đang nhắm vào cựu quân nhân và lấy gia đình anh ra làm con tin. Với kinh nghiệm, sự gan dạ của một người lính cùng tình yêu gia đình mãnh liệt, liệu Will Ford có tìm ra được kẻ chủ mưu và cứu lấy gia đình của anh?","duration":120,"thumbnails":{"small":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Ftoa-thap-choc-troi-skyscraper-2018.jpg%3Fsize%3D300"},"actors":["Dwayne Johnson","Roland Møller"],"genres":["Phim Hành Động","Phim Phiêu Lưu","Phim Viễn Tưởng","Phim Thuyết Minh"],"countries":[{"name":"Mỹ"}],"embeds":[{"file":"https://r3---sn-4g5e6nld.googlevideo.com/videoplayback?id=e9657aebb074396b&itag=18&source=picasa&begin=0&requiressl=yes&mm=30&mn=sn-4g5e6nld&ms=nxu&mv=u&pl=25&sc=yes&ei=COGlXLCjEp7X1wLZhqPwAw&susc=ph&app=fife&mime=video/mp4&dur=6144.301&lmt=1548770273295018&mt=1554373853&ipbits=0&cms_redirect=yes&keepalive=yes&ratebypass=yes&ip=116.203.31.227&expire=1554382120&sparams=ip,ipbits,expire,id,itag,source,requiressl,mm,mn,ms,mv,pl,sc,ei,susc,app,mime,dur,lmt&signature=6C3DB85FBA82FE2B2A330AE817F5220CA9C2FE0B9BD12D7363A32A598A73BA5A.B7F3116BF05050F1CBF6A64B7F25E17916D1FA3EE8498F9CF412FB912DE9A75B&key=us0","label":"360p","type":"video/mp4"},{"file":"https://r3---sn-4g5edns6.googlevideo.com/videoplayback?id=e9657aebb074396b&itag=22&source=picasa&begin=0&requiressl=yes&mm=30&mn=sn-4g5edns6&ms=nxu&mv=u&pl=25&sc=yes&ei=COGlXM_BEsbG1wL0rqHwBg&susc=ph&app=fife&mime=video/mp4&cnr=14&dur=6144.301&lmt=1548773145247011&mt=1554373853&ipbits=0&cms_redirect=yes&keepalive=yes&ratebypass=yes&ip=116.203.31.227&expire=1554382120&sparams=ip,ipbits,expire,id,itag,source,requiressl,mm,mn,ms,mv,pl,sc,ei,susc,app,mime,cnr,dur,lmt&signature=0E9B7A0EE3449DDD458894B83A1A24D5711F1241F48C1AE850DF93763C42319C.AFD5767F33EBB20A3B97983E7B2EDB21835961D5EA51E110CD4CD25FFFD35E14&key=us0","label":"720p","type":"video/mp4","default":"true"}],"backups":["http://topanimehd.com/getid.php?id=MTFTck5aN1FNWUVKVzUwTnVqaDhQUVBHU2VEZUgtWU1qbjh4R2JR&sub=http://topphimhd.com/wp-content/uploads/2018/06/Skyscraper.Vietsub.HD_.Cam_.Ass_.New_.srt"],"status":"updating","viewsCount":1539525,"directors":["Rawson Marshall Thurber"],"quality":"HD","subUrl":"http://topphimhd.com/wp-content/uploads/2018/06/Skyscraper.Vietsub.HD_.Cam_.Ass_.New_.srt","isAdult":false},{"name":"Tay Lái Siêu Hạng","nameOrigin":"Drive","desc":"Drive là câu chuyện ở Hollywood về một diễn viên đóng thế (Gosling) các cảnh đua xe trong phim hành động. Cuộc sống của anh cũng bình lặng như những diễn viên hạng thường ở Hollywood, một căn hộ nhỏ và mối tình với cô gái hàng xóm. Nhưng thật ra nghề tay phải của anh là lái thuê cho bọn tội phạm trong các phi vụ đánh cướp. Cho đến khi thực hiện một hợp đồng lái thuê, anh nhận ra mình bị dính vào một vụ án nguy hiểm có thể hại cả anh và người yêu. Điều duy nhất có thể cứu cả hai là anh phải ngồi sau vô lăng và đạp ga tăng hết tốc lực.","duration":100,"thumbnails":{"small":"https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http%3A%2F%2Fphim3s.pw%2Fdata%2Fimages%2Ffilms%2Fthumb%2Fdrive-2011tay-lai-sieu-hang-drive-2011.jpg%3Fsize%3D300"},"actors":["Phim Hành Động"],"genres":[""],"countries":[{"name":"Mỹ"}],"embeds":"Die","backups":["http://topanimehd.com/getid.php?id=MVZIQ1dfRFZXQlZ2M0RDWVhVWU5TSTU4WjU0RlBWb2dqZDdaN2ha&sub=http://topphimhd.com/wp-content/uploads/2018/07/Drive.2011.mHD_.R5.BluRay.DD5_.1.x264-EPiK.srt"],"status":"updating","viewsCount":5961900,"directors":["Ryan Gosling","Carey Mulligan","Bryan Cranston"],"quality":"HD","subUrl":"http://topphimhd.com/wp-content/uploads/2018/07/Drive.2011.mHD_.R5.BluRay.DD5_.1.x264-EPiK.srt","isAdult":false}]
 
 /***/ }),
 /* 97 */
 /***/ (function(module, exports) {
 
-module.exports = require("body-parser");
+module.exports = require("accesscontrol");
 
 /***/ }),
 /* 98 */
 /***/ (function(module, exports) {
 
-module.exports = require("compression");
+module.exports = require("axios");
 
 /***/ }),
 /* 99 */
 /***/ (function(module, exports) {
 
-module.exports = require("helmet");
+module.exports = require("bcrypt-nodejs");
 
 /***/ }),
 /* 100 */
 /***/ (function(module, exports) {
 
-module.exports = require("jsonwebtoken");
+module.exports = require("body-parser");
 
 /***/ }),
 /* 101 */
 /***/ (function(module, exports) {
 
-module.exports = require("lodash");
+module.exports = require("compression");
 
 /***/ }),
 /* 102 */
 /***/ (function(module, exports) {
 
-module.exports = require("morgan");
+module.exports = require("fs");
 
 /***/ }),
 /* 103 */
 /***/ (function(module, exports) {
 
-module.exports = require("passport-facebook");
+module.exports = require("helmet");
 
 /***/ }),
 /* 104 */
 /***/ (function(module, exports) {
 
-module.exports = require("passport-jwt");
+module.exports = require("lodash");
 
 /***/ }),
 /* 105 */
 /***/ (function(module, exports) {
 
+module.exports = require("log-to-file");
+
+/***/ }),
+/* 106 */
+/***/ (function(module, exports) {
+
+module.exports = require("mongoose-float");
+
+/***/ }),
+/* 107 */
+/***/ (function(module, exports) {
+
+module.exports = require("morgan");
+
+/***/ }),
+/* 108 */
+/***/ (function(module, exports) {
+
+module.exports = require("passport-facebook");
+
+/***/ }),
+/* 109 */
+/***/ (function(module, exports) {
+
+module.exports = require("passport-jwt");
+
+/***/ }),
+/* 110 */
+/***/ (function(module, exports) {
+
 module.exports = require("passport-local");
+
+/***/ }),
+/* 111 */
+/***/ (function(module, exports) {
+
+module.exports = require("request");
 
 /***/ })
 /******/ ]);

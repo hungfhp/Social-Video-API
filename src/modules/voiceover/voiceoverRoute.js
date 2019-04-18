@@ -5,6 +5,9 @@ import HTTPStatus from 'http-status'
 
 import * as voiceoverController from './voiceoverController'
 import voiceoverValidation from './voiceoverValidation'
+import * as authService from '../../services/authService'
+import * as paramService from '../../services/paramService'
+import * as synthesisService from '../../services/synthesisService'
 
 const router = new Router()
 
@@ -16,6 +19,29 @@ const router = new Router()
  * PATCH/PUT /items/:id => update
  * DELETE /items/:id => remove
  */
+
+// More router
+router.get(
+	'/check', // with req.query.requestId
+	validate(voiceoverValidation.checkSynthesis),
+	voiceoverController.checkSynthesis,
+	function(req, res, next) {
+		return res.status(HTTPStatus.OK).json({
+			voiceover: res.voiceover
+		})
+	}
+)
+
+router.post(
+	'/callback', // with req.query.requestId
+	validate(voiceoverValidation.callbackSynthesis),
+	voiceoverController.callbackSynthesis,
+	function(req, res, next) {
+		return res.status(HTTPStatus.OK).json({
+			voiceover: res.voiceover
+		})
+	}
+)
 
 //  Default router
 router
@@ -32,12 +58,12 @@ router
 	.get(
 		'/',
 		validate(voiceoverValidation.index),
-		voiceoverController.getVoiceoversStats,
+		paramService.parseParam,
 		voiceoverController.getVoiceovers,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
 				voiceovers: res.voiceovers,
-				voiceoversStats: res.voiceoversStats
+				voiceoversMeta: res.voiceoversMeta
 			})
 		}
 	)
@@ -53,7 +79,8 @@ router
 	)
 	.post(
 		'/',
-		validate(voiceoverValidation.create),
+		// validate(voiceoverValidation.create),
+		authService.authJwt,
 		voiceoverController.createVoiceover,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
@@ -76,10 +103,8 @@ router
 		validate(voiceoverValidation.delete),
 		voiceoverController.deleteVoiceover,
 		function(req, res, next) {
-		return res.sendStatus(HTTPStatus.OK)
+			return res.sendStatus(HTTPStatus.OK)
 		}
 	)
-
-// More router
 
 export default router

@@ -6,12 +6,12 @@ module.exports = {
 	target: 'node',
 	externals: [nodeExternals()],
 	entry: {
-		'index': './src/app.js',
+		index: './src/app.js'
 	},
 	output: {
 		path: path.join(__dirname, 'dist'),
 		filename: '[name].bundle.js',
-		libraryTarget: 'commonjs2',
+		libraryTarget: 'commonjs2'
 	},
 	module: {
 		rules: [
@@ -19,7 +19,7 @@ module.exports = {
 				test: /\.js$/,
 				exclude: /node_modules/,
 				use: 'babel-loader'
-			},
-		],
-	},
+			}
+		]
+	}
 }
