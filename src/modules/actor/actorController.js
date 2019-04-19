@@ -2,11 +2,24 @@ import Actor from './actorModel.js'
 import HTTPStatus from 'http-status'
 // eslint-disable-next-line no-unused-vars
 import * as util from './actorUtil'
+import defaultActors from '../../initData/actors'
 
 /**
  * @group actors - Operations about actors
  *
  */
+
+export default async function initActors(req, res, next) {
+	try {
+		await Actor.deleteMany()
+		await Actor.insertMany(defaultActors)
+		res.actors = defaultActors
+
+		next()
+	} catch (e) {
+		return res.status(HTTPStatus.BAD_REQUEST).json(e)
+	}
+}
 
 export async function getActorsStats(req, res, next) {
 	try {

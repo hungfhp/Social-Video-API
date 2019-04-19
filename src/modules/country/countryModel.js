@@ -24,6 +24,12 @@ let countrySchema = new Schema({
 		maxlength: [2, 'Country code must be two characters!'],
 		unique: true,
 		trim: true
+	},
+	url: {
+		type: String,
+		required: [true, 'Country url is required!'],
+		trim: true,
+		unique: true
 	}
 })
 

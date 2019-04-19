@@ -1,11 +1,5 @@
-/**
- * @typedef movies
- * @property {string} _id
- * @property {string} movieName
- */
-
-// import validator from 'validator'
-// import * as myValid from './movieValidation'
+/* eslint-disable no-unused-vars */
+import validator from 'validator'
 import mongoose, { Schema } from 'mongoose'
 const ObjectId = mongoose.Schema.Types.ObjectId
 import float from 'mongoose-float'
@@ -13,27 +7,11 @@ const Float = float.loadType(mongoose)
 import mongoosePaginate from 'mongoose-paginate'
 import autopopulate from 'mongoose-autopopulate'
 import uniqueValidator from 'mongoose-unique-validator'
-// import Actor from '../actor/actorModel'
-// import Director from '../director/directorModel'
-// import Genre from '../genre/genreModel'
+import slugify from 'slugify'
 
 import * as pluginService from '../../services/pluginService'
 
-var embedSchema = new Schema({
-	resolution: {
-		type: Number,
-		default: 720
-	},
-	embedUrl: {
-		type: String,
-		required: [true, 'Movie file is required!']
-	},
-	default: {
-		type: Boolean
-	}
-})
-
-let movieSchema = new Schema(
+let seriesSchema = new Schema(
 	{
 		name: {
 			type: String,
@@ -43,6 +21,10 @@ let movieSchema = new Schema(
 		},
 		nameOrigin: {
 			type: String,
+			trim: true
+		},
+		part: {
+			type: Number,
 			trim: true
 		},
 		desc: {
@@ -63,20 +45,10 @@ let movieSchema = new Schema(
 				trim: true
 			}
 		},
-		duration: {
-			type: Date,
-			trim: true
-		},
-		category: {
-			type: String,
-			enum: ['single', 'series'],
-			default: 'single',
-			trim: true
-		},
-		countries: {
-			type: Array,
-			// ref: 'Country',
-			// autopopulate: true,
+		country: {
+			type: ObjectId,
+			ref: 'Country',
+			autopopulate: true,
 			trim: true
 		},
 		uploader: {
@@ -84,14 +56,10 @@ let movieSchema = new Schema(
 			ref: 'User',
 			autopopulate: true,
 			required: [true, 'Uploader is required!'],
-			// hung-dev
-			default: '5ca016de421fa21ea0524815',
 			trim: true
 		},
-		embeds: [embedSchema],
 		url: {
 			type: String,
-			unique: true,
 			trim: true
 		},
 		trailerUrl: {
@@ -130,7 +98,9 @@ let movieSchema = new Schema(
 		},
 		genres: [
 			{
-				type: String,
+				type: ObjectId,
+				ref: 'Genre',
+				autopopulate: true,
 				trim: true
 			}
 		],
@@ -150,47 +120,37 @@ let movieSchema = new Schema(
 			type: Date,
 			trim: true
 		},
+		episodes: [
+			{
+				type: ObjectId,
+				ref: 'Movie',
+				trim: true
+			}
+		],
 		year: {
 			type: Number,
 			trim: true
 		},
-		// series: {
-		// 	type: ObjectId,
-		// 	ref: 'Series',
-		// 	trim: true
-		// },
+		series: {
+			type: ObjectId,
+			ref: 'Series',
+			trim: true
+		},
 		isAdult: {
 			type: Boolean,
 			default: false
 		},
-		subUrl: {
-			type: String,
-			trim: true
-		},
-		enSubUrl: {
-			type: String,
-			trim: true
-		},
-		// voiceoverUrl is lastest in voiceovers[]
-		voiceovers: [
-			{
-				type: ObjectId,
-				ref: 'Voiceover',
-				trim: true
-			}
-		],
 		actors: [
 			{
-				type: String,
+				type: ObjectId,
+				ref: 'Actor',
 				trim: true
 			}
 		],
-		directors: [
-			{
-				type: String,
-				trim: true
-			}
-		],
+		directors: {
+			type: Array,
+			trim: true
+		},
 		quality: {
 			type: String,
 			enum: ['CAM', 'HD', 'FULL HD'],
@@ -199,27 +159,22 @@ let movieSchema = new Schema(
 		},
 		viewsCount: {
 			type: Number,
-			default: 1,
 			trim: true
 		},
 		likesCount: {
 			type: Number,
-			default: 0,
 			trim: true
 		},
 		favoritesCount: {
 			type: Number,
-			default: 0,
 			trim: true
 		},
 		ratesAvg: {
 			type: Number,
-			default: 5,
 			trim: true
 		},
 		ratesCount: {
 			type: Number,
-			default: 0,
 			trim: true
 		}
 	},
@@ -228,37 +183,18 @@ let movieSchema = new Schema(
 	}
 )
 
-movieSchema.pre('save', function(next) {
-	if (this.country) {
-		this.countries.push(this.country)
-	}
+seriesSchema.statics = {}
+
+seriesSchema.pre('save', function(next) {
 	return next()
 })
 
-movieSchema.statics = {
-	// views inc
-	incViewsCount(movieId) {
-		return this.findByIdAndUpdate(movieId, { $inc: { viewsCount: 1 } })
-	},
-
-	// favorites inc
-	incFavoritesCount(movieId) {
-		return this.findByIdAndUpdate(movieId, { $inc: { favoritesCount: 1 } })
-	},
-
-	// favorites dec
-	decFavoritesCount(movieId) {
-		return this.findByIdAndUpdate(movieId, { $inc: { favoritesCount: -1 } })
-	}
-}
-
-movieSchema.plugin(uniqueValidator, {
+seriesSchema.plugin(uniqueValidator, {
 	message: '{VALUE} already taken!'
 })
+seriesSchema.plugin(mongoosePaginate)
+seriesSchema.plugin(autopopulate)
+seriesSchema.plugin(pluginService.logPost, { schemaName: 'Series' })
+seriesSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Series' })
 
-movieSchema.plugin(mongoosePaginate)
-movieSchema.plugin(autopopulate)
-movieSchema.plugin(pluginService.logPost, { schemaName: 'Movie' })
-movieSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Movie' })
-
-export default mongoose.model('Movie', movieSchema)
+export default mongoose.model('Series', seriesSchema)

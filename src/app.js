@@ -15,6 +15,7 @@ app.get('/', (req, res) => {
 app.get('/api', (req, res) => {
 	res.send(listEndpoints(app))
 })
+
 apiRoutes(app)
 
 app.listen(con.PORT, err => {

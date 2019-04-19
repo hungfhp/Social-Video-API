@@ -69,6 +69,7 @@ let userSchema = new Schema(
 		role: {
 			type: String,
 			trim: true,
+			enum: ['viewer', 'user', 'editer', 'admin', 'superadmin'],
 			default: 'user'
 		},
 		avatarUrl: {

@@ -6,7 +6,8 @@ import HTTPStatus from 'http-status'
 import * as userController from './userController'
 import userValidation from './userValidation'
 import { authLocal, authFacebook, authJwt } from '../../services/authService'
-
+import { checkPermission } from '../../middlewares/roleMiddleware'
+import ac from '../../services/roleService'
 const router = new Router()
 
 /**
@@ -20,15 +21,20 @@ const router = new Router()
 
 // More router
 router
-	.get('/current', authJwt, userController.getProfile, function(
-		req,
-		res,
-		next
-	) {
-		return res.status(HTTPStatus.OK).json({
-			user: req.user
-		})
-	})
+	.get(
+		'/current',
+		function(req, res, next) {
+			req.permission = ac.can(req.user.role).readOwn('user')
+			next()
+		},
+		checkPermission,
+		userController.getProfile,
+		function(req, res, next) {
+			return res.status(HTTPStatus.OK).json({
+				user: req.user
+			})
+		}
+	)
 	.post(
 		'/signup',
 		validate(userValidation.create),
@@ -117,7 +123,7 @@ router
 		validate(userValidation.delete),
 		userController.deleteUser,
 		function(req, res, next) {
-		return res.sendStatus(HTTPStatus.OK)
+			return res.sendStatus(HTTPStatus.OK)
 		}
 	)
 

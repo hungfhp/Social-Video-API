@@ -10,12 +10,16 @@ import * as myValid from './voiceoverValidation'
 import mongoose, { Schema } from 'mongoose'
 const ObjectId = mongoose.Schema.Types.ObjectId
 import mongoosePaginate from 'mongoose-paginate'
+import autopopulate from 'mongoose-autopopulate'
+import uniqueValidator from 'mongoose-unique-validator'
+
+import * as pluginService from '../../services/pluginService'
 
 let voiceoverSchema = new Schema(
 	{
 		requestId: {
 			type: String,
-			required: [true, 'Request indentifier is required!'],
+			required: [true, 'Request ID is required!'],
 			unique: true,
 			trim: true
 		},
@@ -41,6 +45,7 @@ let voiceoverSchema = new Schema(
 		uploader: {
 			type: ObjectId,
 			ref: 'User',
+			required: [true, 'Uploader is required!'],
 			trim: true
 		}
 	},
@@ -48,6 +53,14 @@ let voiceoverSchema = new Schema(
 		timestamps: true
 	}
 )
+
+voiceoverSchema.plugin(uniqueValidator, {
+	message: '{VALUE} already taken!'
+})
+
 voiceoverSchema.plugin(mongoosePaginate)
+voiceoverSchema.plugin(autopopulate)
+voiceoverSchema.plugin(pluginService.logPost, { schemaName: 'Voiceover' })
+voiceoverSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Voiceover' })
 
 export default mongoose.model('Voiceover', voiceoverSchema)
