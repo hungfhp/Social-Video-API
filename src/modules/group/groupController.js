@@ -8,6 +8,29 @@ import * as util from './groupUtil'
  *
  */
 
+export async function getSuggestGroups(req, res, next) {
+	try {
+		let suggests = [
+			{ membersCount: 'desc' },
+			{ requestsCount: 'desc' },
+			{ createdAt: 'desc' }
+		]
+		let sort = suggests[Math.floor(Math.random() * suggests.length)]
+
+		let { docs, ...pagination } = await Group.paginate(
+			{},
+			{ ...req.parsedParams, sort: sort }
+		)
+
+		res.groups = docs
+		res.pagination = pagination
+
+		next()
+	} catch (e) {
+		return res.status(HTTPStatus.BAD_REQUEST).json(e)
+	}
+}
+
 export async function getGroupsStats(req, res, next) {
 	try {
 		res.groupsStats = {
@@ -22,10 +45,10 @@ export async function getGroupsStats(req, res, next) {
 
 export async function getGroups(req, res, next) {
 	try {
-		let { docs, ...groupsMeta } = await Group.paginate({}, req.parsedParams)
+		let { docs, ...pagination } = await Group.paginate({}, req.parsedParams)
 
 		res.groups = docs
-		res.groupsMeta = groupsMeta
+		res.pagination = pagination
 
 		next()
 	} catch (e) {
@@ -47,7 +70,7 @@ export async function createGroup(req, res, next) {
 	try {
 		res.group = await Group.create({
 			...req.body,
-			creator: req.user._id || ''
+			creator: req.user
 		})
 
 		next()

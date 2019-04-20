@@ -35,10 +35,10 @@ export async function getActorsStats(req, res, next) {
 
 export async function getActors(req, res, next) {
 	try {
-		let { docs, ...actorsMeta } = await Actor.paginate({}, req.parsedParams)
+		let { docs, ...pagination } = await Actor.paginate({}, req.parsedParams)
 
 		res.actors = docs
-		res.actorsMeta = actorsMeta
+		res.pagination = pagination
 
 		next()
 	} catch (e) {

@@ -22,10 +22,10 @@ export async function getPostsStats(req, res, next) {
 
 export async function getPosts(req, res, next) {
 	try {
-		let { docs, ...postsMeta } = await Post.paginate({}, req.parsedParams)
+		let { docs, ...pagination } = await Post.paginate({}, req.parsedParams)
 
 		res.posts = docs
-		res.postsMeta = postsMeta
+		res.pagination = pagination
 
 		next()
 	} catch (e) {

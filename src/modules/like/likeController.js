@@ -22,10 +22,10 @@ export async function getLikesStats(req, res, next) {
 
 export async function getLikes(req, res, next) {
 	try {
-		let { docs, ...likesMeta } = await Like.paginate({}, req.parsedParams)
+		let { docs, ...pagination } = await Like.paginate({}, req.parsedParams)
 
 		res.likes = docs
-		res.likesMeta = likesMeta
+		res.pagination = pagination
 
 		next()
 	} catch (e) {
@@ -45,7 +45,10 @@ export async function getLikeById(req, res, next) {
 
 export async function createLike(req, res, next) {
 	try {
-		res.like = await Like.create(req.body)
+		res.like = await Like.create({
+			...req.body,
+			user: req.user
+		})
 
 		next()
 	} catch (e) {

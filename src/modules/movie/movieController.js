@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import Movie from './movieModel'
+import FollowMovie from '../followMovie/followMovieModel.js'
 import HTTPStatus from 'http-status'
 import defaultMovies from '../../initData/movies'
 
@@ -20,16 +21,48 @@ export async function initMovies(req, res, next) {
 	}
 }
 
-export async function getOwnMovies(req, res, next) {
+export async function getSuggestMovies(req, res, next) {
 	try {
-		// let { docs, ...moviesMeta } = await Movie.paginate(
-		// 	{ uploader: req.user._id },
-		// 	req.parsedParams
-		// )
-		let { docs, ...moviesMeta } = await Movie.paginate({}, req.parsedParams)
+		let suggests = [
+			{ viewsCount: 'desc' },
+			{ likesCount: 'desc' },
+			{ favoritesCount: 'desc' },
+			{ ratesAvg: 'desc' },
+			{ ratesCount: 'desc' }
+		]
+		let sort = suggests[Math.floor(Math.random() * suggests.length)]
+
+		let { docs, ...pagination } = await Movie.paginate(
+			{ share: 'public' },
+			{ ...req.parsedParams, sort: sort }
+		)
 
 		res.movies = docs
-		res.moviesMeta = moviesMeta
+		res.pagination = pagination
+
+		next()
+	} catch (e) {
+		return res.status(HTTPStatus.BAD_REQUEST).json(e)
+	}
+}
+
+export async function getFollowerMovies(req, res, next) {
+	try {
+		let { docs, ...pagination } = await FollowMovie.paginate(
+			{ movie: req.params.id },
+			{
+				...req.parsedParams,
+				populate: [
+					{
+						path: 'user',
+						model: 'User'
+					}
+				]
+			}
+		)
+
+		res.followers = docs
+		res.pagination = pagination
 
 		next()
 	} catch (e) {
@@ -51,13 +84,13 @@ export async function getMoviesStats(req, res, next) {
 
 export async function getMovies(req, res, next) {
 	try {
-		let { docs, ...moviesMeta } = await Movie.paginate(
+		let { docs, ...pagination } = await Movie.paginate(
 			{ share: 'public' },
 			req.parsedParams
 		)
 
 		res.movies = docs
-		res.moviesMeta = moviesMeta
+		res.pagination = pagination
 
 		next()
 	} catch (e) {

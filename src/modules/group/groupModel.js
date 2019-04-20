@@ -46,10 +46,8 @@ let groupSchema = new Schema(
 		},
 		genres: [
 			{
-				type: ObjectId,
-				ref: 'Genre',
+				type: String,
 				required: [true, 'Genre is required!'],
-				autopopulate: true,
 				trim: true
 			}
 		],
@@ -67,19 +65,19 @@ let groupSchema = new Schema(
 )
 
 groupSchema.statics = {
-	incmembersCount(groupId) {
+	incMembersCount(groupId) {
 		return this.findByIdAndUpdate(groupId, { $inc: { membersCount: 1 } })
 	},
 
-	decmembersCount(groupId) {
+	decMembersCount(groupId) {
 		return this.findByIdAndUpdate(groupId, { $inc: { membersCount: -1 } })
 	},
 
-	increquestsCount(groupId) {
+	incRequestsCount(groupId) {
 		return this.findByIdAndUpdate(groupId, { $inc: { requestsCount: 1 } })
 	},
 
-	decrequestsCount(groupId) {
+	decRequestsCount(groupId) {
 		return this.findByIdAndUpdate(groupId, { $inc: { requestsCount: -1 } })
 	}
 }

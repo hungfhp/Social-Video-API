@@ -16,7 +16,7 @@ export async function getUser(req, res, next) {
 			} else {
 				const user = await User.findById(decoded._id)
 				req.user = user
-        req.token = req.headers.authorization
+				req.token = req.headers.authorization
 				next()
 			}
 		}

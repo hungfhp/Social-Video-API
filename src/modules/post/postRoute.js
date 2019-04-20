@@ -37,8 +37,8 @@ router
 		next
 	) {
 		return res.status(HTTPStatus.OK).json({
-			posts: res.posts,
-			postsMeta: res.postsMeta
+			data: res.posts,
+			pagination: res.pagination
 		})
 	})
 	.get(
@@ -47,7 +47,7 @@ router
 		postController.getPostById,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				post: res.post
+				data: res.post
 			})
 		}
 	)
@@ -57,7 +57,7 @@ router
 		postController.createPost,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				post: res.post
+				data: res.post
 			})
 		}
 	)
@@ -67,7 +67,7 @@ router
 		postController.updatePost,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				post: res.post
+				data: res.post
 			})
 		}
 	)

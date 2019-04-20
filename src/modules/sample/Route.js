@@ -5,8 +5,8 @@ import HTTPStatus from 'http-status'
 
 import * as sampleController from './sampleController'
 import sampleValidation from './sampleValidation'
-import * as authService from '../../services/authService'
 import * as paramService from '../../services/paramService'
+import { accessControl } from '../../middlewares/roleMiddleware'
 
 const router = new Router()
 
@@ -29,19 +29,20 @@ router
 		sampleController.getSamplesStats,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				samplesStats: res.samplesStats
+				data: res.samplesStats
 			})
 		}
 	)
 	.get(
 		'/',
+		accessControl('readAny', 'movie'),
 		paramService.parseParam,
 		validate(sampleValidation.index),
 		sampleController.getSamples,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				samples: res.samples,
-				samplesMeta: res.samplesMeta
+				data: res.samples,
+				pagination: res.pagination
 			})
 		}
 	)
@@ -51,33 +52,35 @@ router
 		sampleController.getSampleById,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				sample: res.sample
+				data: res.sample
 			})
 		}
 	)
 	.post(
 		'/',
-		authService.authJwt,
+		accessControl('createOwn', 'movie'),
 		validate(sampleValidation.create),
 		sampleController.createSample,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				sample: res.sample
+				data: res.sample
 			})
 		}
 	)
 	.put(
 		'/:id',
+		accessControl('updateOwn', 'movie'),
 		validate(sampleValidation.update),
 		sampleController.updateSample,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				sample: res.sample
+				data: res.sample
 			})
 		}
 	)
 	.delete(
 		'/:id',
+		accessControl('deleteOwn', 'movie'),
 		validate(sampleValidation.delete),
 		sampleController.deleteSample,
 		function(req, res, next) {

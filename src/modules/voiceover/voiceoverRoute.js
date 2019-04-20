@@ -27,7 +27,7 @@ router.get(
 	voiceoverController.checkSynthesis,
 	function(req, res, next) {
 		return res.status(HTTPStatus.OK).json({
-			voiceover: res.voiceover
+			data: res.voiceover
 		})
 	}
 )
@@ -38,7 +38,7 @@ router.post(
 	voiceoverController.callbackSynthesis,
 	function(req, res, next) {
 		return res.status(HTTPStatus.OK).json({
-			voiceover: res.voiceover
+			data: res.voiceover
 		})
 	}
 )
@@ -62,8 +62,8 @@ router
 		voiceoverController.getVoiceovers,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				voiceovers: res.voiceovers,
-				voiceoversMeta: res.voiceoversMeta
+				data: res.voiceovers,
+				pagination: res.pagination
 			})
 		}
 	)
@@ -73,7 +73,7 @@ router
 		voiceoverController.getVoiceoverById,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				voiceover: res.voiceover
+				data: res.voiceover
 			})
 		}
 	)
@@ -84,7 +84,7 @@ router
 		voiceoverController.createVoiceover,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				voiceover: res.voiceover
+				data: res.voiceover
 			})
 		}
 	)
@@ -94,7 +94,7 @@ router
 		voiceoverController.updateVoiceover,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				voiceover: res.voiceover
+				data: res.voiceover
 			})
 		}
 	)

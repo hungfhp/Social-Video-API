@@ -11,11 +11,17 @@ import * as pluginService from '../../services/pluginService'
 
 let likeSchema = new Schema(
 	{
-		likeName: {
-			type: String,
-			required: [true, 'likeName is required!'],
-			trim: true,
-			unique: true
+		movie: {
+			type: ObjectId,
+			ref: 'Movie',
+			required: [true, 'Movie is required!'],
+			trim: true
+		},
+		user: {
+			type: ObjectId,
+			ref: 'User',
+			required: [true, 'User is required!'],
+			trim: true
 		}
 	},
 	{

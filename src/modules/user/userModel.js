@@ -1,16 +1,16 @@
+import con from '../../config/constants'
 import validator from 'validator'
 import mongoose, { Schema } from 'mongoose'
 const ObjectId = mongoose.Schema.Types.ObjectId
 import { hashSync, compareSync } from 'bcrypt-nodejs'
 import mongoosePaginate from 'mongoose-paginate'
-// eslint-disable-next-line no-unused-vars
 import autopopulate from 'mongoose-autopopulate'
 import uniqueValidator from 'mongoose-unique-validator'
 import jwt from 'jsonwebtoken'
 import _ from 'lodash'
 
+import * as pluginService from '../../services/pluginService'
 import { passwordReg } from '../../config/regex'
-import con from '../../config/constants'
 
 /**
  * @typedef users
@@ -51,6 +51,12 @@ let userSchema = new Schema(
 		},
 		name: {
 			type: String,
+			default: 'User',
+			trim: true
+		},
+		url: {
+			type: String,
+			unique: true,
 			trim: true
 		},
 		provider: {
@@ -84,14 +90,7 @@ let userSchema = new Schema(
 		uploadedCount: {
 			type: Number,
 			trim: true
-		},
-		friendsRequest: [
-			{
-				type: ObjectId,
-				ref: 'User',
-				trim: true
-			}
-		]
+		}
 	},
 	{
 		timestamps: true
@@ -150,7 +149,10 @@ userSchema.methods = {
 userSchema.plugin(uniqueValidator, {
 	message: '{VALUE} already taken!'
 })
+
 userSchema.plugin(mongoosePaginate)
 userSchema.plugin(autopopulate)
+userSchema.plugin(pluginService.logPost, { schemaName: 'User' })
+userSchema.plugin(pluginService.setSlugUrl, { schemaName: 'User' })
 
 export default mongoose.model('User', userSchema)

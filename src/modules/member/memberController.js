@@ -22,10 +22,10 @@ export async function getMembersStats(req, res, next) {
 
 export async function getMembers(req, res, next) {
 	try {
-		let { docs, ...membersMeta } = await Member.paginate({}, req.parsedParams)
+		let { docs, ...pagination } = await Member.paginate({}, req.parsedParams)
 
 		res.members = docs
-		res.membersMeta = membersMeta
+		res.pagination = pagination
 
 		next()
 	} catch (e) {
@@ -45,7 +45,10 @@ export async function getMemberById(req, res, next) {
 
 export async function createMember(req, res, next) {
 	try {
-		res.member = await Member.create(req.body)
+		res.member = await Member.create({
+			...req.body,
+			user: req.user
+		})
 
 		next()
 	} catch (e) {

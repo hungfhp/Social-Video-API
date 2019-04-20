@@ -5,8 +5,9 @@ import HTTPStatus from 'http-status'
 
 import * as likeController from './likeController'
 import likeValidation from './likeValidation'
-import * as authService from '../../services/authService'
-import * as paramService from '../../services/paramService'
+import * as paramMiddleware from '../../middlewares/paramMiddleware'
+import { accessControl } from '../../middlewares/roleMiddleware'
+import { existLike } from '../../middlewares/existMiddleware'
 
 const router = new Router()
 
@@ -35,13 +36,13 @@ router
 	)
 	.get(
 		'/',
-		paramService.parseParam,
 		validate(likeValidation.index),
+		paramMiddleware.parseParamList,
 		likeController.getLikes,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				likes: res.likes,
-				likesMeta: res.likesMeta
+				data: res.likes,
+				pagination: res.pagination
 			})
 		}
 	)
@@ -51,18 +52,19 @@ router
 		likeController.getLikeById,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				like: res.like
+				data: res.like
 			})
 		}
 	)
 	.post(
 		'/',
-		authService.authJwt,
+		accessControl('createOwn', 'like'),
 		validate(likeValidation.create),
+		existLike,
 		likeController.createLike,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				like: res.like
+				data: res.like
 			})
 		}
 	)
@@ -72,7 +74,7 @@ router
 		likeController.updateLike,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				like: res.like
+				data: res.like
 			})
 		}
 	)
