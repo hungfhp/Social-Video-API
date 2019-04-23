@@ -75,7 +75,7 @@ let userSchema = new Schema(
 		role: {
 			type: String,
 			trim: true,
-			enum: ['viewer', 'user', 'editer', 'admin', 'superadmin'],
+			enum: ['viewer', 'user', 'contributor', 'editer', 'admin', 'superadmin'],
 			default: 'user'
 		},
 		avatarUrl: {
@@ -124,11 +124,12 @@ userSchema.methods = {
 			con.JWT_SECRET
 		)
 	},
-	toJSON() {
+	toJSONs() {
 		return _.pick(this, [
 			'_id',
 			'email',
 			'name',
+			'gender',
 			'role',
 			'avatarUrl',
 			'fbId',
@@ -137,7 +138,7 @@ userSchema.methods = {
 	},
 	toAuthJSON() {
 		return {
-			...this.toJSON(),
+			...this.toJSONs(),
 			role: this.role,
 			provider: this.provider,
 			providerUrl: this.providerUrl,

@@ -5,7 +5,6 @@ import Like from '../like/likeModel'
 import FollowMovie from '../followMovie/followMovieModel'
 import FollowUser from '../followUser/followUserModel'
 import Member from '../member/memberModel'
-import Friend from '../friend/friendModel'
 import HTTPStatus from 'http-status'
 // eslint-disable-next-line no-unused-vars
 import * as util from './userUtil'

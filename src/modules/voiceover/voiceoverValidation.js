@@ -3,8 +3,13 @@ import Joi from 'joi'
 
 export default {
 	checkSynthesis: {
-		query: {
+		params: {
 			requestId: Joi.string().required()
+		}
+	},
+	upload: {
+		body: {
+			file: Joi.any().required()
 		}
 	},
 	callbackSynthesis: {},

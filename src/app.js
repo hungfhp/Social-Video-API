@@ -4,9 +4,13 @@ import './config/database'
 import middlewareConfig from './config/middleware'
 import apiRoutes from './modules'
 import listEndpoints from 'express-list-endpoints'
+import fileUpload from 'express-fileupload'
 
 const app = express()
 middlewareConfig(app)
+
+// default options
+app.use(fileUpload())
 
 app.get('/', (req, res) => {
 	res.send('Welcome!')

@@ -5,8 +5,9 @@ import HTTPStatus from 'http-status'
 
 import * as voiceoverController from './voiceoverController'
 import voiceoverValidation from './voiceoverValidation'
-import * as authService from '../../services/authService'
-import * as paramService from '../../services/paramService'
+import * as paramMiddleware from '../../middlewares/paramMiddleware'
+import * as ownMiddleware from '../../middlewares/ownMiddleware'
+import { accessControl } from '../../middlewares/roleMiddleware'
 import * as synthesisService from '../../services/synthesisService'
 
 const router = new Router()
@@ -21,27 +22,40 @@ const router = new Router()
  */
 
 // More router
-router.get(
-	'/check', // with req.query.requestId
-	validate(voiceoverValidation.checkSynthesis),
-	voiceoverController.checkSynthesis,
-	function(req, res, next) {
-		return res.status(HTTPStatus.OK).json({
-			data: res.voiceover
-		})
-	}
-)
-
-router.post(
-	'/callback', // with req.query.requestId
-	validate(voiceoverValidation.callbackSynthesis),
-	voiceoverController.callbackSynthesis,
-	function(req, res, next) {
-		return res.status(HTTPStatus.OK).json({
-			data: res.voiceover
-		})
-	}
-)
+router
+	.get(
+		'/check/:requestId',
+		// accessControl('createOwn', 'voiceover'),
+		validate(voiceoverValidation.checkSynthesis),
+		voiceoverController.checkSynthesis,
+		function(req, res, next) {
+			return res.status(HTTPStatus.OK).json({
+				data: res.voiceover
+			})
+		}
+	)
+	.post(
+		'/upload',
+		// accessControl('createOwn', 'voiceover'),
+		// validate(voiceoverValidation.upload),
+		voiceoverController.uploadVoiceover,
+		function(req, res, next) {
+			return res.status(HTTPStatus.OK).json({
+				data: res.file
+			})
+		}
+	)
+	.post(
+		'/callback',
+		// accessControl('createOwn', 'voiceover'),
+		validate(voiceoverValidation.callbackSynthesis),
+		voiceoverController.callbackSynthesis,
+		function(req, res, next) {
+			return res.status(HTTPStatus.OK).json({
+				data: res.voiceover
+			})
+		}
+	)
 
 //  Default router
 router
@@ -58,7 +72,7 @@ router
 	.get(
 		'/',
 		validate(voiceoverValidation.index),
-		paramService.parseParam,
+		paramMiddleware.parseParamList,
 		voiceoverController.getVoiceovers,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
@@ -80,7 +94,6 @@ router
 	.post(
 		'/',
 		// validate(voiceoverValidation.create),
-		authService.authJwt,
 		voiceoverController.createVoiceover,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({

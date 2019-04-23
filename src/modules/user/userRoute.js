@@ -4,7 +4,7 @@ import validate from 'express-validation'
 import HTTPStatus from 'http-status'
 
 import * as userController from './userController'
-import * as friendController from '../friend/friendController'
+import * as relationshipController from '../relationship/relationshipController'
 import userValidation from './userValidation'
 import { authLocal, authFacebook, authJwt } from '../../services/authService'
 import * as paramMiddleware from '../../middlewares/paramMiddleware'
@@ -118,25 +118,25 @@ router
 		}
 	)
 	.get(
-		'/:id/friends',
-		accessControl('readOwn', 'friend'),
+		'/:id/requests',
+		accessControl('readAny', 'relationship'),
 		paramMiddleware.parseParamList,
-		userController.getFriends,
+		relationshipController.getRequestsByUserId,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				data: res.followers,
+				data: res.requests,
 				pagination: res.pagination
 			})
 		}
 	)
 	.get(
-		'/:id/friends/requests',
-		accessControl('readOwn', 'friend'),
+		'/:id/friends',
+		accessControl('readAny', 'relationship'),
 		paramMiddleware.parseParamList,
-		userController.getFriendsRequests,
+		relationshipController.getFriendsByUserId,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				data: res.followed,
+				data: res.friends,
 				pagination: res.pagination
 			})
 		}
@@ -145,7 +145,7 @@ router
 		'/signup',
 		validate(userValidation.create),
 		userController.createUser,
-		friendController.createFriend,
+		// relationshipController.createRelationship,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
 				user: req.user

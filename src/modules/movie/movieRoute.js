@@ -57,6 +57,18 @@ router
 			})
 		}
 	)
+// .get(
+// 	'/upload',
+// 	accessControl('createOwn', 'movie'),
+// 	validate(movieValidation.upload),
+// 	movieController.getFollowerMovies,
+// 	function(req, res, next) {
+// 		return res.status(HTTPStatus.OK).json({
+// 			data: res.followers,
+// 			pagination: res.pagination
+// 		})
+// 	}
+// )
 
 //  Default router
 router

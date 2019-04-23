@@ -2,6 +2,7 @@
 import Joi from 'joi'
 
 export default {
+	upload: {},
 	stats: {},
 	index: {},
 	show: {},

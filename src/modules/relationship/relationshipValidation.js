@@ -4,12 +4,12 @@ import Joi from 'joi'
 export default {
 	requests: {
 		body: {
-			friend: Joi.string().required()
+			target: Joi.string().required()
 		}
 	},
 	remove: {
 		body: {
-			friend: Joi.string().required()
+			target: Joi.string().required()
 		}
 	},
 	stats: {},
