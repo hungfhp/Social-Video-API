@@ -5,8 +5,9 @@ import HTTPStatus from 'http-status'
 
 import * as memberController from './memberController'
 import memberValidation from './memberValidation'
-import * as authService from '../../services/authService'
-import * as paramService from '../../services/paramService'
+import * as paramMiddleware from '../../middlewares/paramMiddleware'
+import { accessControl } from '../../middlewares/roleMiddleware'
+import { existMember } from '../../middlewares/existMiddleware'
 
 const router = new Router()
 
@@ -35,13 +36,13 @@ router
 	)
 	.get(
 		'/',
-		paramService.parseParam,
 		validate(memberValidation.index),
+		paramMiddleware.parseParamList,
 		memberController.getMembers,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				members: res.members,
-				membersMeta: res.membersMeta
+				data: res.members,
+				pagination: res.pagination
 			})
 		}
 	)
@@ -51,33 +52,36 @@ router
 		memberController.getMemberById,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				member: res.member
+				data: res.member
 			})
 		}
 	)
 	.post(
 		'/',
-		authService.authJwt,
+		accessControl('createOwn', 'member'),
 		validate(memberValidation.create),
+		existMember,
 		memberController.createMember,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				member: res.member
+				data: res.member
 			})
 		}
 	)
 	.put(
 		'/:id',
+		accessControl('updateOwn', 'member'),
 		validate(memberValidation.update),
 		memberController.updateMember,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				member: res.member
+				data: res.member
 			})
 		}
 	)
 	.delete(
 		'/:id',
+		accessControl('deleteOwn', 'member'),
 		validate(memberValidation.delete),
 		memberController.deleteMember,
 		function(req, res, next) {

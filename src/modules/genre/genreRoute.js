@@ -6,7 +6,7 @@ import HTTPStatus from 'http-status'
 import * as genreController from './genreController'
 import genreValidation from './genreValidation'
 import * as authService from '../../services/authService'
-import * as paramService from '../../services/paramService'
+import * as paramMiddleware from '../../middlewares/paramMiddleware'
 
 const router = new Router()
 
@@ -26,7 +26,7 @@ router.get('/init', authService.authJwt, genreController.initGenres, function(
 	next
 ) {
 	return res.status(HTTPStatus.OK).json({
-		genres: res.genres
+		data: res.genres
 	})
 })
 
@@ -44,13 +44,13 @@ router
 	)
 	.get(
 		'/',
-		paramService.parseParam,
 		validate(genreValidation.index),
+		paramMiddleware.parseParamList,
 		genreController.getGenres,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				genres: res.genres,
-				genresMeta: res.genresMeta
+				data: res.genres,
+				pagination: res.pagination
 			})
 		}
 	)
@@ -60,7 +60,7 @@ router
 		genreController.getGenreById,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				genre: res.genre
+				data: res.genre
 			})
 		}
 	)
@@ -70,7 +70,7 @@ router
 		genreController.createGenre,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				genre: res.genre
+				data: res.genre
 			})
 		}
 	)
@@ -80,7 +80,7 @@ router
 		genreController.updateGenre,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				genre: res.genre
+				data: res.genre
 			})
 		}
 	)

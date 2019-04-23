@@ -35,13 +35,13 @@ export async function getCountriesStats(req, res, next) {
 
 export async function getCountries(req, res, next) {
 	try {
-		let { docs, ...countriesMeta } = await Country.paginate(
+		let { docs, ...pagination } = await Country.paginate(
 			{},
 			req.parsedParams
 		)
 
 		res.countries = docs
-		res.countriesMeta = countriesMeta
+		res.pagination = pagination
 
 		next()
 	} catch (e) {

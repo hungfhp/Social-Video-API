@@ -2,6 +2,12 @@
 import Joi from 'joi'
 
 export default {
+	groupsStatus: {
+		params: {
+			id: Joi.string().required(),
+			status: Joi.string().valid('checking', 'done', 'block')
+		}
+	},
 	stats: {},
 	index: {},
 	show: {},

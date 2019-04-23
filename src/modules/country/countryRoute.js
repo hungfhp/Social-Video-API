@@ -26,7 +26,7 @@ router.get(
 	countryController.initCountries,
 	function(req, res, next) {
 		return res.status(HTTPStatus.OK).json({
-			countries: res.countries
+			data: res.countries
 		})
 	}
 )
@@ -39,7 +39,7 @@ router
 		countryController.getCountriesStats,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				countriesStats: res.countriesStats
+				data: res.countriesStats
 			})
 		}
 	)
@@ -50,8 +50,8 @@ router
 		countryController.getCountries,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				countries: res.countries,
-				countriesMeta: res.countriesMeta
+				data: res.countries,
+				pagination: res.pagination
 			})
 		}
 	)
@@ -61,7 +61,7 @@ router
 		countryController.getCountryById,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				country: res.country
+				data: res.country
 			})
 		}
 	)
@@ -72,7 +72,7 @@ router
 		countryController.createCountry,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				country: res.country
+				data: res.country
 			})
 		}
 	)
@@ -82,7 +82,7 @@ router
 		countryController.updateCountry,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				country: res.country
+				data: res.country
 			})
 		}
 	)

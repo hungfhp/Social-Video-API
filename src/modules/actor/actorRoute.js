@@ -26,7 +26,7 @@ router.get('/init', authService.authJwt, actorController.default, function(
 	next
 ) {
 	return res.status(HTTPStatus.OK).json({
-		actors: res.actors
+		data: res.actors
 	})
 })
 
@@ -38,7 +38,7 @@ router
 		actorController.getActorsStats,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				actorsStats: res.actorsStats
+				data: res.actorsStats
 			})
 		}
 	)
@@ -49,8 +49,8 @@ router
 		actorController.getActors,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				actors: res.actors,
-				actorsMeta: res.actorsMeta
+				data: res.actors,
+				pagination: res.pagination
 			})
 		}
 	)
@@ -60,7 +60,7 @@ router
 		actorController.getActorById,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				actor: res.actor
+				data: res.actor
 			})
 		}
 	)
@@ -70,7 +70,7 @@ router
 		actorController.createActor,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				actor: res.actor
+				data: res.actor
 			})
 		}
 	)
@@ -80,7 +80,7 @@ router
 		actorController.updateActor,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				actor: res.actor
+				data: res.actor
 			})
 		}
 	)

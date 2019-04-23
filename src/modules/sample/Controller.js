@@ -22,10 +22,10 @@ export async function getSamplesStats(req, res, next) {
 
 export async function getSamples(req, res, next) {
 	try {
-		let { docs, ...samplesMeta } = await Sample.paginate({}, req.parsedParams)
+		let { docs, ...pagination } = await Sample.paginate({}, req.parsedParams)
 
 		res.samples = docs
-		res.samplesMeta = samplesMeta
+		res.pagination = pagination
 
 		next()
 	} catch (e) {

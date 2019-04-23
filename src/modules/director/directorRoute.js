@@ -26,7 +26,7 @@ router.get(
 	directorController.initDirectors,
 	function(req, res, next) {
 		return res.status(HTTPStatus.OK).json({
-			directors: res.directors
+			data: res.directors
 		})
 	}
 )
@@ -39,7 +39,7 @@ router
 		directorController.getDirectorsStats,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				directorsStats: res.directorsStats
+				data: res.directorsStats
 			})
 		}
 	)
@@ -50,8 +50,8 @@ router
 		directorController.getDirectors,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				directors: res.directors,
-				directorsMeta: res.directorsMeta
+				data: res.directors,
+				pagination: res.pagination
 			})
 		}
 	)
@@ -61,7 +61,7 @@ router
 		directorController.getDirectorById,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				director: res.director
+				data: res.director
 			})
 		}
 	)
@@ -72,7 +72,7 @@ router
 		directorController.createDirector,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				director: res.director
+				data: res.director
 			})
 		}
 	)
@@ -82,7 +82,7 @@ router
 		directorController.updateDirector,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				director: res.director
+				data: res.director
 			})
 		}
 	)

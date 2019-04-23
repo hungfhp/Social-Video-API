@@ -2,7 +2,16 @@
 import Joi from 'joi'
 
 export default {
-	upload: {},
+	requests: {
+		body: {
+			target: Joi.string().required()
+		}
+	},
+	remove: {
+		body: {
+			target: Joi.string().required()
+		}
+	},
 	stats: {},
 	index: {},
 	show: {},

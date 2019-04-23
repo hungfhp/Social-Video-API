@@ -5,8 +5,9 @@ import HTTPStatus from 'http-status'
 
 import * as groupController from './groupController'
 import groupValidation from './groupValidation'
-import { authJwt } from '../../services/authService'
-import { parseParam } from '../../services/paramService'
+import * as paramMiddleware from '../../middlewares/paramMiddleware'
+import * as ownMiddleware from '../../middlewares/ownMiddleware'
+import { accessControl } from '../../middlewares/roleMiddleware'
 
 const router = new Router()
 
@@ -20,6 +21,19 @@ const router = new Router()
  */
 
 // More router
+router.get(
+	'/suggest',
+	accessControl('readAny', 'group'),
+	validate(groupValidation.index),
+	paramMiddleware.parseParamList,
+	groupController.getSuggestGroups,
+	function(req, res, next) {
+		return res.status(HTTPStatus.OK).json({
+			data: res.groups,
+			pagination: res.pagination
+		})
+	}
+)
 
 // Default Rest router
 router
@@ -35,49 +49,53 @@ router
 	)
 	.get(
 		'/',
-		parseParam,
+		accessControl('readAny', 'group'),
 		validate(groupValidation.index),
+		paramMiddleware.parseParamList,
 		groupController.getGroups,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				groups: res.groups,
-				groupsMeta: res.groupsMeta
+				data: res.groups,
+				pagination: res.pagination
 			})
 		}
 	)
 	.get(
 		'/:id',
+		accessControl('readOwn', 'group'),
 		validate(groupValidation.show),
 		groupController.getGroupById,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				group: res.group
+				data: res.group
 			})
 		}
 	)
 	.post(
 		'/',
-		authJwt,
+		accessControl('createOwn', 'group'),
 		validate(groupValidation.create),
 		groupController.createGroup,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				group: res.group
+				data: res.group
 			})
 		}
 	)
 	.put(
 		'/:id',
+		accessControl('deleteOwn', 'group'),
 		validate(groupValidation.update),
 		groupController.updateGroup,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				group: res.group
+				data: res.group
 			})
 		}
 	)
 	.delete(
 		'/:id',
+		accessControl('updateOwn', 'group'),
 		validate(groupValidation.delete),
 		groupController.deleteGroup,
 		function(req, res, next) {

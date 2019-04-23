@@ -9,24 +9,16 @@ import slugify from 'slugify'
 
 import * as pluginService from '../../services/pluginService'
 
-let memberSchema = new Schema(
+let followUserSchema = new Schema(
 	{
-		group: {
-			type: ObjectId,
-			ref: 'Group',
-			required: [true, 'Group is required!'],
-			trim: true
-		},
 		user: {
 			type: ObjectId,
-			ref: 'User',
 			required: [true, 'User is required!'],
 			trim: true
 		},
-		status: {
-			type: String,
-			enum: ['checking', 'done', 'block'],
-			default: 'checking',
+		follow: {
+			type: ObjectId,
+			required: [true, 'Follow is required!'],
 			trim: true
 		}
 	},
@@ -35,9 +27,9 @@ let memberSchema = new Schema(
 	}
 )
 
-memberSchema.statics = {}
+followUserSchema.statics = {}
 
-memberSchema.pre('save', function(next) {
+followUserSchema.pre('save', function(next) {
 	// this.slug = slugify(this.name, {
 	// 	lower: true
 	// })
@@ -45,12 +37,12 @@ memberSchema.pre('save', function(next) {
 	return next()
 })
 
-memberSchema.plugin(uniqueValidator, {
+followUserSchema.plugin(uniqueValidator, {
 	message: '{VALUE} already taken!'
 })
-memberSchema.plugin(mongoosePaginate)
-memberSchema.plugin(autopopulate)
-memberSchema.plugin(pluginService.logPost, { schemaName: 'Member' })
-memberSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Member' })
+followUserSchema.plugin(mongoosePaginate)
+followUserSchema.plugin(autopopulate)
+followUserSchema.plugin(pluginService.logPost, { schemaName: 'FollowUser' })
+followUserSchema.plugin(pluginService.setSlugUrl, { schemaName: 'FollowUser' })
 
-export default mongoose.model('Member', memberSchema)
+export default mongoose.model('FollowUser', followUserSchema)

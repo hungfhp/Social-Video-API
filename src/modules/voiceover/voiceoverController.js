@@ -3,11 +3,123 @@ import Voiceover from './voiceoverModel.js'
 import HTTPStatus from 'http-status'
 import * as synthesisService from '../../services/synthesisService'
 import * as fileService from '../../services/fileService'
+import cons from '../../config/constants'
 import { log } from '../../utils/helper'
+import request from 'request'
+import fs from 'fs'
+
 /**
  * @group voiceovers - Operations about voiceovers
  *
  */
+
+export async function checkSynthesis(req, res, next) {
+	try {
+		let voiceoverChecked = await synthesisService.checkSynthesis(
+			req.params.requestId
+		)
+
+		let voiceover = await Voiceover.find({
+			requestId: voiceoverChecked.requestId
+		})
+
+		if (
+			voiceover.status !== 'done' &&
+			voiceoverChecked &&
+			voiceoverChecked.status == 'done'
+		) {
+			voiceover = Object.assign(voiceover, voiceoverChecked)
+			await voiceover.save()
+			res.voiceover = voiceover
+		} else {
+			res.voiceover = voiceoverChecked
+		}
+
+		let file = await fileService.uploadFile(
+			'test',
+			false,
+			'https://i.vimeocdn.com/portrait/25122243_300x300'
+		)
+		console.log(file)
+		next()
+	} catch (e) {
+		return res.status(HTTPStatus.BAD_REQUEST).json(e)
+	}
+}
+
+export async function uploadVoiceover(req, res, next) {
+	try {
+		console.log(req.body, req.files.file)
+		res.file = req.files.file
+		// let file = await fileService.uploadFile('test', false, res.file.data)
+		// console.log(file)
+
+		await request.post(
+			{
+				url: 'http://service.com/upload',
+				headers: {
+					authorization: cons.UPLOAD_VBEE_TOKEN
+				},
+				body: {
+					formData: {
+						file: request(
+							'https://www.studyphim.vn/movies/getSubtitle/vi/aquaman-2018/1'
+						),
+						path: 'test',
+						overwrite: false
+					}
+				}
+			},
+			(err, response, body) => {
+				if (err) {
+					console.log('upload failed:', err)
+				}
+				console.log(
+					'Upload successful!  Server responded with:',
+					response,
+					body
+				)
+			}
+		)
+
+		next()
+	} catch (e) {
+		console.log(e)
+		return res.status(HTTPStatus.BAD_REQUEST).json(e)
+	}
+}
+
+export async function callbackSynthesis(req, res, next) {
+	try {
+		log(JSON.stringify(req.body), 'voiceover-callback.log')
+
+		let voiceoverChecked = req.body
+
+		let file = await fileService.uploadFile(
+			'test',
+			false,
+			voiceoverChecked.downloadUrl
+			// 'https://i.vimeocdn.com/portrait/25122243_300x300'
+		)
+
+		let voiceover = await Voiceover.find({
+			requestId: req.body.requestId
+		})
+		voiceover.fileFormat = voiceoverChecked.fileFormat
+		voiceover.embedUrl = file.url
+
+		await voiceover.save()
+		res.voiceover = voiceover
+
+		log(JSON.stringify(file))
+		log('--', 'voiceover-callback.log')
+
+		next()
+	} catch (e) {
+		console.log(e)
+		return res.status(HTTPStatus.BAD_REQUEST).json(e)
+	}
+}
 
 export async function getVoiceoversStats(req, res, next) {
 	try {
@@ -85,72 +197,6 @@ export async function deleteVoiceover(req, res, next) {
 
 		next()
 	} catch (e) {
-		return res.status(HTTPStatus.BAD_REQUEST).json(e)
-	}
-}
-
-export async function checkSynthesis(req, res, next) {
-	try {
-		let voiceoverChecked = await synthesisService.checkSynthesis(
-			req.query.requestId
-		)
-
-		let voiceover = await Voiceover.find({
-			requestId: voiceoverChecked.requestId
-		})
-
-		if (
-			voiceover.status !== 'done' &&
-			voiceoverChecked &&
-			voiceoverChecked.status == 'done'
-		) {
-			voiceover = Object.assign(voiceover, voiceoverChecked)
-			await voiceover.save()
-			res.voiceover = voiceover
-		} else {
-			res.voiceover = voiceoverChecked
-		}
-
-		let file = await fileService.uploadFile(
-			'test',
-			false,
-			'https://i.vimeocdn.com/portrait/25122243_300x300'
-		)
-		console.log(file)
-		next()
-	} catch (e) {
-		return res.status(HTTPStatus.BAD_REQUEST).json(e)
-	}
-}
-
-export async function callbackSynthesis(req, res, next) {
-	try {
-		log(JSON.stringify(req.body), 'voiceover-callback.log')
-
-		let voiceoverChecked = req.body
-
-		let file = await fileService.uploadFile(
-			'test',
-			false,
-			voiceoverChecked.downloadUrl
-			// 'https://i.vimeocdn.com/portrait/25122243_300x300'
-		)
-
-		let voiceover = await Voiceover.find({
-			requestId: req.body.requestId
-		})
-		voiceover.fileFormat = voiceoverChecked.fileFormat
-		voiceover.embedUrl = file.url
-
-		await voiceover.save()
-		res.voiceover = voiceover
-
-		log(JSON.stringify(file))
-		log('--', 'voiceover-callback.log')
-
-		next()
-	} catch (e) {
-		console.log(e)
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }

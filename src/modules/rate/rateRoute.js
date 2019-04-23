@@ -40,8 +40,8 @@ router
 		rateController.getRates,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				rates: res.rates,
-				ratesMeta: res.ratesMeta
+				data: res.rates,
+				pagination: res.pagination
 			})
 		}
 	)
@@ -51,7 +51,7 @@ router
 		rateController.getRateById,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				rate: res.rate
+				data: res.rate
 			})
 		}
 	)
@@ -62,7 +62,7 @@ router
 		rateController.createRate,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				rate: res.rate
+				data: res.rate
 			})
 		}
 	)
@@ -72,7 +72,7 @@ router
 		rateController.updateRate,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				rate: res.rate
+				data: res.rate
 			})
 		}
 	)

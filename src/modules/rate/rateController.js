@@ -22,10 +22,10 @@ export async function getRatesStats(req, res, next) {
 
 export async function getRates(req, res, next) {
 	try {
-		let { docs, ...ratesMeta } = await Rate.paginate({}, req.parsedParams)
+		let { docs, ...pagination } = await Rate.paginate({}, req.parsedParams)
 
 		res.rates = docs
-		res.ratesMeta = ratesMeta
+		res.pagination = pagination
 
 		next()
 	} catch (e) {

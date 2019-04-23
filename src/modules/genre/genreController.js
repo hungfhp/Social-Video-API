@@ -35,10 +35,10 @@ export async function getGenresStats(req, res, next) {
 
 export async function getGenres(req, res, next) {
 	try {
-		let { docs, ...genresMeta } = await Genre.paginate({}, req.parsedParams)
+		let { docs, ...pagination } = await Genre.paginate({}, req.parsedParams)
 
 		res.genres = docs
-		res.genresMeta = genresMeta
+		res.pagination = pagination
 
 		next()
 	} catch (e) {
