@@ -2,6 +2,7 @@ import Genre from './genreModel.js'
 import HTTPStatus from 'http-status'
 // eslint-disable-next-line no-unused-vars
 import * as util from './genreUtil'
+import { log } from '../../utils/helper'
 import defaultGenres from '../../initData/genres'
 
 /**
@@ -17,6 +18,7 @@ export async function initGenres(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -29,6 +31,7 @@ export async function getGenresStats(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -42,6 +45,7 @@ export async function getGenres(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -52,6 +56,7 @@ export async function getGenreById(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -62,6 +67,7 @@ export async function createGenre(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -78,6 +84,7 @@ export async function updateGenre(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -90,6 +97,7 @@ export async function deleteGenre(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }

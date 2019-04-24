@@ -2,6 +2,7 @@ import Relationship from './relationshipModel.js'
 import HTTPStatus from 'http-status'
 // eslint-disable-next-line no-unused-vars
 import * as util from './relationshipUtil'
+import { log } from '../../utils/helper'
 
 /**
  * @group relationships - Operations about relationships
@@ -17,6 +18,7 @@ export async function createRequest(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -33,6 +35,7 @@ export async function acceptRequest(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -54,6 +57,7 @@ export async function getRequestsByUserId(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -75,6 +79,7 @@ export async function getFriendsByUserId(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -87,6 +92,7 @@ export async function getRelationshipsStats(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -103,6 +109,7 @@ export async function getRelationships(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -113,6 +120,7 @@ export async function getRelationshipById(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -123,6 +131,7 @@ export async function createRelationship(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -139,6 +148,7 @@ export async function updateRelationship(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -151,6 +161,7 @@ export async function deleteRelationship(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }

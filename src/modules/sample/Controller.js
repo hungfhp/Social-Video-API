@@ -2,6 +2,7 @@ import Sample from './sampleModel.js'
 import HTTPStatus from 'http-status'
 // eslint-disable-next-line no-unused-vars
 import * as util from './sampleUtil'
+import { log } from '../../utils/helper'
 
 /**
  * @group samples - Operations about samples
@@ -16,6 +17,7 @@ export async function getSamplesStats(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -29,6 +31,7 @@ export async function getSamples(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -39,6 +42,7 @@ export async function getSampleById(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -49,6 +53,7 @@ export async function createSample(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -65,6 +70,7 @@ export async function updateSample(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -77,6 +83,7 @@ export async function deleteSample(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }

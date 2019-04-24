@@ -2,6 +2,7 @@ import Member from './memberModel.js'
 import HTTPStatus from 'http-status'
 // eslint-disable-next-line no-unused-vars
 import * as util from './memberUtil'
+import { log } from '../../utils/helper'
 
 /**
  * @group members - Operations about members
@@ -16,6 +17,7 @@ export async function getMembersStats(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -29,6 +31,7 @@ export async function getMembers(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -39,6 +42,7 @@ export async function getMemberById(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -52,6 +56,7 @@ export async function createMember(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -68,6 +73,7 @@ export async function updateMember(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -80,6 +86,7 @@ export async function deleteMember(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }

@@ -2,6 +2,7 @@ import Like from './likeModel.js'
 import HTTPStatus from 'http-status'
 // eslint-disable-next-line no-unused-vars
 import * as util from './likeUtil'
+import { log } from '../../utils/helper'
 
 /**
  * @group likes - Operations about likes
@@ -16,7 +17,8 @@ export async function getLikesStats(req, res, next) {
 
 		next()
 	} catch (e) {
-		return res.status(HTTPStatus.BAD_REQUEST).json(e)
+		log(JSON.stringify(e), 'error-response.log')
+				return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
 
@@ -29,7 +31,8 @@ export async function getLikes(req, res, next) {
 
 		next()
 	} catch (e) {
-		return res.status(HTTPStatus.BAD_REQUEST).json(e)
+		log(JSON.stringify(e), 'error-response.log')
+				return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
 
@@ -39,7 +42,8 @@ export async function getLikeById(req, res, next) {
 
 		next()
 	} catch (e) {
-		return res.status(HTTPStatus.BAD_REQUEST).json(e)
+		log(JSON.stringify(e), 'error-response.log')
+				return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
 
@@ -52,7 +56,8 @@ export async function createLike(req, res, next) {
 
 		next()
 	} catch (e) {
-		return res.status(HTTPStatus.BAD_REQUEST).json(e)
+		log(JSON.stringify(e), 'error-response.log')
+				return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
 
@@ -68,7 +73,8 @@ export async function updateLike(req, res, next) {
 
 		next()
 	} catch (e) {
-		return res.status(HTTPStatus.BAD_REQUEST).json(e)
+		log(JSON.stringify(e), 'error-response.log')
+				return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
 
@@ -80,6 +86,7 @@ export async function deleteLike(req, res, next) {
 
 		next()
 	} catch (e) {
-		return res.status(HTTPStatus.BAD_REQUEST).json(e)
+		log(JSON.stringify(e), 'error-response.log')
+				return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }

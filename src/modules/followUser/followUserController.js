@@ -2,6 +2,7 @@ import FollowUser from './followUserModel.js'
 import HTTPStatus from 'http-status'
 // eslint-disable-next-line no-unused-vars
 import * as util from './followUserUtil'
+import { log } from '../../utils/helper'
 
 /**
  * @group followUsers - Operations about followUsers
@@ -28,6 +29,7 @@ export async function getFollowing(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -52,6 +54,7 @@ export async function getFollowers(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -64,6 +67,7 @@ export async function getFollowUsersStats(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -80,6 +84,7 @@ export async function getFollowUsers(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -99,6 +104,7 @@ export async function getFollowUserById(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -112,6 +118,7 @@ export async function createFollowUser(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -128,6 +135,7 @@ export async function updateFollowUser(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -140,6 +148,7 @@ export async function deleteFollowUser(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
