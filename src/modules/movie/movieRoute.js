@@ -1,15 +1,15 @@
 /* eslint-disable no-unused-vars */
 import { Router } from 'express'
+const router = new Router()
 import validate from 'express-validation'
 import HTTPStatus from 'http-status'
 
 import * as movieController from './movieController'
 import movieValidation from './movieValidation'
-import * as authService from '../../services/authService'
 import * as paramMiddleware from '../../middlewares/paramMiddleware'
 import * as ownMiddleware from '../../middlewares/ownMiddleware'
 import { accessControl } from '../../middlewares/roleMiddleware'
-const router = new Router()
+import * as voiceoverController from '../voiceover/voiceoverController'
 
 /**
  * GET /items/stats => stats
@@ -111,8 +111,8 @@ router
 		'/',
 		accessControl('createOwn', 'movie'),
 		validate(movieValidation.create),
-		authService.authJwt,
 		movieController.createMovie,
+		voiceoverController.createVoiceover,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
 				data: res.movie

@@ -1,28 +1,33 @@
+/* eslint-disable no-console */
 import request from 'request'
 import cons from '../config/constants'
 import fs from 'fs'
 
-export async function uploadFile(path = 'default', overwrite = false, fileUrl) {
-	return await request.post(
+export async function uploadFile(
+	path = 'default',
+	overwrite = 'false',
+	fileUrl,
+	callback
+) {
+	request.post(
 		{
-			url: 'https://upload.vbee.vn/api/v1/upload/file',
+			url: cons.UPLOAD_VBEE_URL,
 			headers: {
-				'Content-Type': 'multipart/form-data',
-				Authorization: cons.UPLOAD_VBEE_TOKEN
+				authorization: cons.UPLOAD_VBEE_TOKEN
 			},
 			formData: {
 				path: path,
 				overwrite: overwrite,
-				file: fileUrl
+				file: request(fileUrl).on('error', function(err) {
+					console.error(err)
+				})
 			}
 		},
 		(error, res, body) => {
 			if (error) {
 				throw error
 			}
-			console.log(JSON.parse(body))
-			// return JSON.parse(body)
-			res.end()
+			callback(JSON.parse(body))
 		}
 	)
 }

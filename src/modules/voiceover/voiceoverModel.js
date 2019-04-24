@@ -40,6 +40,7 @@ let voiceoverSchema = new Schema(
 		movie: {
 			type: ObjectId,
 			ref: 'Movie',
+			required: [true, 'Movie is required!'],
 			trim: true
 		},
 		uploader: {

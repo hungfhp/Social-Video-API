@@ -10,7 +10,7 @@ const app = express()
 middlewareConfig(app)
 
 // default options
-app.use(fileUpload())
+// app.use(fileUpload())
 
 app.get('/', (req, res) => {
 	res.send('Welcome!')

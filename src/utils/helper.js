@@ -8,6 +8,10 @@ export function genderToNumber(gender) {
 
 export function log(message = '', fileName = '') {
 	// eslint-disable-next-line no-console
-	console.log('---------------', fileName, message)
-	logToFile(message, fileName)
+	console.log(
+		`---------------log---------------:\n fileName: ${fileName} \n: message ${message}`
+	)
+	logToFile(message, `./logs/${fileName}`)
+	// eslint-disable-next-line no-console
+	console.log('\n')
 }

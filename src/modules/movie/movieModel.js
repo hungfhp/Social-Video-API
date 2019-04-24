@@ -171,14 +171,10 @@ let movieSchema = new Schema(
 			type: String,
 			trim: true
 		},
-		// voiceoverUrl is lastest in voiceovers[]
-		voiceovers: [
-			{
-				type: ObjectId,
-				ref: 'Voiceover',
-				trim: true
-			}
-		],
+		voiceoverUrl: {
+			type: String,
+			trim: true
+		},
 		actors: [
 			{
 				type: String,
