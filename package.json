@@ -11,7 +11,7 @@
     "dev": "cross-env NODE_ENV=development nodemon dist/index.bundle.js",
     "test": "cross-env NODE_ENV=test nodemon dist/index.bundle.js",
     "prod": "cross-env NODE_ENV=production nodemon dist/index.bundle.js",
-    "start": "npm start dist/index.bundle.js"
+    "start": "node dist/index.bundle.js"
   },
   "dependencies": {
     "accesscontrol": "^2.2.1",
