@@ -1,5 +1,6 @@
 import HTTPStatus from 'http-status'
 import ac from '../services/accessControlService'
+import { log } from '../utils/helper'
 
 export function accessControl(access, resource) {
 	return function checkPermission(req, res, next) {
@@ -13,6 +14,11 @@ export function accessControl(access, resource) {
 
 			return next()
 		} else {
+			log(
+				`${String(req.user.role).toUpperCase()} ${access} ${resource}`,
+				'error-role.log'
+			)
+
 			return res.status(HTTPStatus.FORBIDDEN).json({
 				status: 'Not Permission',
 				message: `${String(

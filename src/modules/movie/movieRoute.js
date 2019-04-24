@@ -98,7 +98,7 @@ router
 	)
 	.get(
 		'/:id',
-		accessControl('readOwn', 'movie'),
+		accessControl('readAny', 'movie'),
 		validate(movieValidation.show),
 		movieController.getMovieById,
 		function(req, res, next) {

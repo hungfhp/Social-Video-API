@@ -3,6 +3,7 @@ import HTTPStatus from 'http-status'
 // eslint-disable-next-line no-unused-vars
 import * as util from './directorUtil'
 import defaultDirectors from '../../initData/directors'
+import { log } from '../../utils/helper'
 
 /**
  * @group directors - Operations about directors
@@ -17,6 +18,7 @@ export async function initDirectors(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -29,22 +31,21 @@ export async function getDirectorsStats(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
 
 export async function getDirectors(req, res, next) {
 	try {
-		let { docs, ...pagination } = await Director.paginate(
-			{},
-			req.parsedParams
-		)
+		let { docs, ...pagination } = await Director.paginate({}, req.parsedParams)
 
 		res.directors = docs
 		res.pagination = pagination
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -55,6 +56,7 @@ export async function getDirectorById(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -65,6 +67,7 @@ export async function createDirector(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -81,6 +84,7 @@ export async function updateDirector(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -93,6 +97,7 @@ export async function deleteDirector(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }

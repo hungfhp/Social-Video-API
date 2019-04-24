@@ -3,6 +3,7 @@ import HTTPStatus from 'http-status'
 // eslint-disable-next-line no-unused-vars
 import * as util from './countryUtil'
 import defaultCountries from '../../initData/countries'
+import { log } from '../../utils/helper'
 
 /**
  * @group countries - Operations about countries
@@ -17,6 +18,7 @@ export async function initCountries(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -29,22 +31,21 @@ export async function getCountriesStats(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
 
 export async function getCountries(req, res, next) {
 	try {
-		let { docs, ...pagination } = await Country.paginate(
-			{},
-			req.parsedParams
-		)
+		let { docs, ...pagination } = await Country.paginate({}, req.parsedParams)
 
 		res.countries = docs
 		res.pagination = pagination
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -55,6 +56,7 @@ export async function getCountryById(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -65,6 +67,7 @@ export async function createCountry(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -81,6 +84,7 @@ export async function updateCountry(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -93,6 +97,7 @@ export async function deleteCountry(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }

@@ -47,6 +47,7 @@ export async function checkSynthesis(req, res, next) {
 		// console.log(file)
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -82,19 +83,19 @@ export async function uploadVoiceover(req, res, next) {
 		// 		next()
 		// 	}
 		// )
-		fileService.uploadFile(
-			'test',
-			'false',
-			'https://raw.githubusercontent.com/svenhornberg/pipeupload/master/LICENSE',
-			function(uploadedFile) {
-				console.log(uploadedFile)
-			}
-		)
-		console.log('object')
+		// fileService.uploadFile(
+		// 	'test',
+		// 	'false',
+		// 	'https://raw.githubusercontent.com/svenhornberg/pipeupload/master/LICENSE',
+		// 	function(uploadedFile) {
+		// 		console.log(uploadedFile)
+		// 	}
+		// )
+		// console.log('object')
 
 		next()
 	} catch (e) {
-		console.log(e)
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -135,6 +136,7 @@ export async function callbackSynthesis(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -147,6 +149,7 @@ export async function getVoiceoversStats(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -164,6 +167,7 @@ export async function getVoiceovers(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -174,6 +178,7 @@ export async function getVoiceoverById(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -194,6 +199,7 @@ export async function createVoiceover(req, res, next) {
 		}
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -210,6 +216,7 @@ export async function updateVoiceover(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -222,6 +229,7 @@ export async function deleteVoiceover(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }

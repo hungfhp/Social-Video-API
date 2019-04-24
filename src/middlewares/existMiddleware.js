@@ -2,6 +2,7 @@ import HTTPStatus from 'http-status'
 import FollowMovie from '../modules/followMovie/followMovieModel'
 import Like from '../modules/like/likeModel'
 import Member from '../modules/member/memberModel'
+import { log } from '../utils/helper'
 
 export async function existFollowMovie(req, res, next) {
 	try {
@@ -15,6 +16,7 @@ export async function existFollowMovie(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -31,6 +33,7 @@ export async function existFollowUser(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -47,6 +50,7 @@ export async function existLike(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
@@ -63,6 +67,7 @@ export async function existMember(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }

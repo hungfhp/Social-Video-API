@@ -1,5 +1,6 @@
 import HTTPStatus from 'http-status'
 import Movie from '../modules/movie/movieModel'
+import { log } from '../utils/helper'
 
 // update req.movie
 export async function ownMovie(req, res, next) {
@@ -12,6 +13,7 @@ export async function ownMovie(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
