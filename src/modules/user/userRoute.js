@@ -29,7 +29,7 @@ router
 		next
 	) {
 		return res.status(HTTPStatus.OK).json({
-			user: req.user
+			data: req.user
 		})
 	})
 	.get(
@@ -148,7 +148,7 @@ router
 		// relationshipController.createRelationship,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				user: req.user
+				data: res.user
 			})
 		}
 	)
@@ -158,7 +158,7 @@ router
 		next
 	) {
 		return res.status(HTTPStatus.OK).json({
-			user: req.user
+			data: res.user
 		})
 	})
 	.get('/auth/facebook', authFacebook)
@@ -168,7 +168,7 @@ router
 		userController.facebookLogin,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				user: req.user
+				data: res.user
 			})
 		}
 	)
@@ -214,7 +214,7 @@ router
 		userController.createUser,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				user: req.user
+				data: res.user
 			})
 		}
 	)

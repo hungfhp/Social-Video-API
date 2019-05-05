@@ -197,7 +197,7 @@ export async function getUserById(req, res, next) {
 export async function createUser(req, res, next) {
 	try {
 		const user = await User.create({ ...req.body, provider: 'local' })
-		req.user = user.toAuthJSON()
+		res.user = user.toAuthJSON()
 
 		next()
 	} catch (e) {
@@ -237,7 +237,7 @@ export async function deleteUser(req, res, next) {
 }
 
 export function localLogin(req, res, next) {
-	req.user = req.user.toAuthJSON()
+	res.user = req.user.toAuthJSON()
 	return next()
 }
 export function facebookLogin(req, res, next) {
