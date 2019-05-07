@@ -92,14 +92,9 @@ relationshipSchema.statics = {
 
 relationshipSchema.methods = {
 	isRequest(request) {
-		console.log(
-			'isRequest ',
-			this.requests.indexOf(request._id || request) !== -1
-		)
 		return this.requests.indexOf(request._id || request) !== -1 ? true : false
 	},
 	isFriend(friend) {
-		console.log('isFriend ', this.friends.indexOf(friend._id || friend) !== -1)
 		return this.friends.indexOf(friend._id || friend) !== -1 ? true : false
 	},
 	addRequest(request) {

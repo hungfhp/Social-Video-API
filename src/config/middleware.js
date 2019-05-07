@@ -5,6 +5,7 @@ import compression from 'compression'
 import helmet from 'helmet'
 import passport from 'passport'
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 
 const isDev =
 	process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'dev'
@@ -15,6 +16,8 @@ export default app => {
 		app.use(helmet())
 	}
 	app.use(bodyParser.json())
+
+	app.use(cookieParser())
 
 	app.use(cors())
 
