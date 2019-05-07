@@ -4,8 +4,11 @@ import bodyParser from 'body-parser'
 import compression from 'compression'
 import helmet from 'helmet'
 import passport from 'passport'
+import cors from 'cors'
+import cookieParser from 'cookie-parser'
 
-const isDev = process.env.NODE_ENV === 'development'
+const isDev =
+	process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'dev'
 const isProd = process.env.NODE_ENV === 'production'
 export default app => {
 	if (isProd) {
@@ -13,6 +16,10 @@ export default app => {
 		app.use(helmet())
 	}
 	app.use(bodyParser.json())
+
+	app.use(cookieParser())
+
+	app.use(cors())
 
 	app.use(
 		bodyParser.urlencoded({

@@ -11,7 +11,8 @@ import * as paramMiddleware from '../../middlewares/paramMiddleware'
 import * as ownMiddleware from '../../middlewares/ownMiddleware'
 import { accessControl } from '../../middlewares/roleMiddleware'
 const router = new Router()
-
+import { Facebook, FacebookApiException } from 'fb'
+var fb = new Facebook({})
 /**
  * GET /items/stats => getUsersStats
  * GET /items => getUsers
@@ -23,13 +24,9 @@ const router = new Router()
 
 // More router
 router
-	.get('/current', accessControl('createOwn', 'user'), function(
-		req,
-		res,
-		next
-	) {
+	.get('/me', accessControl('createOwn', 'user'), function(req, res, next) {
 		return res.status(HTTPStatus.OK).json({
-			user: req.user
+			data: req.user
 		})
 	})
 	.get(
@@ -148,7 +145,7 @@ router
 		// relationshipController.createRelationship,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				user: req.user
+				data: res.user
 			})
 		}
 	)
@@ -158,20 +155,14 @@ router
 		next
 	) {
 		return res.status(HTTPStatus.OK).json({
-			user: req.user
+			data: res.user
 		})
 	})
-	.get('/auth/facebook', authFacebook)
-	.get(
-		'/auth/facebook/callback',
-		authFacebook,
-		userController.facebookLogin,
-		function(req, res, next) {
-			return res.status(HTTPStatus.OK).json({
-				user: req.user
-			})
-		}
-	)
+	.post('/fb_login', userController.fbLogin, function(req, res, next) {
+		return res.status(HTTPStatus.OK).json({
+			data: res.user
+		})
+	})
 
 //  Default Rest router
 router
@@ -181,7 +172,7 @@ router
 		userController.getUsersStats,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				usersStats: res.usersStats
+				data: res.usersStats
 			})
 		}
 	)
@@ -214,7 +205,7 @@ router
 		userController.createUser,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				user: req.user
+				data: res.user
 			})
 		}
 	)

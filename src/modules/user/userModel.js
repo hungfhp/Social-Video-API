@@ -41,13 +41,13 @@ let userSchema = new Schema(
 		password: {
 			type: String,
 			trim: true,
-			minlength: [6, 'Password need to be longer!'],
-			validate: {
-				validator(password) {
-					return passwordReg.test(password)
-				},
-				message: '{VALUE} is not a valid password!'
-			}
+			minlength: [6, 'Password need to be longer!']
+			// validate: {
+			// 	validator(password) {
+			// 		return passwordReg.test(password)
+			// 	},
+			// 	message: '{VALUE} is not a valid password!'
+			// }
 		},
 		name: {
 			type: String,
@@ -63,7 +63,7 @@ let userSchema = new Schema(
 			type: String,
 			trim: true
 		},
-		socials: {
+		social: {
 			type: Object,
 			trim: true
 		},
@@ -102,6 +102,7 @@ userSchema.plugin(uniqueValidator, {
 })
 
 userSchema.pre('save', function(next) {
+	console.log(this)
 	if (this.isModified('password')) {
 		this.password = this._hashPassword(this.password)
 	}
@@ -117,14 +118,21 @@ userSchema.methods = {
 		return compareSync(password, this.password)
 	},
 	createToken() {
-		return jwt.sign(
-			{
-				_id: this._id
-			},
-			con.JWT_SECRET
-		)
+		this.token =
+			'JWT ' +
+			jwt.sign(
+				{
+					_id: this._id,
+					salt: Math.random()
+				},
+				con.JWT_SECRET,
+				{
+					expiresIn: '60d' // expires in 365 days
+				}
+			)
+		this.save()
 	},
-	toJSONs() {
+	toJSON() {
 		return _.pick(this, [
 			'_id',
 			'email',
@@ -132,17 +140,19 @@ userSchema.methods = {
 			'gender',
 			'role',
 			'avatarUrl',
-			'fbId',
-			'ggId'
+			'provider'
 		])
 	},
 	toAuthJSON() {
+		this.createToken()
 		return {
-			...this.toJSONs(),
+			...this.toJSON(),
 			role: this.role,
 			provider: this.provider,
 			providerUrl: this.providerUrl,
-			token: `JWT ${this.createToken()}`
+			token: this.token
+			// tokenExpiresAt: this.tokenExpiresAt
+			// token: `JWT ${this.createToken()}`
 		}
 	}
 }

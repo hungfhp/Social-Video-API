@@ -24,5 +24,5 @@ export async function getUser(req, res, next) {
 }
 
 function extractToken(authorization = '') {
-	return authorization.replace('JWT ', '')
+	return authorization.split(' ')[1]
 }

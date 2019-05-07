@@ -9,6 +9,8 @@ import HTTPStatus from 'http-status'
 // eslint-disable-next-line no-unused-vars
 import * as util from './userUtil'
 import { log } from '../../utils/helper'
+import * as authService from '../../services/authService'
+import { genderToNumber } from '../../utils/helper'
 
 /**
  * @group users - Operations about users
@@ -197,7 +199,7 @@ export async function getUserById(req, res, next) {
 export async function createUser(req, res, next) {
 	try {
 		const user = await User.create({ ...req.body, provider: 'local' })
-		req.user = user.toAuthJSON()
+		res.user = user.toAuthJSON()
 
 		next()
 	} catch (e) {
@@ -237,10 +239,48 @@ export async function deleteUser(req, res, next) {
 }
 
 export function localLogin(req, res, next) {
-	req.user = req.user.toAuthJSON()
+	res.user = req.user.toAuthJSON()
 	return next()
 }
-export function facebookLogin(req, res, next) {
+
+export async function fbLogin(req, res, next) {
 	// req.user is inited
-	return next()
+	try {
+		const fbAuthUser = await authService.authFacebook(req.body.accessToken)
+
+		if (!fbAuthUser.user_id) {
+			log(JSON.stringify(fbAuthUser.error), 'error-response.log')
+			return res.status(HTTPStatus.BAD_REQUEST).json(fbAuthUser.error)
+		}
+		const profile = { ...req.body, ...fbAuthUser }
+		res.user = await User.findOne({
+			provider: 'facebook',
+			'social.id': profile.user_id
+		})
+
+		if (res.user) {
+			next()
+		} else {
+			let newUser =
+				(await User.findOne({
+					email: profile.name
+				})) || new User()
+			newUser.provider = 'facebook'
+			newUser.social = { id: profile.user_id, accessToken: profile.accessToken }
+			newUser.name = profile.name
+			newUser.email = profile.email
+			newUser.gender = genderToNumber(profile.gender)
+			if (profile.picture && profile.picture.data && profile.picture.data.url) {
+				newUser.avatarUrl = profile.picture.data.url
+			}
+
+			newUser = await newUser.save()
+			res.user = newUser.toAuthJSON()
+		}
+
+		next()
+	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
+		return res.status(HTTPStatus.BAD_REQUEST).json(e)
+	}
 }

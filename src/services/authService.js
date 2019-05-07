@@ -5,6 +5,7 @@ import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt'
 import User from '../modules/user/userModel'
 import constants from '../config/constants'
 import { genderToNumber } from '../utils/helper'
+import axios from 'axios'
 
 const localOpts = {
 	usernameField: 'email'
@@ -106,7 +107,30 @@ passport.use(facebookStrategy)
 
 export const authLocal = passport.authenticate('local', { session: false })
 export const authJwt = passport.authenticate('jwt', { session: false })
-export const authFacebook = passport.authenticate('facebook', {
-	session: false,
-	display: 'popup'
-})
+// export const authFacebook = passport.authenticate('facebook', {
+// 	session: false,
+// 	display: 'popup'
+// })
+
+export const authFacebook = async function(access_token) {
+	const appLink =
+		'https://graph.facebook.com/oauth/access_token?client_id=' +
+		constants.FACEBOOK_APP_ID +
+		'&client_secret=' +
+		constants.FACEBOOK_APP_SECRET +
+		'&grant_type=client_credentials'
+
+	const app = await axios.get(appLink)
+	const appToken = app && app.data && app.data.access_token
+
+	const link =
+		'https://graph.facebook.com/debug_token?input_token=' +
+		access_token +
+		'&access_token=' +
+		appToken
+	const fbAuthUserData = await axios.get(link)
+	const fbAuthUser =
+		fbAuthUserData && fbAuthUserData.data && fbAuthUserData.data.data
+
+	return fbAuthUser
+}

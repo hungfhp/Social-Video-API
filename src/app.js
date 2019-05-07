@@ -4,7 +4,7 @@ import './config/database'
 import middlewareConfig from './config/middleware'
 import apiRoutes from './modules'
 import listEndpoints from 'express-list-endpoints'
-import fileUpload from 'express-fileupload'
+// import fileUpload from 'express-fileupload'
 
 const app = express()
 middlewareConfig(app)
@@ -15,6 +15,14 @@ middlewareConfig(app)
 app.get('/', (req, res) => {
 	res.send('Welcome!')
 })
+
+app.use(
+	'/logs',
+	express.static('./logs', {
+		maxAge: '30d',
+		immutable: true
+	})
+)
 
 app.get('/api', (req, res) => {
 	res.send(listEndpoints(app))
@@ -27,8 +35,6 @@ app.listen(con.PORT, err => {
 		throw err
 	} else {
 		// eslint-disable-next-line no-console
-		console.log(`
-      Running on ${con.HOST}:${con.PORT}
-    `)
+		console.log(`\tRunning on ${con.HOST}:${con.PORT}`)
 	}
 })
