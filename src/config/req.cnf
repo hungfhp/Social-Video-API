@@ -18,6 +18,5 @@ extendedKeyUsage = serverAuth
 subjectAltName = @alt_names
 
 [alt_names]
-DNS.1 = www.thuyetminhphim.com
-DNS.2 = thuyetminhphim.com
+DNS.1 = api-social.thuyetminhphim.com
 DNS.3 = localhost
