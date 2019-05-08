@@ -48,7 +48,7 @@ router
 	.post(
 		'/callback',
 		// accessControl('createOwn', 'voiceover'),
-		validate(voiceoverValidation.callbackSynthesis),
+		// validate(voiceoverValidation.callbackSynthesis),
 		voiceoverController.callbackSynthesis,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({

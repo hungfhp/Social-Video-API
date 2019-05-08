@@ -9,7 +9,7 @@ export async function requestSynthesis(
 	let url = 'http://api.thuyetminhphim.vn/synthesis'
 	let callback = 'http://api-social.thuyetminhphim.com/api/voiceovers/callback'
 	return await axios
-		.get(`${url}?callback=${callback}&subtitle_url=${subUrl}&voice=${voice}`)
+		.get(`${url}?SUBTITLE_URL=${subUrl}&VOICE=${voice}&CALLBACK=${callback}`)
 		.then(function(response) {
 			return response.data
 		})

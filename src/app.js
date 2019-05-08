@@ -5,6 +5,8 @@ import middlewareConfig from './config/middleware'
 import apiRoutes from './modules'
 import listEndpoints from 'express-list-endpoints'
 // import fileUpload from 'express-fileupload'
+import https from 'https'
+import fs from 'fs'
 
 const app = express()
 middlewareConfig(app)
@@ -30,11 +32,20 @@ app.get('/api', (req, res) => {
 
 apiRoutes(app)
 
-app.listen(con.PORT, err => {
-	if (err) {
-		throw err
-	} else {
-		// eslint-disable-next-line no-console
-		console.log(`\tRunning on ${con.HOST}:${con.PORT}`)
-	}
-})
+https
+	.createServer(
+		{
+			key: fs.readFileSync('./src/config/cert.key'),
+			cert: fs.readFileSync('./src/config/cert.pem')
+			// passphrase: 'server'
+		},
+		app
+	)
+	.listen(con.PORT, err => {
+		if (err) {
+			throw err
+		} else {
+			// eslint-disable-next-line no-console
+			console.log(`\tRunning on ${con.HOST}:${con.PORT}`)
+		}
+	})
