@@ -246,16 +246,16 @@ export function localLogin(req, res, next) {
 export async function fbLogin(req, res, next) {
 	// req.user is inited
 	try {
-		const fbAuthUser = await authService.authFacebook(req.body.accessToken)
+		// const fbAuthUser = await authService.authFacebook(req.body.accessToken)
 
-		if (!fbAuthUser.user_id) {
-			log(JSON.stringify(fbAuthUser.error), 'error-response.log')
-			return res.status(HTTPStatus.BAD_REQUEST).json(fbAuthUser.error)
-		}
-		const profile = { ...req.body, ...fbAuthUser }
+		// if (!fbAuthUser.user_id) {
+		// 	log(JSON.stringify(fbAuthUser.error), 'error-response.log')
+		// 	return res.status(HTTPStatus.BAD_REQUEST).json(fbAuthUser.error)
+		// }
+		const profile = req.body
 		res.user = await User.findOne({
 			provider: 'facebook',
-			'social.id': profile.user_id
+			'social.id': profile.userID
 		})
 
 		if (res.user) {
@@ -263,10 +263,10 @@ export async function fbLogin(req, res, next) {
 		} else {
 			let newUser =
 				(await User.findOne({
-					email: profile.name
+					email: profile.email
 				})) || new User()
 			newUser.provider = 'facebook'
-			newUser.social = { id: profile.user_id, accessToken: profile.accessToken }
+			newUser.social = { id: profile.userID, accessToken: profile.accessToken }
 			newUser.name = profile.name
 			newUser.email = profile.email
 			newUser.gender = genderToNumber(profile.gender)

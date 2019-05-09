@@ -7130,26 +7130,26 @@ function localLogin(req, res, next) {
 async function fbLogin(req, res, next) {
 	// req.user is inited
 	try {
-		const fbAuthUser = await authService.authFacebook(req.body.accessToken);
+		// const fbAuthUser = await authService.authFacebook(req.body.accessToken)
 
-		if (!fbAuthUser.user_id) {
-			(0, _helper.log)(JSON.stringify(fbAuthUser.error), 'error-response.log');
-			return res.status(_httpStatus2.default.BAD_REQUEST).json(fbAuthUser.error);
-		}
-		const profile = Object.assign({}, req.body, fbAuthUser);
+		// if (!fbAuthUser.user_id) {
+		// 	log(JSON.stringify(fbAuthUser.error), 'error-response.log')
+		// 	return res.status(HTTPStatus.BAD_REQUEST).json(fbAuthUser.error)
+		// }
+		const profile = req.body;
 		res.user = await _userModel2.default.findOne({
 			provider: 'facebook',
-			'social.id': profile.user_id
+			'social.id': profile.userID
 		});
 
 		if (res.user) {
 			next();
 		} else {
 			let newUser = (await _userModel2.default.findOne({
-				email: profile.name
+				email: profile.email
 			})) || new _userModel2.default();
 			newUser.provider = 'facebook';
-			newUser.social = { id: profile.user_id, accessToken: profile.accessToken };
+			newUser.social = { id: profile.userID, accessToken: profile.accessToken };
 			newUser.name = profile.name;
 			newUser.email = profile.email;
 			newUser.gender = (0, _helper.genderToNumber)(profile.gender);
