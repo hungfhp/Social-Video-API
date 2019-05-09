@@ -2563,11 +2563,16 @@ app.get('/api', (req, res) => {
 
 (0, _modules2.default)(app);
 
-_https2.default.createServer({
-	key: _fs2.default.readFileSync('./src/config/cert.key'),
-	cert: _fs2.default.readFileSync('./src/config/cert.pem')
-	// passphrase: 'server'
-}, app).listen(_constants2.default.PORT, err => {
+// https
+// 	.createServer(
+// 		{
+// 			key: fs.readFileSync('./src/config/cert.key'),
+// 			cert: fs.readFileSync('./src/config/cert.pem')
+// 			// passphrase: 'server'
+// 		},
+// 		app
+// 	)
+app.listen(_constants2.default.PORT, err => {
 	if (err) {
 		throw err;
 	} else {

@@ -32,20 +32,20 @@ app.get('/api', (req, res) => {
 
 apiRoutes(app)
 
-https
-	.createServer(
-		{
-			key: fs.readFileSync('./src/config/cert.key'),
-			cert: fs.readFileSync('./src/config/cert.pem')
-			// passphrase: 'server'
-		},
-		app
-	)
-	.listen(con.PORT, err => {
-		if (err) {
-			throw err
-		} else {
-			// eslint-disable-next-line no-console
-			console.log(`\tRunning on ${con.HOST}:${con.PORT}`)
-		}
-	})
+// https
+// 	.createServer(
+// 		{
+// 			key: fs.readFileSync('./src/config/cert.key'),
+// 			cert: fs.readFileSync('./src/config/cert.pem')
+// 			// passphrase: 'server'
+// 		},
+// 		app
+// 	)
+app.listen(con.PORT, err => {
+	if (err) {
+		throw err
+	} else {
+		// eslint-disable-next-line no-console
+		console.log(`\tRunning on ${con.HOST}:${con.PORT}`)
+	}
+})
