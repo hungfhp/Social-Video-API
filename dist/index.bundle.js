@@ -346,7 +346,12 @@ const defaultConfig = {
 	FACEBOOK_APP_ID: '329324544364004',
 	FACEBOOK_APP_SECRET: '6521fe7adaa99b2038e728dccfcb0885',
 	UPLOAD_VBEE_URL: 'https://upload.vbee.vn/api/v1/upload/file',
-	UPLOAD_VBEE_TOKEN: '30065a2c-cdf1-4316-8827-488557133f54'
+	UPLOAD_VBEE_TOKEN: '30065a2c-cdf1-4316-8827-488557133f54',
+	UPLOAD_FILE_MAX: 10 * 1000000,
+	UPLOAD_IMAGE_MAX: 5 * 1000000,
+	UPLOAD_MOVIE_MAX: 3000 * 1000000,
+	UPLOAD_SUBTITLE_MAX: 10 * 1000000,
+	UPLOAD_VOICEOVER_MAX: 200 * 1000000
 };
 
 function envConfig(env) {
@@ -1995,7 +2000,7 @@ async function checkSynthesis(req, res, next) {
 			res.voiceover = voiceoverChecked;
 		}
 
-		let file = await fileService.uploadFile('test', false, 'https://i.vimeocdn.com/portrait/25122243_300x300');
+		let file = await fileService.uploadFileByUrl('test', false, 'https://i.vimeocdn.com/portrait/25122243_300x300');
 		// console.log(file)
 		next();
 	} catch (e) {
@@ -2035,7 +2040,7 @@ async function uploadVoiceover(req, res, next) {
 		// 		next()
 		// 	}
 		// )
-		// fileService.uploadFile(
+		// fileService.uploadFileByUrl(
 		// 	'test',
 		// 	'false',
 		// 	'https://raw.githubusercontent.com/svenhornberg/pipeupload/master/LICENSE',
@@ -2068,7 +2073,7 @@ async function callbackSynthesis(req, res, next) {
 		voiceover.downloadUrl = synthesised.downloadUrl;
 		voiceover.status = synthesised.status;
 
-		fileService.uploadFile('/voiceovers', 'false', synthesised.downloadUrl, async function (uploadedFile) {
+		fileService.uploadFileByUrl('/voiceovers', 'false', synthesised.downloadUrl, async function (uploadedFile) {
 			voiceover.embedUrl = uploadedFile.url;
 			voiceover.save();
 			res.voiceover = voiceover;
@@ -2459,6 +2464,10 @@ var _rateRoute = __webpack_require__(96);
 
 var _rateRoute2 = _interopRequireDefault(_rateRoute);
 
+var _uploadRoute = __webpack_require__(131);
+
+var _uploadRoute2 = _interopRequireDefault(_uploadRoute);
+
 var _userRoute = __webpack_require__(104);
 
 var _userRoute2 = _interopRequireDefault(_userRoute);
@@ -2469,6 +2478,8 @@ var _voiceoverRoute2 = _interopRequireDefault(_voiceoverRoute);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// ((following)|(followers)|(actor)|(actors)|(country)|(countries)|(director)|(directors)|(genre)|(genres)|(group)|(groups)|(like)|(likes)|(member)|(members)|(movie)|(movies)|(post)|(posts)|(rate)|(rates)|(user)|(users)|(voiceover)|(voiceovers)|(followMovie)|(followUser)): res.
+/* eslint-disable no-console */
 exports.default = app => {
 	app.use(_authMiddleware.getUser);
 	app.use(_constants2.default.API_PREFIX + '/actors', _actorRoute2.default);
@@ -2484,11 +2495,10 @@ exports.default = app => {
 	app.use(_constants2.default.API_PREFIX + '/posts', _postRoute2.default);
 	app.use(_constants2.default.API_PREFIX + '/movies', _movieRoute2.default);
 	app.use(_constants2.default.API_PREFIX + '/rates', _rateRoute2.default);
+	app.use(_constants2.default.API_PREFIX + '/upload', _uploadRoute2.default);
 	app.use(_constants2.default.API_PREFIX + '/users', _userRoute2.default);
 	app.use(_constants2.default.API_PREFIX + '/voiceovers', _voiceoverRoute2.default);
 };
-// ((following)|(followers)|(actor)|(actors)|(country)|(countries)|(director)|(directors)|(genre)|(genres)|(group)|(groups)|(like)|(likes)|(member)|(members)|(movie)|(movies)|(post)|(posts)|(rate)|(rates)|(user)|(users)|(voiceover)|(voiceovers)|(followMovie)|(followUser)): res.
-/* eslint-disable no-console */
 
 /***/ }),
 /* 42 */
@@ -2497,12 +2507,7 @@ exports.default = app => {
 module.exports = require("express-list-endpoints");
 
 /***/ }),
-/* 43 */
-/***/ (function(module, exports) {
-
-module.exports = require("https");
-
-/***/ }),
+/* 43 */,
 /* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2531,18 +2536,17 @@ var _expressListEndpoints = __webpack_require__(42);
 
 var _expressListEndpoints2 = _interopRequireDefault(_expressListEndpoints);
 
-var _https = __webpack_require__(43);
-
-var _https2 = _interopRequireDefault(_https);
-
 var _fs = __webpack_require__(17);
 
 var _fs2 = _interopRequireDefault(_fs);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import fileUpload from 'express-fileupload'
 const app = (0, _express2.default)();
+// import fileUpload from 'express-fileupload'
+
+// import path from 'path'
+
 (0, _middleware2.default)(app);
 
 // default options
@@ -2557,21 +2561,21 @@ app.use('/logs', _express2.default.static('./logs', {
 	immutable: true
 }));
 
+app.get('/logs', async (req, res) => {
+	await _fs2.default.readdir('./logs', function (err, files) {
+		if (err) {
+			res.send('Unable to scan directory: ' + err);
+		}
+		res.send(files);
+	});
+});
+
 app.get('/api', (req, res) => {
 	res.send((0, _expressListEndpoints2.default)(app));
 });
 
 (0, _modules2.default)(app);
 
-// https
-// 	.createServer(
-// 		{
-// 			key: fs.readFileSync('./src/config/cert.key'),
-// 			cert: fs.readFileSync('./src/config/cert.pem')
-// 			// passphrase: 'server'
-// 		},
-// 		app
-// 	)
 app.listen(_constants2.default.PORT, err => {
 	if (err) {
 		throw err;
@@ -7618,6 +7622,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 exports.uploadFile = uploadFile;
+exports.uploadFileByUrl = uploadFileByUrl;
 
 var _request = __webpack_require__(38);
 
@@ -7633,7 +7638,25 @@ var _fs2 = _interopRequireDefault(_fs);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-async function uploadFile(path = 'default', overwrite = 'false', fileUrl, callback) {
+async function uploadFile(path = 'default', overwrite = 'false', file, callback) {
+	_request2.default.post({
+		url: _constants2.default.UPLOAD_VBEE_URL,
+		headers: {
+			authorization: _constants2.default.UPLOAD_VBEE_TOKEN
+		},
+		formData: {
+			path: path,
+			overwrite: overwrite,
+			file: file
+		}
+	}, (error, res, body) => {
+		if (error) {
+			throw error;
+		}
+		callback(JSON.parse(body));
+	});
+} /* eslint-disable no-console */
+async function uploadFileByUrl(path = 'default', overwrite = 'false', fileUrl, callback) {
 	_request2.default.post({
 		url: _constants2.default.UPLOAD_VBEE_URL,
 		headers: {
@@ -7652,7 +7675,7 @@ async function uploadFile(path = 'default', overwrite = 'false', fileUrl, callba
 		}
 		callback(JSON.parse(body));
 	});
-} /* eslint-disable no-console */
+}
 
 /***/ }),
 /* 111 */
@@ -7767,6 +7790,326 @@ module.exports = require("role-acl");
 /***/ (function(module, exports) {
 
 module.exports = require("util");
+
+/***/ }),
+/* 130 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.uploadFile = uploadFile;
+exports.uploadImage = uploadImage;
+exports.uploadSubtitle = uploadSubtitle;
+exports.uploadMovie = uploadMovie;
+exports.uploadVoiceover = uploadVoiceover;
+
+var _httpStatus = __webpack_require__(0);
+
+var _httpStatus2 = _interopRequireDefault(_httpStatus);
+
+var _helper = __webpack_require__(1);
+
+var _multiparty = __webpack_require__(124);
+
+var _multiparty2 = _interopRequireDefault(_multiparty);
+
+var _request = __webpack_require__(38);
+
+var _request2 = _interopRequireDefault(_request);
+
+var _fs = __webpack_require__(17);
+
+var _fs2 = _interopRequireDefault(_fs);
+
+var _constants = __webpack_require__(14);
+
+var _constants2 = _interopRequireDefault(_constants);
+
+var _util = __webpack_require__(129);
+
+var _util2 = _interopRequireDefault(_util);
+
+var _fileService = __webpack_require__(110);
+
+var fileService = _interopRequireWildcard(_fileService);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import Upload from './uploadModel.js'
+async function uploadFile(req, res, next) {
+	try {
+		fileService.uploadFile('/files', 'false', {
+			value: _fs2.default.createReadStream(req.file.path),
+			options: {
+				filename: req.file.originalFilename
+			}
+		}, async function (uploadedFile) {
+			res.uploadedFile = uploadedFile;
+			next();
+		});
+	} catch (e) {
+		(0, _helper.log)(JSON.stringify(e), 'error-response.log');
+		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
+	}
+}
+// import request from 'request'
+
+// eslint-disable-next-line no-unused-vars
+// import * as util from './uploadUtil'
+async function uploadImage(req, res, next) {
+	try {
+		fileService.uploadFile('/images', 'false', {
+			value: _fs2.default.createReadStream(req.file.path),
+			options: {
+				filename: req.file.originalFilename
+			}
+		}, async function (uploadedFile) {
+			res.uploadedFile = uploadedFile;
+			next();
+		});
+	} catch (e) {
+		(0, _helper.log)(JSON.stringify(e), 'error-response.log');
+		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
+	}
+}
+
+async function uploadSubtitle(req, res, next) {
+	try {
+		fileService.uploadFile('/subtitles', 'false', {
+			value: _fs2.default.createReadStream(req.file.path),
+			options: {
+				filename: req.file.originalFilename
+			}
+		}, async function (uploadedFile) {
+			res.uploadedFile = uploadedFile;
+			next();
+		});
+	} catch (e) {
+		(0, _helper.log)(JSON.stringify(e), 'error-response.log');
+		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
+	}
+}
+
+async function uploadMovie(req, res, next) {
+	try {
+		fileService.uploadFile('/movies', 'false', {
+			value: _fs2.default.createReadStream(req.file.path),
+			options: {
+				filename: req.file.originalFilename
+			}
+		}, async function (uploadedFile) {
+			res.uploadedFile = uploadedFile;
+			next();
+		});
+	} catch (e) {
+		(0, _helper.log)(JSON.stringify(e), 'error-response.log');
+		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
+	}
+}
+
+async function uploadVoiceover(req, res, next) {
+	try {
+		fileService.uploadFile('/voiceovers', 'false', {
+			value: _fs2.default.createReadStream(req.file.path),
+			options: {
+				filename: req.file.originalFilename
+			}
+		}, async function (uploadedFile) {
+			res.uploadedFile = uploadedFile;
+			next();
+		});
+	} catch (e) {
+		(0, _helper.log)(JSON.stringify(e), 'error-response.log');
+		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
+	}
+}
+
+/***/ }),
+/* 131 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _express = __webpack_require__(2);
+
+var _expressValidation = __webpack_require__(4);
+
+var _expressValidation2 = _interopRequireDefault(_expressValidation);
+
+var _httpStatus = __webpack_require__(0);
+
+var _httpStatus2 = _interopRequireDefault(_httpStatus);
+
+var _uploadController = __webpack_require__(130);
+
+var uploadController = _interopRequireWildcard(_uploadController);
+
+var _uploadValidation = __webpack_require__(133);
+
+var _uploadValidation2 = _interopRequireDefault(_uploadValidation);
+
+var _paramService = __webpack_require__(16);
+
+var upload = _interopRequireWildcard(_paramService);
+
+var _roleMiddleware = __webpack_require__(12);
+
+var _uploadMiddleware = __webpack_require__(135);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/* eslint-disable no-unused-vars */
+const router = new _express.Router();
+
+/**
+ * GET /items/stats => getUploadsStats
+ * GET /items => getUploads
+ * GET /items/:id => getUploadById
+ * POST /items/ => createUpload
+ * PATCH/PUT /items/:id => updateUpload
+ * DELETE /items/:id => deleteUpload
+ */
+
+// More router
+
+router.post('/file', _uploadMiddleware.parseForm, (0, _expressValidation2.default)(_uploadValidation2.default.uploadFile), uploadController.uploadFile, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK).json({
+		data: res.uploadedFile
+	});
+});
+router.post('/image', _uploadMiddleware.parseForm, (0, _expressValidation2.default)(_uploadValidation2.default.uploadImage), uploadController.uploadImage, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK).json({
+		data: res.uploadedFile
+	});
+});
+router.post('/movie', _uploadMiddleware.parseForm, (0, _expressValidation2.default)(_uploadValidation2.default.uploadMovie), uploadController.uploadMovie, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK).json({
+		data: res.uploadedFile
+	});
+});
+router.post('/subtitle', _uploadMiddleware.parseForm, (0, _expressValidation2.default)(_uploadValidation2.default.uploadSubtitle), uploadController.uploadSubtitle, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK).json({
+		data: res.uploadedFile
+	});
+});
+router.post('/voiceover', _uploadMiddleware.parseForm, (0, _expressValidation2.default)(_uploadValidation2.default.uploadVoiceover), uploadController.uploadVoiceover, function (req, res, next) {
+	return res.status(_httpStatus2.default.OK).json({
+		data: res.uploadedFile
+	});
+});
+
+exports.default = router;
+
+/***/ }),
+/* 132 */,
+/* 133 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _joi = __webpack_require__(5);
+
+var _joi2 = _interopRequireDefault(_joi);
+
+var _constants = __webpack_require__(14);
+
+var _constants2 = _interopRequireDefault(_constants);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/* eslint-disable no-unused-vars */
+exports.default = {
+	uploadFile: {
+		params: {
+			size: _joi2.default.number().max(_constants2.default.UPLOAD_FILE_MAX)
+		}
+	},
+	uploadImage: {
+		params: {
+			size: _joi2.default.number().max(_constants2.default.UPLOAD_IMAGE_MAX)
+		}
+	},
+	uploadMovie: {
+		params: {
+			size: _joi2.default.number().max(_constants2.default.UPLOAD_MOVIE_MAX)
+		}
+	},
+	uploadSubtitle: {
+		params: {
+			size: _joi2.default.number().max(_constants2.default.UPLOAD_SUBTITLE_MAX)
+		}
+	},
+	uploadVoiceover: {
+		params: {
+			size: _joi2.default.number().max(_constants2.default.UPLOAD_VOICEOVER_MAX)
+		}
+	}
+};
+
+/***/ }),
+/* 134 */,
+/* 135 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.parseForm = parseForm;
+
+var _httpStatus = __webpack_require__(0);
+
+var _httpStatus2 = _interopRequireDefault(_httpStatus);
+
+var _helper = __webpack_require__(1);
+
+var _multiparty = __webpack_require__(124);
+
+var _multiparty2 = _interopRequireDefault(_multiparty);
+
+var _constants = __webpack_require__(14);
+
+var _constants2 = _interopRequireDefault(_constants);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+async function parseForm(req, res, next) {
+	try {
+		var form = new _multiparty2.default.Form();
+
+		form.parse(req, function () {});
+
+		form.on('file', function (name, file) {
+			req.file = file;
+			req.params.size = file.size;
+			next();
+		});
+	} catch (e) {
+		(0, _helper.log)(JSON.stringify(e), 'error-response.log');
+		return res.status(_httpStatus2.default.BAD_REQUEST).json(e);
+	}
+}
+// import Movie from '../modules/movie/movieModel'
 
 /***/ })
 /******/ ]);

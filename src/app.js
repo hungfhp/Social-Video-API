@@ -5,7 +5,8 @@ import middlewareConfig from './config/middleware'
 import apiRoutes from './modules'
 import listEndpoints from 'express-list-endpoints'
 // import fileUpload from 'express-fileupload'
-import https from 'https'
+
+// import path from 'path'
 import fs from 'fs'
 
 const app = express()
@@ -26,21 +27,21 @@ app.use(
 	})
 )
 
+app.get('/logs', async (req, res) => {
+	await fs.readdir('./logs', function(err, files) {
+		if (err) {
+			res.send('Unable to scan directory: ' + err)
+		}
+		res.send(files)
+	})
+})
+
 app.get('/api', (req, res) => {
 	res.send(listEndpoints(app))
 })
 
 apiRoutes(app)
 
-// https
-// 	.createServer(
-// 		{
-// 			key: fs.readFileSync('./src/config/cert.key'),
-// 			cert: fs.readFileSync('./src/config/cert.pem')
-// 			// passphrase: 'server'
-// 		},
-// 		app
-// 	)
 app.listen(con.PORT, err => {
 	if (err) {
 		throw err

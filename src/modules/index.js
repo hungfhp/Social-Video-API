@@ -16,6 +16,7 @@ import memberRoute from './member/memberRoute'
 import movieRoute from './movie/movieRoute'
 import postRoute from './post/postRoute'
 import rateRoute from './rate/rateRoute'
+import uploadRoute from './upload/uploadRoute'
 import userRoute from './user/userRoute'
 import voiceoverRoute from './voiceover/voiceoverRoute'
 
@@ -34,6 +35,7 @@ export default app => {
 	app.use(con.API_PREFIX + '/posts', postRoute)
 	app.use(con.API_PREFIX + '/movies', movieRoute)
 	app.use(con.API_PREFIX + '/rates', rateRoute)
+	app.use(con.API_PREFIX + '/upload', uploadRoute)
 	app.use(con.API_PREFIX + '/users', userRoute)
 	app.use(con.API_PREFIX + '/voiceovers', voiceoverRoute)
 }

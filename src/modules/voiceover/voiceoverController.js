@@ -39,7 +39,7 @@ export async function checkSynthesis(req, res, next) {
 			res.voiceover = voiceoverChecked
 		}
 
-		let file = await fileService.uploadFile(
+		let file = await fileService.uploadFileByUrl(
 			'test',
 			false,
 			'https://i.vimeocdn.com/portrait/25122243_300x300'
@@ -83,7 +83,7 @@ export async function uploadVoiceover(req, res, next) {
 		// 		next()
 		// 	}
 		// )
-		// fileService.uploadFile(
+		// fileService.uploadFileByUrl(
 		// 	'test',
 		// 	'false',
 		// 	'https://raw.githubusercontent.com/svenhornberg/pipeupload/master/LICENSE',
@@ -116,7 +116,7 @@ export async function callbackSynthesis(req, res, next) {
 		voiceover.downloadUrl = synthesised.downloadUrl
 		voiceover.status = synthesised.status
 
-		fileService.uploadFile(
+		fileService.uploadFileByUrl(
 			'/voiceovers',
 			'false',
 			synthesised.downloadUrl,

@@ -6,6 +6,33 @@ import fs from 'fs'
 export async function uploadFile(
 	path = 'default',
 	overwrite = 'false',
+	file,
+	callback
+) {
+	request.post(
+		{
+			url: cons.UPLOAD_VBEE_URL,
+			headers: {
+				authorization: cons.UPLOAD_VBEE_TOKEN
+			},
+			formData: {
+				path: path,
+				overwrite: overwrite,
+				file: file
+			}
+		},
+		(error, res, body) => {
+			if (error) {
+				throw error
+			}
+			callback(JSON.parse(body))
+		}
+	)
+}
+
+export async function uploadFileByUrl(
+	path = 'default',
+	overwrite = 'false',
 	fileUrl,
 	callback
 ) {
