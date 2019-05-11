@@ -9,6 +9,25 @@ import { log } from '../../utils/helper'
  *
  */
 
+export async function searchGroups(req, res, next) {
+	try {
+    Group.find({$text: {$search: 'p'}})
+       .limit(10)
+       .exec(function(err, docs) { 
+        if (err) {
+          res.json(err);
+      } else {
+        res.groups = docs
+        next()
+      }
+       });
+
+	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
+		return res.status(HTTPStatus.BAD_REQUEST).json(e)
+	}
+}
+
 export async function getSuggestGroups(req, res, next) {
 	try {
 		let suggests = [

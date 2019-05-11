@@ -47,6 +47,16 @@ router
 			})
 		}
 	)
+  .get(
+    '/search',
+    accessControl('readAny', 'movie'),
+    groupController.searchGroups,
+    function(req, res, next) {
+      return res.status(HTTPStatus.OK).json({
+        data: res.groups
+      })
+    }
+  )
 	.get(
 		'/',
 		accessControl('readAny', 'group'),

@@ -49,12 +49,11 @@ export function setSlugUrl(schema, options) {
 					lower: true
 				})}_${String(this._id).slice(-6)}` // ObjectId.valueOf
 			}
-		}
-		if (this.nameOrigin) {
+    }
+    let nameOrigin = this.nameOrigin || ((this.name||this.title)+`_${String(this._id).slice(-6)}`)
 			if (schema.paths.slugOrigin) {
-				this.slugOrigin = slugify(this.nameOrigin)
+				this.slugOrigin = slugify(nameOrigin)
 			}
-		}
 		next()
 	})
 }

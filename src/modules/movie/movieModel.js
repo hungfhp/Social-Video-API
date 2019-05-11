@@ -1,9 +1,3 @@
-/**
- * @typedef movies
- * @property {string} _id
- * @property {string} movieName
- */
-
 // import validator from 'validator'
 // import * as myValid from './movieValidation'
 import mongoose, { Schema } from 'mongoose'
@@ -16,6 +10,9 @@ import uniqueValidator from 'mongoose-unique-validator'
 // import Actor from '../actor/actorModel'
 // import Director from '../director/directorModel'
 // import Genre from '../genre/genreModel'
+import mongoosastic from 'mongoosastic'
+import searchPlugin from 'mongoose-search-plugin'
+var searchable = require('mongoose-searchable');
 
 import * as pluginService from '../../services/pluginService'
 
@@ -33,7 +30,7 @@ var embedSchema = new Schema({
 	}
 })
 
-let movieSchema = new Schema(
+var movieSchema = new Schema(
 	{
 		name: {
 			type: String,
@@ -126,7 +123,8 @@ let movieSchema = new Schema(
 		slugOrigin: {
 			type: String,
 			unique: true,
-			trim: true
+      trim: true,
+      index: false
 		},
 		genres: [
 			{
@@ -167,6 +165,12 @@ let movieSchema = new Schema(
 			type: String,
 			trim: true
 		},
+		subs: [
+			{
+				type: String,
+				trim: true
+			}
+		],
 		enSubUrl: {
 			type: String,
 			trim: true
@@ -224,7 +228,12 @@ let movieSchema = new Schema(
 	}
 )
 
+movieSchema.set('autoIndex', true);
+
+movieSchema.index({'$**': 'text'} )
+
 movieSchema.pre('save', function(next) {
+  
 	if (this.country) {
 		this.countries.push(this.country)
 	}
@@ -256,5 +265,6 @@ movieSchema.plugin(mongoosePaginate)
 movieSchema.plugin(autopopulate)
 movieSchema.plugin(pluginService.logPost, { schemaName: 'Movie' })
 movieSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Movie' })
+
 
 export default mongoose.model('Movie', movieSchema)

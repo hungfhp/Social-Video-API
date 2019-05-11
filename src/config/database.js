@@ -12,7 +12,7 @@ const options = {
 }
 // Connect the db with the url provided
 try {
-	mongoose.connect(constants.MONGO_URL, options)
+  mongoose.connect(constants.MONGO_URL, options)
 } catch (err) {
 	mongoose.createConnection(constants.MONGO_URL)
 }

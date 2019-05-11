@@ -22,16 +22,28 @@ import * as voiceoverController from '../voiceover/voiceoverController'
 
 // More router
 router
-	.get(
-		'/init',
-		accessControl('createAny', 'movie'),
-		movieController.initMovies,
-		function(req, res, next) {
-			return res.status(HTTPStatus.OK).json({
-				data: res.movies
-			})
-		}
-	)
+.get(
+  '/init',
+  accessControl('createAny', 'movie'),
+  movieController.initMovies,
+  function(req, res, next) {
+    return res.status(HTTPStatus.OK).json({
+      data: res.movies
+    })
+  }
+)
+.get(
+  '/search',
+  accessControl('readAny', 'movie'),
+  paramMiddleware.parseParamList,
+  movieController.searchMovies,
+  function(req, res, next) {
+    return res.status(HTTPStatus.OK).json({
+      data: res.movies,
+      pagination: res.pagination
+    })
+  }
+)
 	.get(
 		'/suggests',
 		accessControl('readAny', 'movie'),

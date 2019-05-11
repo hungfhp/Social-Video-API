@@ -4,11 +4,30 @@ import FollowMovie from '../followMovie/followMovieModel.js'
 import HTTPStatus from 'http-status'
 import defaultMovies from '../../initData/movies'
 import { log } from '../../utils/helper'
+import mongoose, { Schema } from 'mongoose'
+var movieSchema = mongoose.model('Movie').schema
 
 /**
  * @group movies - Operations about movies
  *
  */
+
+export async function searchMovies(req, res, next) {
+	try {
+		let { docs, ...pagination } = await Movie.paginate(
+      { $text: {$search: req.parsedParams.search}, share: 'public'},
+			{ ...req.parsedParams }
+		)
+    
+		res.movies = docs
+    res.pagination = pagination
+
+    next()
+	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
+		return res.status(HTTPStatus.BAD_REQUEST).json(e)
+	}
+}
 
 export async function initMovies(req, res, next) {
 	try {

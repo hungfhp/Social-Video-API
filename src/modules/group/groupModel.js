@@ -64,6 +64,8 @@ let groupSchema = new Schema(
 	}
 )
 
+groupSchema.index({'$**': 'text'})
+
 groupSchema.statics = {
 	incMembersCount(groupId) {
 		return this.findByIdAndUpdate(groupId, { $inc: { membersCount: 1 } })
