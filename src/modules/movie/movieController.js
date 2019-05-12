@@ -15,14 +15,14 @@ var movieSchema = mongoose.model('Movie').schema
 export async function searchMovies(req, res, next) {
 	try {
 		let { docs, ...pagination } = await Movie.paginate(
-      { $text: {$search: req.parsedParams.search}, share: 'public'},
+			{ $text: { $search: req.parsedParams.search }, share: 'public' },
 			{ ...req.parsedParams }
 		)
-    
-		res.movies = docs
-    res.pagination = pagination
 
-    next()
+		res.movies = docs
+		res.pagination = pagination
+
+		next()
 	} catch (e) {
 		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)

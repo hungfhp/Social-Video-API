@@ -246,12 +246,6 @@ export function localLogin(req, res, next) {
 export async function fbLogin(req, res, next) {
 	// req.user is inited
 	try {
-		// const fbAuthUser = await authService.authFacebook(req.body.accessToken)
-
-		// if (!fbAuthUser.user_id) {
-		// 	log(JSON.stringify(fbAuthUser.error), 'error-response.log')
-		// 	return res.status(HTTPStatus.BAD_REQUEST).json(fbAuthUser.error)
-		// }
 		const profile = req.body
 		res.user = await User.findOne({
 			provider: 'facebook',
@@ -259,6 +253,7 @@ export async function fbLogin(req, res, next) {
 		})
 
 		if (res.user) {
+			res.user = res.user.toAuthJSON()
 			next()
 		} else {
 			let newUser =
