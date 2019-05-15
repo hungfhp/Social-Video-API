@@ -93,8 +93,8 @@ router
 	)
 	.post(
 		'/',
-		// validate(voiceoverValidation.create),
-		voiceoverController.createVoiceover,
+		validate(voiceoverValidation.create),
+		// voiceoverController.createVoiceover,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
 				data: res.voiceover

@@ -31,7 +31,7 @@ export async function uploadFile(
 }
 
 export async function uploadFileByUrl(
-	path = 'default',
+	path = '/default',
 	overwrite = 'false',
 	fileUrl,
 	callback

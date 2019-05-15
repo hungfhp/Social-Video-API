@@ -5,7 +5,9 @@ export default {
 	groupsStatus: {
 		params: {
 			id: Joi.string().required(),
-			status: Joi.string().valid('checking', 'done', 'block')
+			status: Joi.string()
+				.required()
+				.valid('checking', 'done', 'block')
 		}
 	},
 	stats: {},

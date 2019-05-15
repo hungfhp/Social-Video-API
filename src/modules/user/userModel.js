@@ -81,7 +81,7 @@ let userSchema = new Schema(
 		avatarUrl: {
 			type: String,
 			trim: true,
-			default: 'https://png.pngtree.com/svg/20161212/f93e57629c.svg'
+			default: 'https://png.pngtree.com/svg/20161027/631929649c.png'
 		},
 		token: {
 			type: String,
@@ -97,18 +97,31 @@ let userSchema = new Schema(
 	}
 )
 
+userSchema.set('autoIndex', true)
+
+userSchema.index({
+	name: 'text',
+	email: 'text',
+	gender: 'text'
+})
+
 userSchema.plugin(uniqueValidator, {
 	message: '{VALUE} already taken!'
 })
 
 userSchema.pre('save', function(next) {
-	console.log(this)
 	if (this.isModified('password')) {
 		this.password = this._hashPassword(this.password)
 	}
 
 	return next()
 })
+
+userSchema.statics = {
+	incUploadedCount(userId) {
+		return this.findByIdAndUpdate(userId, { $inc: { uploadedCount: 1 } })
+	}
+}
 
 userSchema.methods = {
 	_hashPassword(password) {

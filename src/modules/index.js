@@ -9,6 +9,7 @@ import directorRoute from './director/directorRoute'
 import followMovieRoute from './followMovie/followMovieRoute'
 import followUserRoute from './followUser/followUserRoute'
 import relationshipRoute from './relationship/relationshipRoute'
+import subRoute from './sub/subRoute'
 import genreRoute from './genre/genreRoute'
 import groupRoute from './group/groupRoute'
 import likeRoute from './like/likeRoute'
@@ -28,6 +29,7 @@ export default app => {
 	app.use(con.API_PREFIX + '/follows/movies', followMovieRoute)
 	app.use(con.API_PREFIX + '/follows/users', followUserRoute)
 	app.use(con.API_PREFIX + '/relationships', relationshipRoute)
+	app.use(con.API_PREFIX + '/subs', subRoute)
 	app.use(con.API_PREFIX + '/genres', genreRoute)
 	app.use(con.API_PREFIX + '/groups', groupRoute)
 	app.use(con.API_PREFIX + '/likes', likeRoute)

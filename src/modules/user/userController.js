@@ -9,13 +9,26 @@ import HTTPStatus from 'http-status'
 // eslint-disable-next-line no-unused-vars
 import * as util from './userUtil'
 import { log } from '../../utils/helper'
-import * as authService from '../../services/authService'
+// import * as authService from '../../services/authService'
 import { genderToNumber } from '../../utils/helper'
 
-/**
- * @group users - Operations about users
- *
- */
+export async function searchUsers(req, res, next) {
+	try {
+		let { docs, ...pagination } = await User.paginate(
+			{ $text: { $search: req.parsedParams.search } },
+			{ ...req.parsedParams }
+		)
+
+		res.users = docs
+		res.pagination = pagination
+
+		next()
+	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
+		return res.status(HTTPStatus.BAD_REQUEST).json(e)
+	}
+}
+
 export async function getMoviesOwn(req, res, next) {
 	try {
 		let { docs, ...pagination } = await Movie.paginate(

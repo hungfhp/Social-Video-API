@@ -30,6 +30,18 @@ router
 		})
 	})
 	.get(
+		'/search',
+		accessControl('readAny', 'user'),
+		paramMiddleware.parseParamList,
+		userController.searchUsers,
+		function(req, res, next) {
+			return res.status(HTTPStatus.OK).json({
+				data: res.users,
+				pagination: res.pagination
+			})
+		}
+	)
+	.get(
 		'/:id/movies/own',
 		accessControl('readOwn', 'movie'),
 		paramMiddleware.parseParamList,

@@ -23,7 +23,8 @@ var embedSchema = new Schema({
 		required: [true, 'Movie file is required!']
 	},
 	default: {
-		type: Boolean
+		type: Boolean,
+		default: false
 	}
 })
 
@@ -58,7 +59,7 @@ var movieSchema = new Schema(
 			}
 		},
 		duration: {
-			type: Date,
+			type: Number,
 			trim: true
 		},
 		category: {
@@ -67,12 +68,12 @@ var movieSchema = new Schema(
 			default: 'single',
 			trim: true
 		},
-		countries: {
-			type: Array,
-			// ref: 'Country',
-			// autopopulate: true,
-			trim: true
-		},
+		countries: [
+			{
+				type: String,
+				trim: true
+			}
+		],
 		uploader: {
 			type: ObjectId,
 			ref: 'User',
@@ -149,26 +150,15 @@ var movieSchema = new Schema(
 			type: Number,
 			trim: true
 		},
-		// series: {
-		// 	type: ObjectId,
-		// 	ref: 'Series',
-		// 	trim: true
-		// },
+		provider: {
+			type: Object,
+			trim: true
+		},
 		isAdult: {
 			type: Boolean,
 			default: false
 		},
 		subUrl: {
-			type: String,
-			trim: true
-		},
-		subs: [
-			{
-				type: String,
-				trim: true
-			}
-		],
-		enSubUrl: {
 			type: String,
 			trim: true
 		},
@@ -227,7 +217,16 @@ var movieSchema = new Schema(
 
 movieSchema.set('autoIndex', true)
 
-movieSchema.index({ '$**': 'text' })
+movieSchema.index({
+	name: 'text',
+	nameOrigin: 'text',
+	genres: 'text',
+	actors: 'text',
+	countries: 'text',
+	directors: 'text',
+	uploader: 'text',
+	year: 'text'
+})
 
 movieSchema.pre('save', function(next) {
 	if (this.country) {

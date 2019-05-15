@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import Movie from './movieModel'
+import User from '../user/userModel'
 import FollowMovie from '../followMovie/followMovieModel.js'
 import HTTPStatus from 'http-status'
 import defaultMovies from '../../initData/movies'
@@ -140,6 +141,7 @@ export async function createMovie(req, res, next) {
 			...req.body,
 			uploader: req.user._id || ''
 		})
+		User.incUploadedCount(req.user._id)
 
 		next()
 	} catch (e) {

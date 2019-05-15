@@ -3,13 +3,15 @@ import axios from 'axios'
 // import HTTPStatus from 'http-status'
 
 export async function requestSynthesis(
-	subUrl,
+	subtitle_url,
 	voice = 'hn_male_xuantin_vdts_48k-hsmm'
 ) {
 	let url = 'http://api.thuyetminhphim.vn/synthesis'
 	let callback = 'http://api-social.thuyetminhphim.com/api/voiceovers/callback'
 	return await axios
-		.get(`${url}?SUBTITLE_URL=${subUrl}&VOICE=${voice}&CALLBACK=${callback}`)
+		.get(url, {
+			params: { callback, subtitle_url, voice }
+		})
 		.then(function(response) {
 			return response.data
 		})

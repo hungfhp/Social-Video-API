@@ -154,6 +154,17 @@ export async function getVoiceoversStats(req, res, next) {
 	}
 }
 
+export async function getVoiceoversByMovie(req, res, next) {
+	try {
+		res.voiceovers = await Voiceover.find({ movie: res.movie })
+
+		next()
+	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
+		return res.status(HTTPStatus.BAD_REQUEST).json(e)
+	}
+}
+
 export async function getVoiceovers(req, res, next) {
 	const limit = parseInt(req.query.limit, 0)
 	const skip = parseInt(req.query.skip, 0)
@@ -185,18 +196,18 @@ export async function getVoiceoverById(req, res, next) {
 
 export async function createVoiceover(req, res, next) {
 	try {
-		if (res.movie.subUrl) {
-			let requestSysthesis = await systhesisService.requestSynthesis(
-				res.movie.subUrl,
-				null
-			)
+		const movie = await Movie.findById(req.body.movieId)
 
-			let vc = await Voiceover.create({
-				requestId: requestSysthesis.requestId,
-				movie: res.movie._id,
-				uploader: req.user || ''
-			})
-		}
+		let requestSysthesis = await systhesisService.requestSynthesis(
+			movie.subUrl,
+			req.body.voice || 'hn_male_xuantin_vdts_48k-hsmm'
+		)
+
+		res.voiceover = await Voiceover.create({
+			requestId: requestSysthesis.requestId,
+			movie,
+			uploader: req.user || ''
+		})
 		next()
 	} catch (e) {
 		log(JSON.stringify(e), 'error-response.log')
