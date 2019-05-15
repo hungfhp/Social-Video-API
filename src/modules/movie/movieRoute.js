@@ -28,7 +28,7 @@ router
 		movieController.initMovies,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				data: res.movies
+				data: 'OK'
 			})
 		}
 	)
@@ -115,13 +115,6 @@ router
 		movieController.getMovieById,
 		voiceoverController.getVoiceoversByMovie,
 		function(req, res, next) {
-			// res.movie.voiceovers = 'res.voiceovers'
-			console.log(Object.keys(res.voiceovers))
-			let movie = res.movie
-			// movie.name = 'res.voiceovers'
-			// movie = 'res.voiceovers'
-			// console.log(res.movie._doc)
-			// console.log(movie)
 			return res.status(HTTPStatus.OK).json({
 				data: { ...res.movie._doc, voiceovers: res.voiceovers }
 			})
@@ -133,7 +126,7 @@ router
 		validate(movieValidation.create),
 		movieController.createMovie,
 		function(req, res, next) {
-			req.body.movieId = res.movie.id
+			req.body.movieId = res.movie._id
 			next()
 		},
 		voiceoverController.createVoiceover,

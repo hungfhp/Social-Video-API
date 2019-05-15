@@ -1019,7 +1019,7 @@ movieSchema.pre('save', function (next) {
 	// if (this.country) {
 	// 	this.countries.push(this.country)
 	// }
-	// return next()
+	return next();
 });
 
 movieSchema.statics = {
@@ -2249,7 +2249,6 @@ async function getVoiceoverById(req, res, next) {
 async function createVoiceover(req, res, next) {
 	try {
 		const movie = await _movieModel2.default.findById(req.body.movieId);
-
 		let requestSysthesis = await systhesisService.requestSynthesis(movie.subUrl, req.body.voice || 'hn_male_xuantin_vdts_48k-hsmm');
 
 		res.voiceover = await _voiceoverModel2.default.create({
@@ -5986,7 +5985,7 @@ const router = new _express.Router(); /* eslint-disable no-unused-vars */
 // More router
 router.get('/init', (0, _roleMiddleware.accessControl)('createAny', 'movie'), movieController.initMovies, function (req, res, next) {
 	return res.status(_httpStatus2.default.OK).json({
-		data: res.movies
+		data: 'OK'
 	});
 }).get('/search', (0, _roleMiddleware.accessControl)('readAny', 'movie'), paramMiddleware.parseParamList, movieController.searchMovies, function (req, res, next) {
 	return res.status(_httpStatus2.default.OK).json({
@@ -6028,18 +6027,11 @@ router.get('/stats', (0, _roleMiddleware.accessControl)('readAny', 'movie'), (0,
 		pagination: res.pagination
 	});
 }).get('/:id', (0, _roleMiddleware.accessControl)('readAny', 'movie'), (0, _expressValidation2.default)(_movieValidation2.default.show), movieController.getMovieById, voiceoverController.getVoiceoversByMovie, function (req, res, next) {
-	// res.movie.voiceovers = 'res.voiceovers'
-	console.log(Object.keys(res.voiceovers));
-	let movie = res.movie;
-	// movie.name = 'res.voiceovers'
-	// movie = 'res.voiceovers'
-	// console.log(res.movie._doc)
-	// console.log(movie)
 	return res.status(_httpStatus2.default.OK).json({
 		data: Object.assign({}, res.movie._doc, { voiceovers: res.voiceovers })
 	});
 }).post('/', (0, _roleMiddleware.accessControl)('createOwn', 'movie'), (0, _expressValidation2.default)(_movieValidation2.default.create), movieController.createMovie, function (req, res, next) {
-	req.body.movieId = res.movie.id;
+	req.body.movieId = res.movie._id;
 	next();
 }, voiceoverController.createVoiceover, function (req, res, next) {
 	return res.status(_httpStatus2.default.OK).json({

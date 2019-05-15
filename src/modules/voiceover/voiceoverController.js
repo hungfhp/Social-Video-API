@@ -197,7 +197,6 @@ export async function getVoiceoverById(req, res, next) {
 export async function createVoiceover(req, res, next) {
 	try {
 		const movie = await Movie.findById(req.body.movieId)
-
 		let requestSysthesis = await systhesisService.requestSynthesis(
 			movie.subUrl,
 			req.body.voice || 'hn_male_xuantin_vdts_48k-hsmm'

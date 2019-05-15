@@ -231,7 +231,7 @@ movieSchema.pre('save', function(next) {
 	// if (this.country) {
 	// 	this.countries.push(this.country)
 	// }
-	// return next()
+	return next()
 })
 
 movieSchema.statics = {
