@@ -32,7 +32,6 @@ var movieSchema = new Schema(
 	{
 		name: {
 			type: String,
-			unique: true,
 			required: [true, 'Movie name is required!'],
 			trim: true
 		},
@@ -79,8 +78,8 @@ var movieSchema = new Schema(
 			ref: 'User',
 			autopopulate: true,
 			required: [true, 'Uploader is required!'],
-			// hung-dev
-			default: '5ca016de421fa21ea0524815',
+			// hung-prod
+			default: '5c9edb2d6d7b1b2ea07ff3fa',
 			trim: true
 		},
 		embeds: [embedSchema],
@@ -229,10 +228,10 @@ movieSchema.index({
 })
 
 movieSchema.pre('save', function(next) {
-	if (this.country) {
-		this.countries.push(this.country)
-	}
-	return next()
+	// if (this.country) {
+	// 	this.countries.push(this.country)
+	// }
+	// return next()
 })
 
 movieSchema.statics = {
