@@ -115,8 +115,15 @@ router
 		movieController.getMovieById,
 		voiceoverController.getVoiceoversByMovie,
 		function(req, res, next) {
+			// res.movie.voiceovers = 'res.voiceovers'
+			console.log(Object.keys(res.voiceovers))
+			let movie = res.movie
+			// movie.name = 'res.voiceovers'
+			// movie = 'res.voiceovers'
+			// console.log(res.movie._doc)
+			// console.log(movie)
 			return res.status(HTTPStatus.OK).json({
-				data: { ...res.movie, voiceovers: res.voiceovers }
+				data: { ...res.movie._doc, voiceovers: res.voiceovers }
 			})
 		}
 	)
