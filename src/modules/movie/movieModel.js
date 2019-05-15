@@ -114,12 +114,12 @@ var movieSchema = new Schema(
 		],
 		slug: {
 			type: String,
-			unique: true,
+			// unique: true,
 			trim: true
 		},
 		slugOrigin: {
 			type: String,
-			unique: true,
+			// unique: true,
 			trim: true,
 			index: false
 		},
