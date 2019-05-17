@@ -24,7 +24,10 @@ export async function getSamplesStats(req, res, next) {
 
 export async function getSamples(req, res, next) {
 	try {
-		let { docs, ...pagination } = await Sample.paginate({}, req.parsedParams)
+		let { docs, ...pagination } = await Sample.paginate(
+			{ ...req.parsedParams.filters },
+			req.parsedParams
+		)
 
 		res.samples = docs
 		res.pagination = pagination

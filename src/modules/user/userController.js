@@ -7,20 +7,24 @@ import FollowUser from '../followUser/followUserModel'
 import Member from '../member/memberModel'
 import HTTPStatus from 'http-status'
 // eslint-disable-next-line no-unused-vars
-import * as util from './userUtil'
 import { log } from '../../utils/helper'
 // import * as authService from '../../services/authService'
 import { genderToNumber } from '../../utils/helper'
 
 export async function searchUsers(req, res, next) {
 	try {
-		let { docs, ...pagination } = await User.paginate(
+		res.users = await User.find(
 			{ $text: { $search: req.parsedParams.search } },
-			{ ...req.parsedParams }
+			{ score: { $meta: 'textScore' } }
 		)
+			.sort({ score: { $meta: 'textScore' } })
+			.limit(req.parsedParams.limit)
 
-		res.users = docs
-		res.pagination = pagination
+		res.pagination = {
+			...req.parsedParams,
+			sort: 'textScore',
+			total: req.parsedParams.limit
+		}
 
 		next()
 	} catch (e) {
@@ -32,7 +36,7 @@ export async function searchUsers(req, res, next) {
 export async function getMoviesOwn(req, res, next) {
 	try {
 		let { docs, ...pagination } = await Movie.paginate(
-			{ uploader: req.params.id },
+			{ ...req.parsedParams.filters, uploader: req.params.id },
 			req.parsedParams
 		)
 		res.movies = docs
@@ -48,7 +52,7 @@ export async function getMoviesOwn(req, res, next) {
 export async function getMoviesLiked(req, res, next) {
 	try {
 		let { docs, ...pagination } = await Like.paginate(
-			{ user: req.params.id },
+			{ ...req.parsedParams.filters, user: req.params.id },
 			req.parsedParams
 		)
 
@@ -65,7 +69,7 @@ export async function getMoviesLiked(req, res, next) {
 export async function getMoviesFollowed(req, res, next) {
 	try {
 		let { docs, ...pagination } = await FollowMovie.paginate(
-			{ user: req.params.id },
+			{ ...req.parsedParams.filters, user: req.params.id },
 			{
 				...req.parsedParams,
 				populate: [
@@ -90,7 +94,7 @@ export async function getMoviesFollowed(req, res, next) {
 export async function getGroupsOwn(req, res, next) {
 	try {
 		let { docs, ...pagination } = await Group.paginate(
-			{ creator: req.params.id },
+			{ ...req.parsedParams.filters, creator: req.params.id },
 			req.parsedParams
 		)
 
@@ -107,7 +111,11 @@ export async function getGroupsOwn(req, res, next) {
 export async function getGroupsStatus(req, res, next) {
 	try {
 		let { docs, ...pagination } = await Member.paginate(
-			{ user: req.params.id, status: req.params.status },
+			{
+				...req.parsedParams.filters,
+				user: req.params.id,
+				status: req.params.status
+			},
 			req.parsedParams
 		)
 
@@ -124,7 +132,7 @@ export async function getGroupsStatus(req, res, next) {
 export async function getFollowers(req, res, next) {
 	try {
 		let { docs, ...pagination } = await FollowUser.paginate(
-			{ follow: req.params.id },
+			{ ...req.parsedParams.filters, follow: req.params.id },
 			{
 				...req.parsedParams,
 				populate: [
@@ -149,7 +157,7 @@ export async function getFollowers(req, res, next) {
 export async function getFollowed(req, res, next) {
 	try {
 		let { docs, ...pagination } = await FollowUser.paginate(
-			{ user: req.params.id },
+			{ ...req.parsedParams.filters, user: req.params.id },
 			{
 				...req.parsedParams,
 				populate: [
@@ -186,7 +194,10 @@ export async function getUsersStats(req, res, next) {
 
 export async function getUsers(req, res, next) {
 	try {
-		let { docs, ...pagination } = await User.paginate({}, req.parsedParams)
+		let { docs, ...pagination } = await User.paginate(
+			{ ...req.parsedParams.filters },
+			req.parsedParams
+		)
 
 		res.users = docs
 		res.pagination = pagination

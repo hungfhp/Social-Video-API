@@ -18,13 +18,16 @@ export async function getLikesStats(req, res, next) {
 		next()
 	} catch (e) {
 		log(JSON.stringify(e), 'error-response.log')
-				return res.status(HTTPStatus.BAD_REQUEST).json(e)
+		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
 
 export async function getLikes(req, res, next) {
 	try {
-		let { docs, ...pagination } = await Like.paginate({}, req.parsedParams)
+		let { docs, ...pagination } = await Like.paginate(
+			{ ...req.parsedParams.filters },
+			req.parsedParams
+		)
 
 		res.likes = docs
 		res.pagination = pagination
@@ -32,7 +35,7 @@ export async function getLikes(req, res, next) {
 		next()
 	} catch (e) {
 		log(JSON.stringify(e), 'error-response.log')
-				return res.status(HTTPStatus.BAD_REQUEST).json(e)
+		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
 
@@ -43,7 +46,7 @@ export async function getLikeById(req, res, next) {
 		next()
 	} catch (e) {
 		log(JSON.stringify(e), 'error-response.log')
-				return res.status(HTTPStatus.BAD_REQUEST).json(e)
+		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
 
@@ -57,7 +60,7 @@ export async function createLike(req, res, next) {
 		next()
 	} catch (e) {
 		log(JSON.stringify(e), 'error-response.log')
-				return res.status(HTTPStatus.BAD_REQUEST).json(e)
+		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
 
@@ -74,7 +77,7 @@ export async function updateLike(req, res, next) {
 		next()
 	} catch (e) {
 		log(JSON.stringify(e), 'error-response.log')
-				return res.status(HTTPStatus.BAD_REQUEST).json(e)
+		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }
 
@@ -87,6 +90,6 @@ export async function deleteLike(req, res, next) {
 		next()
 	} catch (e) {
 		log(JSON.stringify(e), 'error-response.log')
-				return res.status(HTTPStatus.BAD_REQUEST).json(e)
+		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
 }

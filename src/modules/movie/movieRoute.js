@@ -10,15 +10,7 @@ import * as paramMiddleware from '../../middlewares/paramMiddleware'
 import * as ownMiddleware from '../../middlewares/ownMiddleware'
 import { accessControl } from '../../middlewares/roleMiddleware'
 import * as voiceoverController from '../voiceover/voiceoverController'
-
-/**
- * GET /items/stats => stats
- * GET /items => index
- * GET /items/:id => show
- * POST /items/ => create
- * PATCH/PUT /items/:id => update
- * DELETE /items/:id => remove
- */
+import * as recommendController from '../recommend/recommendController'
 
 // More router
 router
@@ -39,6 +31,7 @@ router
 		movieController.searchMovies,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
+				// data: res.data
 				data: res.movies,
 				pagination: res.pagination
 			})
@@ -69,18 +62,6 @@ router
 			})
 		}
 	)
-// .get(
-// 	'/upload',
-// 	accessControl('createOwn', 'movie'),
-// 	validate(movieValidation.upload),
-// 	movieController.getFollowerMovies,
-// 	function(req, res, next) {
-// 		return res.status(HTTPStatus.OK).json({
-// 			data: res.followers,
-// 			pagination: res.pagination
-// 		})
-// 	}
-// )
 
 //  Default router
 router

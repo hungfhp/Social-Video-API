@@ -12,7 +12,7 @@ import { log } from '../../utils/helper'
 export async function getFollowing(req, res, next) {
 	try {
 		let { docs, ...pagination } = await FollowMovie.paginate(
-			{ user: req.params.id },
+			{ ...req.parsedParams.filters, user: req.params.id },
 			{
 				...req.parsedParams,
 				populate: [
@@ -37,7 +37,7 @@ export async function getFollowing(req, res, next) {
 export async function getFollowers(req, res, next) {
 	try {
 		let { docs, ...pagination } = await FollowMovie.paginate(
-			{ movie: req.params.id },
+			{ ...req.parsedParams.filters, movie: req.params.id },
 			{
 				...req.parsedParams,
 				populate: [
@@ -75,7 +75,7 @@ export async function getFollowMoviesStats(req, res, next) {
 export async function getFollowMovies(req, res, next) {
 	try {
 		let { docs, ...pagination } = await FollowMovie.paginate(
-			{},
+			{ ...req.parsedParams.filters },
 			{
 				...req.parsedParams,
 				populate: [

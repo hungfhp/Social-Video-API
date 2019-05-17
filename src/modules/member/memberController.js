@@ -24,7 +24,10 @@ export async function getMembersStats(req, res, next) {
 
 export async function getMembers(req, res, next) {
 	try {
-		let { docs, ...pagination } = await Member.paginate({}, req.parsedParams)
+		let { docs, ...pagination } = await Member.paginate(
+			{ ...req.parsedParams.filters },
+			req.parsedParams
+		)
 
 		res.members = docs
 		res.pagination = pagination

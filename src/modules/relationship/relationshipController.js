@@ -100,7 +100,7 @@ export async function getRelationshipsStats(req, res, next) {
 export async function getRelationships(req, res, next) {
 	try {
 		let { docs, ...pagination } = await Relationship.paginate(
-			{},
+			{ ...req.parsedParams.filters },
 			req.parsedParams
 		)
 

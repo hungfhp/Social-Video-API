@@ -3,14 +3,14 @@ export async function parseParamList(req, res, next) {
 	const page = parseInt(req.query.page, 0) || 1
 	const offset = parseInt(req.query.offset, 0) || 0
 	const search = String(req.query.search || '')
-	const filter = JSON.parse(req.query.filter || '{}')
+	const filters = JSON.parse(req.query.filters || '{}')
 	const sort = req.query.sort || '-createdAt'
 
 	req.parsedParams = {
 		page,
 		limit,
 		search,
-		filter,
+		filters,
 		sort
 	}
 

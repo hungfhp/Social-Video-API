@@ -44,7 +44,10 @@ export async function getSubsSuggest(req, res, next) {
 
 export async function getSubs(req, res, next) {
 	try {
-		let { docs, ...pagination } = await Sub.paginate({}, req.parsedParams)
+		let { docs, ...pagination } = await Sub.paginate(
+			{ ...req.parsedParams.filters },
+			req.parsedParams
+		)
 
 		res.subs = docs
 		res.pagination = pagination

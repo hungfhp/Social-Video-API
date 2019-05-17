@@ -15,13 +15,18 @@ var movieSchema = mongoose.model('Movie').schema
 
 export async function searchMovies(req, res, next) {
 	try {
-		let { docs, ...pagination } = await Movie.paginate(
-			{ $text: { $search: req.parsedParams.search }, share: 'public' },
-			{ ...req.parsedParams }
+		res.movies = await Movie.find(
+			{ $text: { $search: req.parsedParams.search } },
+			{ score: { $meta: 'textScore' } }
 		)
+			.sort({ score: { $meta: 'textScore' } })
+			.limit(req.parsedParams.limit)
 
-		res.movies = docs
-		res.pagination = pagination
+		res.pagination = {
+			...req.parsedParams,
+			sort: 'textScore',
+			total: req.parsedParams.limit
+		}
 
 		next()
 	} catch (e) {
@@ -55,7 +60,7 @@ export async function getSuggestMovies(req, res, next) {
 		let sort = suggests[Math.floor(Math.random() * suggests.length)]
 
 		let { docs, ...pagination } = await Movie.paginate(
-			{ share: 'public' },
+			{ ...req.parsedParams.filters, share: 'public' },
 			{ ...req.parsedParams, sort: sort }
 		)
 
@@ -72,7 +77,7 @@ export async function getSuggestMovies(req, res, next) {
 export async function getFollowerMovies(req, res, next) {
 	try {
 		let { docs, ...pagination } = await FollowMovie.paginate(
-			{ movie: req.params.id },
+			{ ...req.parsedParams.filters, movie: req.params.id },
 			{
 				...req.parsedParams,
 				populate: [
@@ -110,7 +115,7 @@ export async function getMoviesStats(req, res, next) {
 export async function getMovies(req, res, next) {
 	try {
 		let { docs, ...pagination } = await Movie.paginate(
-			{ share: 'public' },
+			{ ...req.parsedParams.filters, share: 'public' },
 			req.parsedParams
 		)
 

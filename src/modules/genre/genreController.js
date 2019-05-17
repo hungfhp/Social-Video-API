@@ -38,7 +38,10 @@ export async function getGenresStats(req, res, next) {
 
 export async function getGenres(req, res, next) {
 	try {
-		let { docs, ...pagination } = await Genre.paginate({}, req.parsedParams)
+		let { docs, ...pagination } = await Genre.paginate(
+			{ ...req.parsedParams.filters },
+			req.parsedParams
+		)
 
 		res.genres = docs
 		res.pagination = pagination

@@ -38,7 +38,10 @@ export async function getDirectorsStats(req, res, next) {
 
 export async function getDirectors(req, res, next) {
 	try {
-		let { docs, ...pagination } = await Director.paginate({}, req.parsedParams)
+		let { docs, ...pagination } = await Director.paginate(
+			{ ...req.parsedParams.filters },
+			req.parsedParams
+		)
 
 		res.directors = docs
 		res.pagination = pagination

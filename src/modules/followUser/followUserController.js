@@ -12,7 +12,7 @@ import { log } from '../../utils/helper'
 export async function getFollowing(req, res, next) {
 	try {
 		let { docs, ...pagination } = await FollowUser.paginate(
-			{ user: req.params.id },
+			{ ...req.parsedParams.filters, user: req.params.id },
 			{
 				...req.parsedParams,
 				populate: [
@@ -37,7 +37,7 @@ export async function getFollowing(req, res, next) {
 export async function getFollowers(req, res, next) {
 	try {
 		let { docs, ...pagination } = await FollowUser.paginate(
-			{ follow: req.params.id },
+			{ ...req.parsedParams.filters, follow: req.params.id },
 			{
 				...req.parsedParams,
 				populate: [
@@ -75,7 +75,7 @@ export async function getFollowUsersStats(req, res, next) {
 export async function getFollowUsers(req, res, next) {
 	try {
 		let { docs, ...pagination } = await FollowUser.paginate(
-			{},
+			{ ...req.parsedParams.filters },
 			req.parsedParams
 		)
 

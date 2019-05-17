@@ -7,7 +7,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "clean:logs": "rimraf logs/*",
-    "build": "npm run clean  && webpack -w",
+    "build": "webpack -w",
     "dev": "cross-env NODE_ENV=development nodemon dist/index.bundle.js",
     "test": "cross-env NODE_ENV=test nodemon dist/index.bundle.js",
     "prod": "cross-env NODE_ENV=production nodemon dist/index.bundle.js",
