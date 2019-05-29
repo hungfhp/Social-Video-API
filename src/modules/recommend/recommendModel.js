@@ -77,7 +77,9 @@ recommendSchema.statics = {
 		let foundIndex = await rcd.indexExistHiroty(movie._id)
 
 		if (foundIndex > -1) {
-			rcd.histories[foundIndex].score = score
+      if (score !==3 ) {
+        rcd.histories[foundIndex].score = score
+      }
 		} else {
 			rcd.histories.push({ movie: movie._id, score })
 		}

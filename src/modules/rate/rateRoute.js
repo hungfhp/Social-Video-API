@@ -7,6 +7,10 @@ import * as rateController from './rateController'
 import rateValidation from './rateValidation'
 import * as authService from '../../services/authService'
 import * as paramService from '../../services/paramService'
+import * as paramMiddleware from '../../middlewares/paramMiddleware'
+import { accessControl } from '../../middlewares/roleMiddleware'
+import { existRate } from '../../middlewares/existMiddleware'
+import * as recommendController from '../recommend/recommendController'
 
 const router = new Router()
 
@@ -57,9 +61,17 @@ router
 	)
 	.post(
 		'/',
-		authService.authJwt,
+		accessControl('createOwn', 'rate'),
 		validate(rateValidation.create),
-		rateController.createRate,
+		existRate,
+    rateController.createRate,
+    function(req, res, next) {
+      req.body.movieId = res.rate && res.rate.movie
+      req.body.score = res.rate && res.rate.value
+      console.log(req.body)
+      next()
+    },
+    recommendController.addHistory,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
 				data: res.rate

@@ -8,6 +8,7 @@ import likeValidation from './likeValidation'
 import * as paramMiddleware from '../../middlewares/paramMiddleware'
 import { accessControl } from '../../middlewares/roleMiddleware'
 import { existLike } from '../../middlewares/existMiddleware'
+import * as recommendController from '../recommend/recommendController'
 
 const router = new Router()
 
@@ -60,8 +61,14 @@ router
 		'/',
 		accessControl('createOwn', 'like'),
 		validate(likeValidation.create),
-		existLike,
+    existLike,
 		likeController.createLike,
+		function(req, res, next) {
+      req.body.movieId = res.like && res.like.movie
+      req.body.score = 4
+      next()
+    },
+    recommendController.addHistory,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
 				data: res.like

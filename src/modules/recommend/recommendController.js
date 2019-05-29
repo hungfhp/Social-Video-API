@@ -7,10 +7,14 @@ import { log } from '../../utils/helper'
 
 export async function addHistory(req, res, next) {
 	try {
-		if (!req.user._id) {
+		if (!req.user._id || !req.body.movieId) {
 			next()
 		}
 		let moive = await Movie.findById(req.body.movieId)
+		if (!moive) {
+			next()
+    }      
+
 		Recommend.addHistory(req.user, moive, req.body.score)
 
 		next()

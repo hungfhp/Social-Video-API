@@ -11,11 +11,25 @@ import * as pluginService from '../../services/pluginService'
 
 let rateSchema = new Schema(
 	{
-		rateName: {
-			type: String,
-			required: [true, 'rateName is required!'],
-			trim: true,
-			unique: true
+		movie: {
+			type: ObjectId,
+			required: [true, 'Movie is required!'],
+			ref: 'Movie',
+			trim: true
+		},
+		user: {
+			type: ObjectId,
+			required: [true, 'User is required!'],
+			ref: 'User',
+			trim: true
+		},
+		value: {
+			type: Number,
+      min: 1,
+      max: 5,
+      required: [true, 'Rate value is required!'],
+			ref: 'User',
+			trim: true
 		}
 	},
 	{

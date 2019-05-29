@@ -55,7 +55,7 @@ router
 		followUserController.getFollowUsersStats,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				followUsersStats: res.followUsersStats
+				data: res.followUsersStats
 			})
 		}
 	)
@@ -67,7 +67,7 @@ router
 		followUserController.getFollowUsers,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				followUsers: res.followUsers,
+				data: res.followUsers,
 				pagination: res.pagination
 			})
 		}

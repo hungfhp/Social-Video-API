@@ -94,7 +94,13 @@ router
 		accessControl('readAny', 'movie'),
 		validate(movieValidation.show),
 		movieController.getMovieById,
-		voiceoverController.getVoiceoversByMovie,
+    voiceoverController.getVoiceoversByMovie,
+		function(req, res, next) {
+      req.body.movieId = res.movie && res.movie._doc && res.movie._doc._id
+      req.body.score = 3
+      next()
+    },
+    recommendController.addHistory,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
 				data: { ...res.movie._doc, voiceovers: res.voiceovers }

@@ -52,7 +52,7 @@ export async function getRateById(req, res, next) {
 
 export async function createRate(req, res, next) {
 	try {
-		res.rate = await Rate.create(req.body)
+		res.rate = await Rate.create({...req.body, user: req.user})
 
 		next()
 	} catch (e) {

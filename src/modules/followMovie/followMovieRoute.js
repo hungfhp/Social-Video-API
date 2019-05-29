@@ -8,6 +8,7 @@ import followMovieValidation from './followMovieValidation'
 import * as paramMiddleware from '../../middlewares/paramMiddleware'
 import { accessControl } from '../../middlewares/roleMiddleware'
 import { existFollowMovie } from '../../middlewares/existMiddleware'
+import * as recommendController from '../recommend/recommendController'
 
 const router = new Router()
 
@@ -87,7 +88,13 @@ router
 		accessControl('createOwn', 'followMovie'),
 		validate(followMovieValidation.create),
 		existFollowMovie,
-		followMovieController.createFollowMovie,
+    followMovieController.createFollowMovie,
+		function(req, res, next) {
+      req.body.movieId = res.followMovie && res.followMovie.movie
+      req.body.score = 4
+      next()
+    },
+    recommendController.addHistory,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
 				data: res.followMovie

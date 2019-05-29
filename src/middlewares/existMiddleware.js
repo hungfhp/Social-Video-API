@@ -1,6 +1,8 @@
 import HTTPStatus from 'http-status'
 import FollowMovie from '../modules/followMovie/followMovieModel'
+import FollowUser from '../modules/followUser/followUserModel'
 import Like from '../modules/like/likeModel'
+import Rate from '../modules/rate/rateModel'
 import Member from '../modules/member/memberModel'
 import { log } from '../utils/helper'
 
@@ -23,7 +25,7 @@ export async function existFollowMovie(req, res, next) {
 
 export async function existFollowUser(req, res, next) {
 	try {
-		res.followUser = await FollowMovie.findOne({ ...req.body, user: req.user })
+		res.followUser = await FollowUser.findOne({ ...req.body, user: req.user })
 
 		if (res.followUser) {
 			return res.status(HTTPStatus.OK).json({
@@ -45,6 +47,23 @@ export async function existLike(req, res, next) {
 		if (res.like) {
 			return res.status(HTTPStatus.OK).json({
 				data: res.like
+			})
+		}
+
+		next()
+	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
+		return res.status(HTTPStatus.BAD_REQUEST).json(e)
+	}
+}
+
+export async function existRate(req, res, next) {
+	try {
+		res.rate = await Rate.findOne({ ...req.body, user: req.user })
+
+		if (res.rate) {
+			return res.status(HTTPStatus.OK).json({
+				data: res.rate
 			})
 		}
 

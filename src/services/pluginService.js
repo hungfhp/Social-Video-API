@@ -3,35 +3,35 @@ import slugify from 'slugify'
 
 export function logPost(schema, options) {
 	schema.post('init', function(doc) {
-		console.log(
-			`${options.schemaName || 'Model'}: ${doc.name ||
-				doc.title ||
-				doc._id} has been initialized`
-		)
+		// console.log(
+		// 	`${options.schemaName || 'Model'}: ${doc.name ||
+		// 		doc.title ||
+		// 		doc._id} has been initialized`
+		// )
 	})
 
 	schema.post('validate', function(doc) {
-		console.log(
-			`${options.schemaName || 'Model'}: ${doc.name ||
-				doc.title ||
-				doc._id} has been validated`
-		)
+		// console.log(
+		// 	`${options.schemaName || 'Model'}: ${doc.name ||
+		// 		doc.title ||
+		// 		doc._id} has been validated`
+		// )
 	})
 
 	schema.post('save', function(doc) {
-		console.log(
-			`${options.schemaName || 'Model'}: ${doc.name ||
-				doc.title ||
-				doc._id} has been saved`
-		)
+		// console.log(
+		// 	`${options.schemaName || 'Model'}: ${doc.name ||
+		// 		doc.title ||
+		// 		doc._id} has been saved`
+		// )
 	})
 
 	schema.post('remove', function(doc) {
-		console.log(
-			`${options.schemaName || 'Model'}: ${doc.name ||
-				doc.title ||
-				doc._id} has been removed`
-		)
+		// console.log(
+		// 	`${options.schemaName || 'Model'}: ${doc.name ||
+		// 		doc.title ||
+		// 		doc._id} has been removed`
+		// )
 	})
 }
 

@@ -103,7 +103,6 @@ export async function uploadVoiceover(req, res, next) {
 export async function callbackSynthesis(req, res, next) {
 	try {
 		log(JSON.stringify(req.body), 'voiceover-callback.log')
-
 		let synthesised = req.body
 
 		let voiceover = await Voiceover.findOne({
@@ -136,6 +135,7 @@ export async function callbackSynthesis(req, res, next) {
 
 		next()
 	} catch (e) {
+		log(JSON.stringify(req.body), 'voiceover-callback.log')
 		log(JSON.stringify(e), 'error-response.log')
 		return res.status(HTTPStatus.BAD_REQUEST).json(e)
 	}
