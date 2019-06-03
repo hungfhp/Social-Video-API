@@ -40,6 +40,58 @@ export async function acceptRequest(req, res, next) {
 	}
 }
 
+export async function rejectRequest(req, res, next) {
+	try {
+		let request = {
+			_id: req.body.target
+		}
+		res.relationship = await Relationship.rejectRequest(
+			req.user, // user
+			request
+		)
+
+		next()
+	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
+		return res.status(HTTPStatus.BAD_REQUEST).json(e)
+	}
+}
+
+export async function removeFriend(req, res, next) {
+	try {
+		let target = {
+			_id: req.params.targetId
+		}
+		res.relationship = await Relationship.removeFriend(
+			req.user, // user
+			target
+		)
+
+		next()
+	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
+		return res.status(HTTPStatus.BAD_REQUEST).json(e)
+	}
+}
+
+export async function checkStatus(req, res, next) {
+	try {
+		let target = {
+			_id: req.params.targetId
+		}
+		res.relationshipStatus = {
+			isRequester: await Relationship.isRequest(req.user, target),
+			isFriend: await Relationship.isFriend(req.user, target),
+			isRequested: await Relationship.isRequest(target, req.user)
+		}
+
+		next()
+	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
+		return res.status(HTTPStatus.BAD_REQUEST).json(e)
+	}
+}
+
 export async function getRequestsByUserId(req, res, next) {
 	try {
 		let rs = await Relationship.findOne({

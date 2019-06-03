@@ -52,17 +52,12 @@ relationshipSchema.statics = {
 		return rs ? rs : await this.create(condition)
 	},
 	async isRequest(user, request) {
-		let rs = await this.findOne({ user }).populate({
-			path: 'requests',
-			match: { _id: request }
-		})
-		return rs.requests && rs.requests.length ? true : false
+		let rs = await this.findOneOrCreate({ user })
+		return rs.isRequest(request)
 	},
 	async isFriend(user, friend) {
-		return await this.findOne({ user }).populate({
-			path: 'friends',
-			match: friend
-		})
+		let rs = await this.findOneOrCreate({ user })
+		return rs.isFriend(friend)
 	},
 	async createRequest(user, request) {
 		let rs = await this.findOneOrCreate({ user })
@@ -79,14 +74,14 @@ relationshipSchema.statics = {
 	},
 	async rejectRequest(user, request) {
 		let userRS = await this.findOneOrCreate({ user })
-		userRS.removeRequest(request)
-		return userRS
+		return await userRS.removeRequest(request)
 	},
 	async removeFriend(user, friend) {
-		let userResource = this.findOne({ user })
-		let friendResource = this.findOne({ user: friend })
+		let userResource = await this.findOneOrCreate({ user })
+		let friendResource = await this.findOneOrCreate({ user: friend })
+
 		friendResource.removeFriend(user)
-		return userResource.removeFriend(friend)
+		return await userResource.removeFriend(friend)
 	}
 }
 

@@ -89,6 +89,7 @@ let userSchema = new Schema(
 		},
 		uploadedCount: {
 			type: Number,
+			default: 0,
 			trim: true
 		}
 	},
@@ -153,7 +154,8 @@ userSchema.methods = {
 			'gender',
 			'role',
 			'avatarUrl',
-			'provider'
+			'provider',
+			'uploadedCount'
 		])
 	},
 	toAuthJSON() {

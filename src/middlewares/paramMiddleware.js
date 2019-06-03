@@ -11,8 +11,8 @@ export async function parseParamList(req, res, next) {
 		page,
 		limit,
 		search,
-    filters,
-    populate,
+		filters,
+		populate,
 		sort
 	}
 

@@ -42,6 +42,18 @@ router
 		}
 	)
 	.get(
+		'/suggests',
+		accessControl('readAny', 'user'),
+		paramMiddleware.parseParamList,
+		userController.suggestUsers,
+		function(req, res, next) {
+			return res.status(HTTPStatus.OK).json({
+				data: res.users,
+				pagination: res.pagination
+			})
+		}
+	)
+	.get(
 		'/:id/movies/own',
 		accessControl('readOwn', 'movie'),
 		paramMiddleware.parseParamList,

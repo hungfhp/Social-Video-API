@@ -43,28 +43,37 @@ router
 			})
 		}
 	)
-// 	.put(
-// 		'/reject',
-// 		accessControl('updateOwn', 'relationship'),
-// 		validate(relationshipValidation.requests),
-// 		relationshipController.rejectRequest,
-// 		function(req, res, next) {
-// 			return res.status(HTTPStatus.OK).json({
-// 				data: res.relationship
-// 			})
-// 		}
-// 	)
-// 	.delete(
-// 		'/',
-// 		accessControl('Own', 'relationship'),
-// 		validate(relationshipValidation.remove),
-// 		relationshipController.removeFriend,
-// 		function(req, res, next) {
-// 			return res.status(HTTPStatus.OK).json({
-// 				data: res.relationship
-// 			})
-// 		}
-// 	)
+	.put(
+		'/reject',
+		accessControl('updateOwn', 'relationship'),
+		validate(relationshipValidation.requests),
+		relationshipController.rejectRequest,
+		function(req, res, next) {
+			return res.status(HTTPStatus.OK).json({
+				data: res.relationship
+			})
+		}
+	)
+	.get(
+		'/check/:targetId',
+		accessControl('updateOwn', 'relationship'),
+		relationshipController.checkStatus,
+		function(req, res, next) {
+			return res.status(HTTPStatus.OK).json({
+				data: res.relationshipStatus
+			})
+		}
+	)
+	.delete(
+		'/remove/:targetId',
+		accessControl('updateOwn', 'relationship'),
+		relationshipController.removeFriend,
+		function(req, res, next) {
+			return res.status(HTTPStatus.OK).json({
+				data: res.relationship
+			})
+		}
+	)
 
 // Default Rest router
 router
@@ -91,46 +100,46 @@ router
 			})
 		}
 	)
-	.get(
-		'/:id',
-		validate(relationshipValidation.show),
-		relationshipController.getRelationshipById,
-		function(req, res, next) {
-			return res.status(HTTPStatus.OK).json({
-				data: res.relationship
-			})
-		}
-	)
-	.post(
-		'/',
-		accessControl('createOwn', 'movie'),
-		validate(relationshipValidation.create),
-		relationshipController.createRelationship,
-		function(req, res, next) {
-			return res.status(HTTPStatus.OK).json({
-				data: res.relationship
-			})
-		}
-	)
-	.put(
-		'/:id',
-		accessControl('updateOwn', 'movie'),
-		validate(relationshipValidation.update),
-		relationshipController.updateRelationship,
-		function(req, res, next) {
-			return res.status(HTTPStatus.OK).json({
-				data: res.relationship
-			})
-		}
-	)
-	.delete(
-		'/:id',
-		accessControl('deleteOwn', 'movie'),
-		validate(relationshipValidation.delete),
-		relationshipController.deleteRelationship,
-		function(req, res, next) {
-			return res.sendStatus(HTTPStatus.OK)
-		}
-	)
+// .get(
+// 	'/:id',
+// 	validate(relationshipValidation.show),
+// 	relationshipController.getRelationshipById,
+// 	function(req, res, next) {
+// 		return res.status(HTTPStatus.OK).json({
+// 			data: res.relationship
+// 		})
+// 	}
+// )
+// .post(
+// 	'/',
+// 	accessControl('createOwn', 'movie'),
+// 	validate(relationshipValidation.create),
+// 	relationshipController.createRelationship,
+// 	function(req, res, next) {
+// 		return res.status(HTTPStatus.OK).json({
+// 			data: res.relationship
+// 		})
+// 	}
+// )
+// .put(
+// 	'/:id',
+// 	accessControl('updateOwn', 'movie'),
+// 	validate(relationshipValidation.update),
+// 	relationshipController.updateRelationship,
+// 	function(req, res, next) {
+// 		return res.status(HTTPStatus.OK).json({
+// 			data: res.relationship
+// 		})
+// 	}
+// )
+// .delete(
+// 	'/:id',
+// 	accessControl('deleteOwn', 'movie'),
+// 	validate(relationshipValidation.delete),
+// 	relationshipController.deleteRelationship,
+// 	function(req, res, next) {
+// 		return res.sendStatus(HTTPStatus.OK)
+// 	}
+// )
 
 export default router

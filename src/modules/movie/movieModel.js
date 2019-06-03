@@ -248,6 +248,26 @@ movieSchema.statics = {
 	// favorites dec
 	decFavoritesCount(movieId) {
 		return this.findByIdAndUpdate(movieId, { $inc: { favoritesCount: -1 } })
+	},
+
+	// likes inc
+	incLikesCount(movieId) {
+		return this.findByIdAndUpdate(movieId, { $inc: { likesCount: 1 } })
+	},
+
+	// likes dec
+	decLikesCount(movieId) {
+		return this.findByIdAndUpdate(movieId, { $inc: { likesCount: -1 } })
+	},
+
+	// rates inc
+	incRatesCount(movieId) {
+		return this.findByIdAndUpdate(movieId, { $inc: { ratesCount: 1 } })
+	},
+
+	// ratesAvg update
+	updateRatesAvg(movieId, ratesAvg) {
+		return this.findByIdAndUpdate(movieId, { ratesAvg: ratesAvg })
 	}
 }
 

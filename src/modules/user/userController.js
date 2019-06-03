@@ -33,6 +33,38 @@ export async function searchUsers(req, res, next) {
 	}
 }
 
+export async function suggestUsers(req, res, next) {
+	try {
+		let suggests = [
+			{ uploadedCount: 'desc' },
+			{ uploadedCount: 'desc' },
+			{ uploadedCount: 'desc' },
+			{ uploadedCount: 'desc' },
+			{ uploadedCount: 'desc' },
+			{ uploadedCount: 'desc' },
+			{ createdAt: 'desc' }
+		]
+		let sort = suggests[Math.floor(Math.random() * suggests.length)]
+
+		let { docs, ...pagination } = await User.paginate(
+			{ ...req.parsedParams.filters },
+			{
+				...req.parsedParams,
+				sort: sort,
+				offset: Math.floor(Math.random() * 10)
+			}
+		)
+
+		res.users = docs
+		res.pagination = pagination
+
+		next()
+	} catch (e) {
+		log(JSON.stringify(e), 'error-response.log')
+		return res.status(HTTPStatus.BAD_REQUEST).json(e)
+	}
+}
+
 export async function getMoviesOwn(req, res, next) {
 	try {
 		let { docs, ...pagination } = await Movie.paginate(
