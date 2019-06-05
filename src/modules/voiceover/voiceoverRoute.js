@@ -25,7 +25,6 @@ const router = new Router()
 router
 	.get(
 		'/check/:requestId',
-		// accessControl('createOwn', 'voiceover'),
 		validate(voiceoverValidation.checkSynthesis),
 		voiceoverController.checkSynthesis,
 		function(req, res, next) {
@@ -34,14 +33,13 @@ router
 			})
 		}
 	)
-	.post(
-		'/upload',
-		// accessControl('createOwn', 'voiceover'),
-		// validate(voiceoverValidation.upload),
-		voiceoverController.uploadVoiceover,
+	.get(
+		'/rerequest/:requestId',
+		validate(voiceoverValidation.checkSynthesis),
+		voiceoverController.reSynthesis,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
-				data: res.file
+				data: res.voiceover
 			})
 		}
 	)
@@ -94,7 +92,7 @@ router
 	.post(
 		'/',
 		validate(voiceoverValidation.create),
-		// voiceoverController.createVoiceover,
+		voiceoverController.createVoiceover,
 		function(req, res, next) {
 			return res.status(HTTPStatus.OK).json({
 				data: res.voiceover

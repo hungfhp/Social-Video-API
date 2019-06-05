@@ -23,28 +23,32 @@ export async function checkSynthesis(req, res, next) {
 			req.params.requestId
 		)
 
-		let voiceover = await Voiceover.find({
+		let voiceover = await Voiceover.findOne({
 			requestId: voiceoverChecked.requestId
 		})
+		voiceover = (voiceover && voiceover._doc) || {}
 
 		if (
+			voiceover.status &&
 			voiceover.status !== 'done' &&
 			voiceoverChecked &&
 			voiceoverChecked.status == 'done'
 		) {
 			voiceover = Object.assign(voiceover, voiceoverChecked)
-			await voiceover.save()
-			res.voiceover = voiceover
+			await fileService.uploadFileByUrl(
+				'/voiceovers',
+				'true',
+				voiceoverChecked.downloadUrl,
+				async uploadedFile => {
+					voiceover.embedUrl = uploadedFile.url
+					await voiceover.save()
+					res.voiceover = { ...voiceover, vbee: voiceoverChecked }
+				}
+			)
 		} else {
-			res.voiceover = voiceoverChecked
+			res.voiceover = { ...voiceover, vbee: voiceoverChecked }
 		}
 
-		let file = await fileService.uploadFileByUrl(
-			'test',
-			false,
-			'https://i.vimeocdn.com/portrait/25122243_300x300'
-		)
-		// console.log(file)
 		next()
 	} catch (e) {
 		log(JSON.stringify(e), 'error-response.log')
@@ -52,47 +56,36 @@ export async function checkSynthesis(req, res, next) {
 	}
 }
 
-export async function uploadVoiceover(req, res, next) {
+export async function reSynthesis(req, res, next) {
 	try {
-		var form = new multiparty.Form()
+		let vbee = await synthesisService.requestResynthesis(req.params.requestId)
 
-		// await form.parse(req, async function(err, fields, files) {
-		// 	// 	res.writeHead(200, { 'content-type': 'text/plain' })
-		// 	// 	res.write('received upload:\n\n')
-		// 	// 	res.end(util.inspect({ fields: fields, files: files }))
-		// 	console.log(files.file)
-		// await request.post(
-		// 	{
-		// 		url: 'https://upload.vbee.vn/api/v1/upload/file',
-		// 		headers: {
-		// 			authorization: cons.UPLOAD_VBEE_TOKEN
-		// 		},
-		// 		formData: {
-		// 			path: '/test',
-		// 			overwrite: 'false',
-		// 			file: request(
-		// 				'https://raw.githubusercontent.com/svenhornberg/pipeupload/master/LICENSE'
-		// 			)
-		// 		}
-		// 	},
-		// 	(error, response, body) => {
-		// 		console.error('error:', error) // Print the error if one occurred
-		// 		console.log('statusCode:', response && response.statusCode) // Print the response status code if a response was received
-		// 		console.log('body:', body) // Prin
-		// 		res.file = JSON.parse(body)
-		// 		next()
-		// 	}
-		// )
-		// fileService.uploadFileByUrl(
-		// 	'test',
-		// 	'false',
-		// 	'https://raw.githubusercontent.com/svenhornberg/pipeupload/master/LICENSE',
-		// 	function(uploadedFile) {
-		// 		console.log(uploadedFile)
-		// 	}
-		// )
-		// console.log('object')
+		const hour = 60 * 60 * 1000
+		setTimeout(function() {
+			systhesisService.callbackSynthesis(req.params.requestId)
+		}, 1 * hour)
+		setTimeout(function() {
+			systhesisService.callbackSynthesis(req.params.requestId)
+		}, 2 * hour)
+		setTimeout(function() {
+			systhesisService.callbackSynthesis(req.params.requestId)
+		}, 3 * hour)
+		setTimeout(function() {
+			systhesisService.callbackSynthesis(req.params.requestId)
+		}, 4 * hour)
+		setTimeout(function() {
+			systhesisService.callbackSynthesis(req.params.requestId)
+		}, 6 * hour)
+		setTimeout(function() {
+			systhesisService.callbackSynthesis(req.params.requestId)
+		}, 8 * hour)
 
+		let voiceover = await Voiceover.findOne({
+			requestId: req.params.requestId
+		})
+		voiceover = (voiceover && voiceover._doc) || {}
+
+		res.voiceover = { ...voiceover, vbee: vbee }
 		next()
 	} catch (e) {
 		log(JSON.stringify(e), 'error-response.log')
@@ -166,15 +159,14 @@ export async function getVoiceoversByMovie(req, res, next) {
 }
 
 export async function getVoiceovers(req, res, next) {
-	const limit = parseInt(req.query.limit, 0)
-	const skip = parseInt(req.query.skip, 0)
-
 	try {
-		res.voiceovers = await Voiceover.find({
-			// limit,
-			// skip,
-			...req.query
-		})
+		let { docs, ...pagination } = await Voiceover.paginate(
+			{ ...req.parsedParams.filters },
+			{ ...req.parsedParams }
+		)
+
+		res.voiceovers = docs
+		res.pagination = pagination
 
 		next()
 	} catch (e) {
@@ -202,10 +194,31 @@ export async function createVoiceover(req, res, next) {
 			req.body.voice || 'hn_male_xuantin_vdts_48k-hsmm'
 		)
 
+		const hour = 60 * 60 * 1000
+		setTimeout(function() {
+			systhesisService.callbackSynthesis(requestSysthesis.requestId)
+		}, 1 * hour)
+		setTimeout(function() {
+			systhesisService.callbackSynthesis(requestSysthesis.requestId)
+		}, 2 * hour)
+		setTimeout(function() {
+			systhesisService.callbackSynthesis(requestSysthesis.requestId)
+		}, 3 * hour)
+		setTimeout(function() {
+			systhesisService.callbackSynthesis(requestSysthesis.requestId)
+		}, 4 * hour)
+		setTimeout(function() {
+			systhesisService.callbackSynthesis(requestSysthesis.requestId)
+		}, 6 * hour)
+		setTimeout(function() {
+			systhesisService.callbackSynthesis(requestSysthesis.requestId)
+		}, 8 * hour)
+
 		res.voiceover = await Voiceover.create({
 			requestId: requestSysthesis.requestId,
 			movie,
-			uploader: req.user || ''
+			uploader: req.user || '',
+			name: req.body.name
 		})
 		next()
 	} catch (e) {

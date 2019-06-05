@@ -48,6 +48,11 @@ let voiceoverSchema = new Schema(
 			ref: 'User',
 			required: [true, 'Uploader is required!'],
 			trim: true
+		},
+		name: {
+			type: String,
+			trim: true,
+			default: 'Giọng'
 		}
 	},
 	{

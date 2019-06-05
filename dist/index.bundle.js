@@ -2360,7 +2360,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 exports.checkSynthesis = checkSynthesis;
-exports.uploadVoiceover = uploadVoiceover;
+exports.reSynthesis = reSynthesis;
 exports.callbackSynthesis = callbackSynthesis;
 exports.getVoiceoversStats = getVoiceoversStats;
 exports.getVoiceoversByMovie = getVoiceoversByMovie;
@@ -2418,30 +2418,34 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; } /* eslint-disable no-unused-vars */
+
+
 /**
  * @group voiceovers - Operations about voiceovers
  *
  */
 
-/* eslint-disable no-unused-vars */
 async function checkSynthesis(req, res, next) {
 	try {
 		let voiceoverChecked = await synthesisService.checkSynthesis(req.params.requestId);
 
-		let voiceover = await _voiceoverModel2.default.find({
+		let voiceover = await _voiceoverModel2.default.findOne({
 			requestId: voiceoverChecked.requestId
 		});
+		voiceover = voiceover && voiceover._doc || {};
 
-		if (voiceover.status !== 'done' && voiceoverChecked && voiceoverChecked.status == 'done') {
+		if (voiceover.status && voiceover.status !== 'done' && voiceoverChecked && voiceoverChecked.status == 'done') {
 			voiceover = Object.assign(voiceover, voiceoverChecked);
-			await voiceover.save();
-			res.voiceover = voiceover;
+			await fileService.uploadFileByUrl('/voiceovers', 'true', voiceoverChecked.downloadUrl, async uploadedFile => {
+				voiceover.embedUrl = uploadedFile.url;
+				await voiceover.save();
+				res.voiceover = Object.assign({}, voiceover, { vbee: voiceoverChecked });
+			});
 		} else {
-			res.voiceover = voiceoverChecked;
+			res.voiceover = Object.assign({}, voiceover, { vbee: voiceoverChecked });
 		}
 
-		let file = await fileService.uploadFileByUrl('test', false, 'https://i.vimeocdn.com/portrait/25122243_300x300');
-		// console.log(file)
 		next();
 	} catch (e) {
 		(0, _helper.log)(JSON.stringify(e), 'error-response.log');
@@ -2449,47 +2453,36 @@ async function checkSynthesis(req, res, next) {
 	}
 }
 
-async function uploadVoiceover(req, res, next) {
+async function reSynthesis(req, res, next) {
 	try {
-		var form = new _multiparty2.default.Form();
+		let vbee = await synthesisService.requestResynthesis(req.params.requestId);
 
-		// await form.parse(req, async function(err, fields, files) {
-		// 	// 	res.writeHead(200, { 'content-type': 'text/plain' })
-		// 	// 	res.write('received upload:\n\n')
-		// 	// 	res.end(util.inspect({ fields: fields, files: files }))
-		// 	console.log(files.file)
-		// await request.post(
-		// 	{
-		// 		url: 'https://upload.vbee.vn/api/v1/upload/file',
-		// 		headers: {
-		// 			authorization: cons.UPLOAD_VBEE_TOKEN
-		// 		},
-		// 		formData: {
-		// 			path: '/test',
-		// 			overwrite: 'false',
-		// 			file: request(
-		// 				'https://raw.githubusercontent.com/svenhornberg/pipeupload/master/LICENSE'
-		// 			)
-		// 		}
-		// 	},
-		// 	(error, response, body) => {
-		// 		console.error('error:', error) // Print the error if one occurred
-		// 		console.log('statusCode:', response && response.statusCode) // Print the response status code if a response was received
-		// 		console.log('body:', body) // Prin
-		// 		res.file = JSON.parse(body)
-		// 		next()
-		// 	}
-		// )
-		// fileService.uploadFileByUrl(
-		// 	'test',
-		// 	'false',
-		// 	'https://raw.githubusercontent.com/svenhornberg/pipeupload/master/LICENSE',
-		// 	function(uploadedFile) {
-		// 		console.log(uploadedFile)
-		// 	}
-		// )
-		// console.log('object')
+		const hour = 60 * 60 * 1000;
+		setTimeout(function () {
+			systhesisService.callbackSynthesis(req.params.requestId);
+		}, 1 * hour);
+		setTimeout(function () {
+			systhesisService.callbackSynthesis(req.params.requestId);
+		}, 2 * hour);
+		setTimeout(function () {
+			systhesisService.callbackSynthesis(req.params.requestId);
+		}, 3 * hour);
+		setTimeout(function () {
+			systhesisService.callbackSynthesis(req.params.requestId);
+		}, 4 * hour);
+		setTimeout(function () {
+			systhesisService.callbackSynthesis(req.params.requestId);
+		}, 6 * hour);
+		setTimeout(function () {
+			systhesisService.callbackSynthesis(req.params.requestId);
+		}, 8 * hour);
 
+		let voiceover = await _voiceoverModel2.default.findOne({
+			requestId: req.params.requestId
+		});
+		voiceover = voiceover && voiceover._doc || {};
+
+		res.voiceover = Object.assign({}, voiceover, { vbee: vbee });
 		next();
 	} catch (e) {
 		(0, _helper.log)(JSON.stringify(e), 'error-response.log');
@@ -2558,11 +2551,13 @@ async function getVoiceoversByMovie(req, res, next) {
 }
 
 async function getVoiceovers(req, res, next) {
-	const limit = parseInt(req.query.limit, 0);
-	const skip = parseInt(req.query.skip, 0);
-
 	try {
-		res.voiceovers = await _voiceoverModel2.default.find(Object.assign({}, req.query));
+		let _ref = await _voiceoverModel2.default.paginate(Object.assign({}, req.parsedParams.filters), Object.assign({}, req.parsedParams)),
+		    { docs } = _ref,
+		    pagination = _objectWithoutProperties(_ref, ['docs']);
+
+		res.voiceovers = docs;
+		res.pagination = pagination;
 
 		next();
 	} catch (e) {
@@ -2587,10 +2582,31 @@ async function createVoiceover(req, res, next) {
 		const movie = await _movieModel2.default.findById(req.body.movieId);
 		let requestSysthesis = await systhesisService.requestSynthesis(movie.subUrl, req.body.voice || 'hn_male_xuantin_vdts_48k-hsmm');
 
+		const hour = 60 * 60 * 1000;
+		setTimeout(function () {
+			systhesisService.callbackSynthesis(requestSysthesis.requestId);
+		}, 1 * hour);
+		setTimeout(function () {
+			systhesisService.callbackSynthesis(requestSysthesis.requestId);
+		}, 2 * hour);
+		setTimeout(function () {
+			systhesisService.callbackSynthesis(requestSysthesis.requestId);
+		}, 3 * hour);
+		setTimeout(function () {
+			systhesisService.callbackSynthesis(requestSysthesis.requestId);
+		}, 4 * hour);
+		setTimeout(function () {
+			systhesisService.callbackSynthesis(requestSysthesis.requestId);
+		}, 6 * hour);
+		setTimeout(function () {
+			systhesisService.callbackSynthesis(requestSysthesis.requestId);
+		}, 8 * hour);
+
 		res.voiceover = await _voiceoverModel2.default.create({
 			requestId: requestSysthesis.requestId,
 			movie,
-			uploader: req.user || ''
+			uploader: req.user || '',
+			name: req.body.name
 		});
 		next();
 	} catch (e) {
@@ -2684,18 +2700,33 @@ Object.defineProperty(exports, "__esModule", {
 exports.requestSynthesis = requestSynthesis;
 exports.requestResynthesis = requestResynthesis;
 exports.checkSynthesis = checkSynthesis;
-exports.doneSynthesis = doneSynthesis;
+exports.callbackSynthesis = callbackSynthesis;
 
 var _axios = __webpack_require__(28);
 
 var _axios2 = _interopRequireDefault(_axios);
 
+var _movieModel = __webpack_require__(15);
+
+var _movieModel2 = _interopRequireDefault(_movieModel);
+
+var _voiceoverModel = __webpack_require__(105);
+
+var _voiceoverModel2 = _interopRequireDefault(_voiceoverModel);
+
+var _fileService = __webpack_require__(27);
+
+var fileService = _interopRequireWildcard(_fileService);
+
+var _helper = __webpack_require__(1);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // import HTTPStatus from 'http-status'
-
 async function requestSynthesis(subtitle_url, voice = 'hn_male_xuantin_vdts_48k-hsmm') {
-	let url = 'http://api.thuyetminhphim.vn/synthesis';
+	let url = 'http://api-thuyetminhphim.vbee.vn/synthesis';
 	let callback = 'http://api-social.thuyetminhphim.com/api/voiceovers/callback';
 	return await _axios2.default.get(url, {
 		params: { callback, subtitle_url, voice }
@@ -2707,7 +2738,11 @@ async function requestSynthesis(subtitle_url, voice = 'hn_male_xuantin_vdts_48k-
 	});
 } /* eslint-disable no-console */
 async function requestResynthesis(requestId) {
-	return await _axios2.default.get(`http://api.thuyetminhphim.vn/resynthesis?request_id=${requestId}`).then(function (response) {
+	return await _axios2.default.get('http://api-thuyetminhphim.vbee.vn/resynthesis', {
+		params: {
+			request_id: requestId
+		}
+	}).then(function (response) {
 		return response.data;
 	}).catch(function (e) {
 		console.log('error', e);
@@ -2716,7 +2751,11 @@ async function requestResynthesis(requestId) {
 }
 
 async function checkSynthesis(requestId) {
-	return await _axios2.default.get('http://api.thuyetminhphim.vn/check?request_id=' + requestId).then(function (response) {
+	return await _axios2.default.get('http://api-thuyetminhphim.vbee.vn/check', {
+		params: {
+			request_id: requestId
+		}
+	}).then(function (response) {
 		return response.data;
 	}).catch(function (e) {
 		// eslint-disable-next-line no-console
@@ -2725,7 +2764,35 @@ async function checkSynthesis(requestId) {
 	});
 }
 
-function doneSynthesis(movieId, subUrl) {}
+async function callbackSynthesis(requestId) {
+	let synthesised = await checkSynthesis(requestId);
+	let voiceover = await _voiceoverModel2.default.findOne({
+		requestId: synthesised.requestId
+	});
+	if (!voiceover) {
+		console.log(synthesised);
+		return { vbee: synthesised };
+	}
+
+	if (voiceover.status && voiceover.status !== 'done' && synthesised && synthesised.status == 'done') {
+		voiceover = Object.assign(voiceover, synthesised);
+		await fileService.uploadFileByUrl('/voiceovers', 'true', synthesised.downloadUrl, async function (uploadedFile) {
+			voiceover.embedUrl = uploadedFile.url;
+			voiceover.save();
+
+			_movieModel2.default.findByIdAndUpdate(voiceover.movie, {
+				status: synthesised.status,
+				voiceoverUrl: uploadedFile.url
+			});
+
+			(0, _helper.log)(JSON.stringify(voiceover), 'voiceover-callback.log');
+			return voiceover;
+		});
+	}
+	// voiceover.fileFormat = synthesised.fileFormat
+	// voiceover.downloadUrl = synthesised.downloadUrl
+	// voiceover.status = synthesised.status
+}
 
 /***/ }),
 /* 39 */
@@ -7934,6 +8001,11 @@ let voiceoverSchema = new _mongoose.Schema({
 		ref: 'User',
 		required: [true, 'Uploader is required!'],
 		trim: true
+	},
+	name: {
+		type: String,
+		trim: true,
+		default: 'Giọng'
 	}
 }, {
 	timestamps: true
@@ -8010,18 +8082,13 @@ const router = new _express.Router();
 
 // More router
 /* eslint-disable no-unused-vars */
-router.get('/check/:requestId',
-// accessControl('createOwn', 'voiceover'),
-(0, _expressValidation2.default)(_voiceoverValidation2.default.checkSynthesis), voiceoverController.checkSynthesis, function (req, res, next) {
+router.get('/check/:requestId', (0, _expressValidation2.default)(_voiceoverValidation2.default.checkSynthesis), voiceoverController.checkSynthesis, function (req, res, next) {
 	return res.status(_httpStatus2.default.OK).json({
 		data: res.voiceover
 	});
-}).post('/upload',
-// accessControl('createOwn', 'voiceover'),
-// validate(voiceoverValidation.upload),
-voiceoverController.uploadVoiceover, function (req, res, next) {
+}).get('/rerequest/:requestId', (0, _expressValidation2.default)(_voiceoverValidation2.default.checkSynthesis), voiceoverController.reSynthesis, function (req, res, next) {
 	return res.status(_httpStatus2.default.OK).json({
-		data: res.file
+		data: res.voiceover
 	});
 }).post('/callback',
 // accessControl('createOwn', 'voiceover'),
@@ -8046,9 +8113,7 @@ router.get('/stats', (0, _expressValidation2.default)(_voiceoverValidation2.defa
 	return res.status(_httpStatus2.default.OK).json({
 		data: res.voiceover
 	});
-}).post('/', (0, _expressValidation2.default)(_voiceoverValidation2.default.create),
-// voiceoverController.createVoiceover,
-function (req, res, next) {
+}).post('/', (0, _expressValidation2.default)(_voiceoverValidation2.default.create), voiceoverController.createVoiceover, function (req, res, next) {
 	return res.status(_httpStatus2.default.OK).json({
 		data: res.voiceover
 	});

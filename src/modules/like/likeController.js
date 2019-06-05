@@ -25,8 +25,8 @@ export async function getLikesStats(req, res, next) {
 export async function getLikes(req, res, next) {
 	try {
 		let { docs, ...pagination } = await Like.paginate(
-      { ...req.parsedParams.filters },
-        req.parsedParams
+			{ ...req.parsedParams.filters },
+			req.parsedParams
 		)
 
 		res.likes = docs
