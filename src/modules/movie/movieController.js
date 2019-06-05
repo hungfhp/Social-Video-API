@@ -198,7 +198,17 @@ export async function updateMovie(req, res, next) {
 
 export async function deleteMovie(req, res, next) {
 	try {
-		await Movie.findOneAndDelete(req.movie._id)
+		let movie = await Movie.findById(req.params.id)
+		if (!movie) {
+			next()
+		}
+
+		if (
+			String(movie.uploader._id) === String(req.user._id) ||
+			req.user.role == 'admin'
+		) {
+			await movie.remove()
+		}
 
 		next()
 	} catch (e) {

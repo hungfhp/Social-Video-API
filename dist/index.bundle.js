@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 46);
+/******/ 	return __webpack_require__(__webpack_require__.s = 47);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -712,7 +712,7 @@ exports.createRecommend = createRecommend;
 exports.updateRecommend = updateRecommend;
 exports.deleteRecommend = deleteRecommend;
 
-var _recommendModel = __webpack_require__(86);
+var _recommendModel = __webpack_require__(87);
 
 var _recommendModel2 = _interopRequireDefault(_recommendModel);
 
@@ -724,7 +724,7 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _recommendUtil = __webpack_require__(88);
+var _recommendUtil = __webpack_require__(89);
 
 var util = _interopRequireWildcard(_recommendUtil);
 
@@ -891,11 +891,11 @@ var _followMovieModel = __webpack_require__(21);
 
 var _followMovieModel2 = _interopRequireDefault(_followMovieModel);
 
-var _followUserModel = __webpack_require__(23);
+var _followUserModel = __webpack_require__(24);
 
 var _followUserModel2 = _interopRequireDefault(_followUserModel);
 
-var _likeModel = __webpack_require__(24);
+var _likeModel = __webpack_require__(25);
 
 var _likeModel2 = _interopRequireDefault(_likeModel);
 
@@ -903,7 +903,7 @@ var _rateModel = __webpack_require__(34);
 
 var _rateModel2 = _interopRequireDefault(_rateModel);
 
-var _memberModel = __webpack_require__(25);
+var _memberModel = __webpack_require__(26);
 
 var _memberModel2 = _interopRequireDefault(_memberModel);
 
@@ -1180,7 +1180,7 @@ var _mongooseUniqueValidator = __webpack_require__(8);
 
 var _mongooseUniqueValidator2 = _interopRequireDefault(_mongooseUniqueValidator);
 
-var _jsonwebtoken = __webpack_require__(39);
+var _jsonwebtoken = __webpack_require__(40);
 
 var _jsonwebtoken2 = _interopRequireDefault(_jsonwebtoken);
 
@@ -1192,7 +1192,7 @@ var _pluginService = __webpack_require__(10);
 
 var pluginService = _interopRequireWildcard(_pluginService);
 
-var _regex = __webpack_require__(47);
+var _regex = __webpack_require__(48);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -1363,6 +1363,72 @@ exports.default = _mongoose2.default.model('User', userSchema);
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+exports.uploadFile = uploadFile;
+exports.uploadFileByUrl = uploadFileByUrl;
+
+var _request = __webpack_require__(30);
+
+var _request2 = _interopRequireDefault(_request);
+
+var _constants = __webpack_require__(12);
+
+var _constants2 = _interopRequireDefault(_constants);
+
+var _fs = __webpack_require__(17);
+
+var _fs2 = _interopRequireDefault(_fs);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+async function uploadFile(path = 'default', overwrite = 'false', file, callback) {
+	_request2.default.post({
+		url: _constants2.default.UPLOAD_VBEE_URL,
+		headers: {
+			authorization: _constants2.default.UPLOAD_VBEE_TOKEN
+		},
+		formData: {
+			path: path,
+			overwrite: overwrite,
+			file: file
+		}
+	}, (error, res, body) => {
+		if (error) {
+			throw error;
+		}
+		callback(JSON.parse(body));
+	});
+} /* eslint-disable no-console */
+async function uploadFileByUrl(path = '/default', overwrite = 'false', fileUrl, callback) {
+	_request2.default.post({
+		url: _constants2.default.UPLOAD_VBEE_URL,
+		headers: {
+			authorization: _constants2.default.UPLOAD_VBEE_TOKEN
+		},
+		formData: {
+			path: path,
+			overwrite: overwrite,
+			file: (0, _request2.default)(fileUrl).on('error', function (err) {
+				console.error(err);
+			})
+		}
+	}, (error, res, body) => {
+		if (error) {
+			throw error;
+		}
+		callback(JSON.parse(body));
+	});
+}
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
 var _validator = __webpack_require__(11);
 
@@ -1436,7 +1502,7 @@ followUserSchema.plugin(pluginService.setSlugUrl, { schemaName: 'FollowUser' });
 exports.default = _mongoose2.default.model('FollowUser', followUserSchema);
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1520,7 +1586,7 @@ likeSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Like' });
 exports.default = _mongoose2.default.model('Like', likeSchema);
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1610,7 +1676,7 @@ memberSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Member' });
 exports.default = _mongoose2.default.model('Member', memberSchema);
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1621,7 +1687,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.authFacebook = exports.authJwt = exports.authLocal = undefined;
 
-var _passport = __webpack_require__(40);
+var _passport = __webpack_require__(41);
 
 var _passport2 = _interopRequireDefault(_passport);
 
@@ -1747,72 +1813,6 @@ const authFacebook = exports.authFacebook = async function (access_token) {
 
 	return fbAuthUser;
 };
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.uploadFile = uploadFile;
-exports.uploadFileByUrl = uploadFileByUrl;
-
-var _request = __webpack_require__(30);
-
-var _request2 = _interopRequireDefault(_request);
-
-var _constants = __webpack_require__(12);
-
-var _constants2 = _interopRequireDefault(_constants);
-
-var _fs = __webpack_require__(17);
-
-var _fs2 = _interopRequireDefault(_fs);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-async function uploadFile(path = 'default', overwrite = 'false', file, callback) {
-	_request2.default.post({
-		url: _constants2.default.UPLOAD_VBEE_URL,
-		headers: {
-			authorization: _constants2.default.UPLOAD_VBEE_TOKEN
-		},
-		formData: {
-			path: path,
-			overwrite: overwrite,
-			file: file
-		}
-	}, (error, res, body) => {
-		if (error) {
-			throw error;
-		}
-		callback(JSON.parse(body));
-	});
-} /* eslint-disable no-console */
-async function uploadFileByUrl(path = '/default', overwrite = 'false', fileUrl, callback) {
-	_request2.default.post({
-		url: _constants2.default.UPLOAD_VBEE_URL,
-		headers: {
-			authorization: _constants2.default.UPLOAD_VBEE_TOKEN
-		},
-		formData: {
-			path: path,
-			overwrite: overwrite,
-			file: (0, _request2.default)(fileUrl).on('error', function (err) {
-				console.error(err);
-			})
-		}
-	}, (error, res, body) => {
-		if (error) {
-			throw error;
-		}
-		callback(JSON.parse(body));
-	});
-}
 
 /***/ }),
 /* 28 */
@@ -2122,7 +2122,7 @@ exports.createRelationship = createRelationship;
 exports.updateRelationship = updateRelationship;
 exports.deleteRelationship = deleteRelationship;
 
-var _relationshipModel = __webpack_require__(90);
+var _relationshipModel = __webpack_require__(91);
 
 var _relationshipModel2 = _interopRequireDefault(_relationshipModel);
 
@@ -2130,7 +2130,7 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _relationshipUtil = __webpack_require__(92);
+var _relationshipUtil = __webpack_require__(93);
 
 var util = _interopRequireWildcard(_relationshipUtil);
 
@@ -2370,7 +2370,7 @@ exports.createVoiceover = createVoiceover;
 exports.updateVoiceover = updateVoiceover;
 exports.deleteVoiceover = deleteVoiceover;
 
-var _voiceoverModel = __webpack_require__(105);
+var _voiceoverModel = __webpack_require__(37);
 
 var _voiceoverModel2 = _interopRequireDefault(_voiceoverModel);
 
@@ -2382,13 +2382,13 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _synthesisService = __webpack_require__(38);
+var _synthesisService = __webpack_require__(39);
 
 var synthesisService = _interopRequireWildcard(_synthesisService);
 
 var systhesisService = _interopRequireWildcard(_synthesisService);
 
-var _fileService = __webpack_require__(27);
+var _fileService = __webpack_require__(23);
 
 var fileService = _interopRequireWildcard(_fileService);
 
@@ -2410,7 +2410,7 @@ var _multiparty = __webpack_require__(29);
 
 var _multiparty2 = _interopRequireDefault(_multiparty);
 
-var _util = __webpack_require__(41);
+var _util = __webpack_require__(42);
 
 var _util2 = _interopRequireDefault(_util);
 
@@ -2656,6 +2656,109 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
+var _validator = __webpack_require__(11);
+
+var _validator2 = _interopRequireDefault(_validator);
+
+var _voiceoverValidation = __webpack_require__(38);
+
+var myValid = _interopRequireWildcard(_voiceoverValidation);
+
+var _mongoose = __webpack_require__(3);
+
+var _mongoose2 = _interopRequireDefault(_mongoose);
+
+var _mongoosePaginate = __webpack_require__(7);
+
+var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
+
+var _mongooseAutopopulate = __webpack_require__(6);
+
+var _mongooseAutopopulate2 = _interopRequireDefault(_mongooseAutopopulate);
+
+var _mongooseUniqueValidator = __webpack_require__(8);
+
+var _mongooseUniqueValidator2 = _interopRequireDefault(_mongooseUniqueValidator);
+
+var _pluginService = __webpack_require__(10);
+
+var pluginService = _interopRequireWildcard(_pluginService);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const ObjectId = _mongoose2.default.Schema.Types.ObjectId; /* eslint-disable no-unused-vars */
+/**
+ * @typedef voiceovers
+ * @property {string} _id
+ * @property {string} voiceoverName
+ */
+
+let voiceoverSchema = new _mongoose.Schema({
+	requestId: {
+		type: String,
+		required: [true, 'Request ID is required!'],
+		unique: true,
+		trim: true
+	},
+	embedUrl: {
+		type: String,
+		trim: true
+	},
+	fileFormat: {
+		type: String,
+		trim: true
+	},
+	status: {
+		type: String,
+		enum: ['pending', 'done'],
+		default: 'pending',
+		trim: true
+	},
+	movie: {
+		type: ObjectId,
+		ref: 'Movie',
+		required: [true, 'Movie is required!'],
+		trim: true
+	},
+	uploader: {
+		type: ObjectId,
+		ref: 'User',
+		required: [true, 'Uploader is required!'],
+		trim: true
+	},
+	name: {
+		type: String,
+		trim: true,
+		default: 'Giọng'
+	}
+}, {
+	timestamps: true
+});
+
+voiceoverSchema.plugin(_mongooseUniqueValidator2.default, {
+	message: '{VALUE} already taken!'
+});
+
+voiceoverSchema.plugin(_mongoosePaginate2.default);
+voiceoverSchema.plugin(_mongooseAutopopulate2.default);
+voiceoverSchema.plugin(pluginService.logPost, { schemaName: 'Voiceover' });
+voiceoverSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Voiceover' });
+
+exports.default = _mongoose2.default.model('Voiceover', voiceoverSchema);
+
+/***/ }),
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
 var _joi = __webpack_require__(5);
 
 var _joi2 = _interopRequireDefault(_joi);
@@ -2688,7 +2791,7 @@ exports.default = {
 }; /* eslint-disable no-unused-vars */
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2710,11 +2813,11 @@ var _movieModel = __webpack_require__(15);
 
 var _movieModel2 = _interopRequireDefault(_movieModel);
 
-var _voiceoverModel = __webpack_require__(105);
+var _voiceoverModel = __webpack_require__(37);
 
 var _voiceoverModel2 = _interopRequireDefault(_voiceoverModel);
 
-var _fileService = __webpack_require__(27);
+var _fileService = __webpack_require__(23);
 
 var fileService = _interopRequireWildcard(_fileService);
 
@@ -2795,25 +2898,25 @@ async function callbackSynthesis(requestId) {
 }
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports) {
 
 module.exports = require("jsonwebtoken");
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports) {
 
 module.exports = require("passport");
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports) {
 
 module.exports = require("util");
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2848,7 +2951,7 @@ _mongoose2.default.connection.once('open', () => console.log('\tMongoDB Connecte
 });
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2874,7 +2977,7 @@ var _helmet = __webpack_require__(115);
 
 var _helmet2 = _interopRequireDefault(_helmet);
 
-var _passport = __webpack_require__(40);
+var _passport = __webpack_require__(41);
 
 var _passport2 = _interopRequireDefault(_passport);
 
@@ -2914,7 +3017,7 @@ exports.default = app => {
 };
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2928,61 +3031,61 @@ var _constants = __webpack_require__(12);
 
 var _constants2 = _interopRequireDefault(_constants);
 
-var _authMiddleware = __webpack_require__(49);
+var _authMiddleware = __webpack_require__(50);
 
-var _followMovieRoute = __webpack_require__(52);
+var _followMovieRoute = __webpack_require__(53);
 
 var _followMovieRoute2 = _interopRequireDefault(_followMovieRoute);
 
-var _followUserRoute = __webpack_require__(56);
+var _followUserRoute = __webpack_require__(57);
 
 var _followUserRoute2 = _interopRequireDefault(_followUserRoute);
 
-var _relationshipRoute = __webpack_require__(91);
+var _relationshipRoute = __webpack_require__(92);
 
 var _relationshipRoute2 = _interopRequireDefault(_relationshipRoute);
 
-var _subRoute = __webpack_require__(96);
+var _subRoute = __webpack_require__(97);
 
 var _subRoute2 = _interopRequireDefault(_subRoute);
 
-var _genreRoute = __webpack_require__(61);
+var _genreRoute = __webpack_require__(62);
 
 var _genreRoute2 = _interopRequireDefault(_genreRoute);
 
-var _groupRoute = __webpack_require__(64);
+var _groupRoute = __webpack_require__(65);
 
 var _groupRoute2 = _interopRequireDefault(_groupRoute);
 
-var _likeRoute = __webpack_require__(68);
+var _likeRoute = __webpack_require__(69);
 
 var _likeRoute2 = _interopRequireDefault(_likeRoute);
 
-var _memberRoute = __webpack_require__(72);
+var _memberRoute = __webpack_require__(73);
 
 var _memberRoute2 = _interopRequireDefault(_memberRoute);
 
-var _movieRoute = __webpack_require__(76);
+var _movieRoute = __webpack_require__(77);
 
 var _movieRoute2 = _interopRequireDefault(_movieRoute);
 
-var _postRoute = __webpack_require__(80);
+var _postRoute = __webpack_require__(81);
 
 var _postRoute2 = _interopRequireDefault(_postRoute);
 
-var _rateRoute = __webpack_require__(83);
+var _rateRoute = __webpack_require__(84);
 
 var _rateRoute2 = _interopRequireDefault(_rateRoute);
 
-var _recommendRoute = __webpack_require__(87);
+var _recommendRoute = __webpack_require__(88);
 
 var _recommendRoute2 = _interopRequireDefault(_recommendRoute);
 
-var _uploadRoute = __webpack_require__(100);
+var _uploadRoute = __webpack_require__(101);
 
 var _uploadRoute2 = _interopRequireDefault(_uploadRoute);
 
-var _userRoute = __webpack_require__(103);
+var _userRoute = __webpack_require__(104);
 
 var _userRoute2 = _interopRequireDefault(_userRoute);
 
@@ -3020,13 +3123,13 @@ exports.default = app => {
 /* eslint-disable no-console */
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports) {
 
 module.exports = require("express-list-endpoints");
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3040,17 +3143,17 @@ var _constants = __webpack_require__(12);
 
 var _constants2 = _interopRequireDefault(_constants);
 
-__webpack_require__(42);
+__webpack_require__(43);
 
-var _middleware = __webpack_require__(43);
+var _middleware = __webpack_require__(44);
 
 var _middleware2 = _interopRequireDefault(_middleware);
 
-var _modules = __webpack_require__(44);
+var _modules = __webpack_require__(45);
 
 var _modules2 = _interopRequireDefault(_modules);
 
-var _expressListEndpoints = __webpack_require__(45);
+var _expressListEndpoints = __webpack_require__(46);
 
 var _expressListEndpoints2 = _interopRequireDefault(_expressListEndpoints);
 
@@ -3104,7 +3207,7 @@ app.listen(_constants2.default.PORT, err => {
 });
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3118,7 +3221,7 @@ const passwordReg = exports.passwordReg = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
 const countryCodeReg = exports.countryCodeReg = /^\w{2}$/;
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3130,7 +3233,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = [{ name: 'Hài Hước' }, { name: 'Viễn Tưởng' }, { name: 'Hành Động' }, { name: 'Phiêu Lưu' }, { name: 'Tâm Lý' }, { name: 'Hình Sự' }, { name: 'Kinh Dị' }, { name: 'Điện Ảnh' }, { name: 'Âm Nhạc' }, { name: 'Khoa học Tài liệu' }, { name: 'Võ Thuật' }, { name: 'Chiến Tranh' }, { name: 'Hoạt Hình' }, { name: 'Thần Thoại' }, { name: 'Cổ Trang' }, { name: 'Thuyết Minh' }, { name: 'Thiếu nhi' }, { name: 'Hài Việt' }, { name: 'TV Show' }];
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3145,7 +3248,7 @@ var _constants = __webpack_require__(12);
 
 var _constants2 = _interopRequireDefault(_constants);
 
-var _jsonwebtoken = __webpack_require__(39);
+var _jsonwebtoken = __webpack_require__(40);
 
 var _jsonwebtoken2 = _interopRequireDefault(_jsonwebtoken);
 
@@ -3177,7 +3280,7 @@ function extractToken(authorization = '') {
 }
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3223,7 +3326,7 @@ async function parseForm(req, res, next) {
 // import Movie from '../modules/movie/movieModel'
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3249,7 +3352,7 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _followMovieUtil = __webpack_require__(53);
+var _followMovieUtil = __webpack_require__(54);
 
 var util = _interopRequireWildcard(_followMovieUtil);
 
@@ -3408,7 +3511,7 @@ async function deleteFollowMovie(req, res, next) {
 }
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3428,11 +3531,11 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _followMovieController = __webpack_require__(51);
+var _followMovieController = __webpack_require__(52);
 
 var followMovieController = _interopRequireWildcard(_followMovieController);
 
-var _followMovieValidation = __webpack_require__(54);
+var _followMovieValidation = __webpack_require__(55);
 
 var _followMovieValidation2 = _interopRequireDefault(_followMovieValidation);
 
@@ -3518,7 +3621,7 @@ router.get('/stats', (0, _expressValidation2.default)(_followMovieValidation2.de
 exports.default = router;
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3534,7 +3637,7 @@ function debug(obj) {
 }
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3570,7 +3673,7 @@ exports.default = {
 }; /* eslint-disable no-unused-vars */
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3588,7 +3691,7 @@ exports.createFollowUser = createFollowUser;
 exports.updateFollowUser = updateFollowUser;
 exports.deleteFollowUser = deleteFollowUser;
 
-var _followUserModel = __webpack_require__(23);
+var _followUserModel = __webpack_require__(24);
 
 var _followUserModel2 = _interopRequireDefault(_followUserModel);
 
@@ -3596,7 +3699,7 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _followUserUtil = __webpack_require__(57);
+var _followUserUtil = __webpack_require__(58);
 
 var util = _interopRequireWildcard(_followUserUtil);
 
@@ -3747,7 +3850,7 @@ async function deleteFollowUser(req, res, next) {
 }
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3767,11 +3870,11 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _followUserController = __webpack_require__(55);
+var _followUserController = __webpack_require__(56);
 
 var followUserController = _interopRequireWildcard(_followUserController);
 
-var _followUserValidation = __webpack_require__(58);
+var _followUserValidation = __webpack_require__(59);
 
 var _followUserValidation2 = _interopRequireDefault(_followUserValidation);
 
@@ -3849,7 +3952,7 @@ router.get('/stats', (0, _expressValidation2.default)(_followUserValidation2.def
 exports.default = router;
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3865,7 +3968,7 @@ function debug(obj) {
 }
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3901,7 +4004,7 @@ exports.default = {
 }; /* eslint-disable no-unused-vars */
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3918,7 +4021,7 @@ exports.createGenre = createGenre;
 exports.updateGenre = updateGenre;
 exports.deleteGenre = deleteGenre;
 
-var _genreModel = __webpack_require__(60);
+var _genreModel = __webpack_require__(61);
 
 var _genreModel2 = _interopRequireDefault(_genreModel);
 
@@ -3926,13 +4029,13 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _genreUtil = __webpack_require__(62);
+var _genreUtil = __webpack_require__(63);
 
 var util = _interopRequireWildcard(_genreUtil);
 
 var _helper = __webpack_require__(1);
 
-var _genres = __webpack_require__(48);
+var _genres = __webpack_require__(49);
 
 var _genres2 = _interopRequireDefault(_genres);
 
@@ -4044,7 +4147,7 @@ async function deleteGenre(req, res, next) {
 }
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4128,7 +4231,7 @@ genreSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Genre' });
 exports.default = _mongoose2.default.model('Genre', genreSchema);
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4148,7 +4251,7 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _genreController = __webpack_require__(59);
+var _genreController = __webpack_require__(60);
 
 var genreController = _interopRequireWildcard(_genreController);
 
@@ -4156,7 +4259,7 @@ var _genreValidation = __webpack_require__(31);
 
 var _genreValidation2 = _interopRequireDefault(_genreValidation);
 
-var _authService = __webpack_require__(26);
+var _authService = __webpack_require__(27);
 
 var authService = _interopRequireWildcard(_authService);
 
@@ -4216,7 +4319,7 @@ router.get('/stats', (0, _expressValidation2.default)(_genreValidation2.default.
 exports.default = router;
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4232,7 +4335,7 @@ function debug(obj) {
 }
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4258,7 +4361,7 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _groupUtil = __webpack_require__(65);
+var _groupUtil = __webpack_require__(66);
 
 var util = _interopRequireWildcard(_groupUtil);
 
@@ -4396,7 +4499,7 @@ async function deleteGroup(req, res, next) {
 }
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4416,11 +4519,11 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _groupController = __webpack_require__(63);
+var _groupController = __webpack_require__(64);
 
 var groupController = _interopRequireWildcard(_groupController);
 
-var _groupValidation = __webpack_require__(66);
+var _groupValidation = __webpack_require__(67);
 
 var _groupValidation2 = _interopRequireDefault(_groupValidation);
 
@@ -4491,7 +4594,7 @@ router.get('/stats', (0, _expressValidation2.default)(_groupValidation2.default.
 exports.default = router;
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4507,7 +4610,7 @@ function debug(obj) {
 }
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4533,7 +4636,7 @@ exports.default = {
 }; /* eslint-disable no-unused-vars */
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4549,7 +4652,7 @@ exports.createLike = createLike;
 exports.updateLike = updateLike;
 exports.deleteLike = deleteLike;
 
-var _likeModel = __webpack_require__(24);
+var _likeModel = __webpack_require__(25);
 
 var _likeModel2 = _interopRequireDefault(_likeModel);
 
@@ -4557,7 +4660,7 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _likeUtil = __webpack_require__(69);
+var _likeUtil = __webpack_require__(70);
 
 var util = _interopRequireWildcard(_likeUtil);
 
@@ -4660,7 +4763,7 @@ async function deleteLike(req, res, next) {
 }
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4680,11 +4783,11 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _likeController = __webpack_require__(67);
+var _likeController = __webpack_require__(68);
 
 var likeController = _interopRequireWildcard(_likeController);
 
-var _likeValidation = __webpack_require__(70);
+var _likeValidation = __webpack_require__(71);
 
 var _likeValidation2 = _interopRequireDefault(_likeValidation);
 
@@ -4751,7 +4854,7 @@ router.get('/stats', (0, _expressValidation2.default)(_likeValidation2.default.s
 exports.default = router;
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4767,7 +4870,7 @@ function debug(obj) {
 }
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4793,7 +4896,7 @@ exports.default = {
 }; /* eslint-disable no-unused-vars */
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4809,7 +4912,7 @@ exports.createMember = createMember;
 exports.updateMember = updateMember;
 exports.deleteMember = deleteMember;
 
-var _memberModel = __webpack_require__(25);
+var _memberModel = __webpack_require__(26);
 
 var _memberModel2 = _interopRequireDefault(_memberModel);
 
@@ -4817,7 +4920,7 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _memberUtil = __webpack_require__(73);
+var _memberUtil = __webpack_require__(74);
 
 var util = _interopRequireWildcard(_memberUtil);
 
@@ -4920,7 +5023,7 @@ async function deleteMember(req, res, next) {
 }
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4940,11 +5043,11 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _memberController = __webpack_require__(71);
+var _memberController = __webpack_require__(72);
 
 var memberController = _interopRequireWildcard(_memberController);
 
-var _memberValidation = __webpack_require__(74);
+var _memberValidation = __webpack_require__(75);
 
 var _memberValidation2 = _interopRequireDefault(_memberValidation);
 
@@ -5003,7 +5106,7 @@ router.get('/stats', (0, _expressValidation2.default)(_memberValidation2.default
 exports.default = router;
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5019,7 +5122,7 @@ function debug(obj) {
 }
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5045,7 +5148,7 @@ exports.default = {
 }; /* eslint-disable no-unused-vars */
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5265,7 +5368,14 @@ async function updateMovie(req, res, next) {
 
 async function deleteMovie(req, res, next) {
 	try {
-		await _movieModel2.default.findOneAndDelete(req.movie._id);
+		let movie = await _movieModel2.default.findById(req.params.id);
+		if (!movie) {
+			next();
+		}
+
+		if (String(movie.uploader._id) === String(req.user._id) || req.user.role == 'admin') {
+			await movie.remove();
+		}
 
 		next();
 	} catch (e) {
@@ -5275,7 +5385,7 @@ async function deleteMovie(req, res, next) {
 }
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5295,11 +5405,11 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _movieController = __webpack_require__(75);
+var _movieController = __webpack_require__(76);
 
 var movieController = _interopRequireWildcard(_movieController);
 
-var _movieValidation = __webpack_require__(77);
+var _movieValidation = __webpack_require__(78);
 
 var _movieValidation2 = _interopRequireDefault(_movieValidation);
 
@@ -5387,7 +5497,7 @@ router.get('/stats', (0, _roleMiddleware.accessControl)('readAny', 'movie'), (0,
 exports.default = router;
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5414,7 +5524,7 @@ exports.default = {
 }; /* eslint-disable no-unused-vars */
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5430,7 +5540,7 @@ exports.createPost = createPost;
 exports.updatePost = updatePost;
 exports.deletePost = deletePost;
 
-var _postModel = __webpack_require__(79);
+var _postModel = __webpack_require__(80);
 
 var _postModel2 = _interopRequireDefault(_postModel);
 
@@ -5438,7 +5548,7 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _postUtil = __webpack_require__(81);
+var _postUtil = __webpack_require__(82);
 
 var util = _interopRequireWildcard(_postUtil);
 
@@ -5539,7 +5649,7 @@ async function deletePost(req, res, next) {
 }
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5623,7 +5733,7 @@ postSchema.plugin(_mongooseAutopopulate2.default);
 exports.default = _mongoose2.default.model('Post', postSchema);
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5643,7 +5753,7 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _postController = __webpack_require__(78);
+var _postController = __webpack_require__(79);
 
 var postController = _interopRequireWildcard(_postController);
 
@@ -5698,7 +5808,7 @@ router.get('/stats', (0, _expressValidation2.default)(_postValidation2.default.s
 exports.default = router;
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5714,7 +5824,7 @@ function debug(obj) {
 }
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5738,7 +5848,7 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _rateUtil = __webpack_require__(84);
+var _rateUtil = __webpack_require__(85);
 
 var util = _interopRequireWildcard(_rateUtil);
 
@@ -5839,7 +5949,7 @@ async function deleteRate(req, res, next) {
 }
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5859,15 +5969,15 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _rateController = __webpack_require__(82);
+var _rateController = __webpack_require__(83);
 
 var rateController = _interopRequireWildcard(_rateController);
 
-var _rateValidation = __webpack_require__(85);
+var _rateValidation = __webpack_require__(86);
 
 var _rateValidation2 = _interopRequireDefault(_rateValidation);
 
-var _authService = __webpack_require__(26);
+var _authService = __webpack_require__(27);
 
 var authService = _interopRequireWildcard(_authService);
 
@@ -5939,7 +6049,7 @@ router.get('/stats', (0, _expressValidation2.default)(_rateValidation2.default.s
 exports.default = router;
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5955,7 +6065,7 @@ function debug(obj) {
 }
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5981,7 +6091,7 @@ exports.default = {
 }; /* eslint-disable no-unused-vars */
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6208,7 +6318,7 @@ recommendSchema.plugin(pluginService.logPost, { schemaName: 'Recommend' });
 exports.default = _mongoose2.default.model('Recommend', recommendSchema);
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6232,7 +6342,7 @@ var _recommendController = __webpack_require__(16);
 
 var recommendController = _interopRequireWildcard(_recommendController);
 
-var _recommendValidation = __webpack_require__(89);
+var _recommendValidation = __webpack_require__(90);
 
 var _recommendValidation2 = _interopRequireDefault(_recommendValidation);
 
@@ -6295,7 +6405,7 @@ router.get('/', (0, _roleMiddleware.accessControl)('readAny', 'recommend'), para
 exports.default = router;
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6311,7 +6421,7 @@ function debug(obj) {
 }
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6337,7 +6447,7 @@ exports.default = {
 }; /* eslint-disable no-unused-vars */
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6526,7 +6636,7 @@ relationshipSchema.plugin(pluginService.setSlugUrl, {
 exports.default = _mongoose2.default.model('Relationship', relationshipSchema);
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6550,7 +6660,7 @@ var _relationshipController = __webpack_require__(35);
 
 var relationshipController = _interopRequireWildcard(_relationshipController);
 
-var _relationshipValidation = __webpack_require__(93);
+var _relationshipValidation = __webpack_require__(94);
 
 var _relationshipValidation2 = _interopRequireDefault(_relationshipValidation);
 
@@ -6655,7 +6765,7 @@ router.get('/stats', (0, _expressValidation2.default)(_relationshipValidation2.d
 exports.default = router;
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6671,7 +6781,7 @@ function debug(obj) {
 }
 
 /***/ }),
-/* 93 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6707,7 +6817,7 @@ exports.default = {
 }; /* eslint-disable no-unused-vars */
 
 /***/ }),
-/* 94 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6723,7 +6833,7 @@ exports.createSub = createSub;
 exports.updateSub = updateSub;
 exports.deleteSub = deleteSub;
 
-var _subModel = __webpack_require__(95);
+var _subModel = __webpack_require__(96);
 
 var _subModel2 = _interopRequireDefault(_subModel);
 
@@ -6731,7 +6841,7 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _subUtil = __webpack_require__(97);
+var _subUtil = __webpack_require__(98);
 
 var util = _interopRequireWildcard(_subUtil);
 
@@ -6745,7 +6855,7 @@ var _axios = __webpack_require__(28);
 
 var _axios2 = _interopRequireDefault(_axios);
 
-var _fileService = __webpack_require__(27);
+var _fileService = __webpack_require__(23);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -6853,7 +6963,7 @@ async function deleteSub(req, res, next) {
 }
 
 /***/ }),
-/* 95 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6931,7 +7041,7 @@ subSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Sub' });
 exports.default = _mongoose2.default.model('Sub', subSchema);
 
 /***/ }),
-/* 96 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6951,11 +7061,11 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _subController = __webpack_require__(94);
+var _subController = __webpack_require__(95);
 
 var subController = _interopRequireWildcard(_subController);
 
-var _subValidation = __webpack_require__(98);
+var _subValidation = __webpack_require__(99);
 
 var _subValidation2 = _interopRequireDefault(_subValidation);
 
@@ -7046,7 +7156,7 @@ router.get('/suggest', subController.getSubsSuggest, function (req, res, next) {
 exports.default = router;
 
 /***/ }),
-/* 97 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7062,7 +7172,7 @@ function debug(obj) {
 }
 
 /***/ }),
-/* 98 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7088,7 +7198,7 @@ exports.default = {
 }; /* eslint-disable no-unused-vars */
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7125,11 +7235,11 @@ var _constants = __webpack_require__(12);
 
 var _constants2 = _interopRequireDefault(_constants);
 
-var _util = __webpack_require__(41);
+var _util = __webpack_require__(42);
 
 var _util2 = _interopRequireDefault(_util);
 
-var _fileService = __webpack_require__(27);
+var _fileService = __webpack_require__(23);
 
 var fileService = _interopRequireWildcard(_fileService);
 
@@ -7227,7 +7337,7 @@ async function uploadVoiceover(req, res, next) {
 }
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7247,11 +7357,11 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _uploadController = __webpack_require__(99);
+var _uploadController = __webpack_require__(100);
 
 var uploadController = _interopRequireWildcard(_uploadController);
 
-var _uploadValidation = __webpack_require__(101);
+var _uploadValidation = __webpack_require__(102);
 
 var _uploadValidation2 = _interopRequireDefault(_uploadValidation);
 
@@ -7261,7 +7371,7 @@ var upload = _interopRequireWildcard(_paramService);
 
 var _roleMiddleware = __webpack_require__(9);
 
-var _uploadMiddleware = __webpack_require__(50);
+var _uploadMiddleware = __webpack_require__(51);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -7310,7 +7420,7 @@ router.post('/voiceover', _uploadMiddleware.parseForm, (0, _expressValidation2.d
 exports.default = router;
 
 /***/ }),
-/* 101 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7360,7 +7470,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 102 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7399,7 +7509,7 @@ var _groupModel = __webpack_require__(32);
 
 var _groupModel2 = _interopRequireDefault(_groupModel);
 
-var _likeModel = __webpack_require__(24);
+var _likeModel = __webpack_require__(25);
 
 var _likeModel2 = _interopRequireDefault(_likeModel);
 
@@ -7407,11 +7517,11 @@ var _followMovieModel = __webpack_require__(21);
 
 var _followMovieModel2 = _interopRequireDefault(_followMovieModel);
 
-var _followUserModel = __webpack_require__(23);
+var _followUserModel = __webpack_require__(24);
 
 var _followUserModel2 = _interopRequireDefault(_followUserModel);
 
-var _memberModel = __webpack_require__(25);
+var _memberModel = __webpack_require__(26);
 
 var _memberModel2 = _interopRequireDefault(_memberModel);
 
@@ -7720,7 +7830,7 @@ async function fbLogin(req, res, next) {
 }
 
 /***/ }),
-/* 103 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7740,7 +7850,7 @@ var _httpStatus = __webpack_require__(0);
 
 var _httpStatus2 = _interopRequireDefault(_httpStatus);
 
-var _userController = __webpack_require__(102);
+var _userController = __webpack_require__(103);
 
 var userController = _interopRequireWildcard(_userController);
 
@@ -7748,11 +7858,11 @@ var _relationshipController = __webpack_require__(35);
 
 var relationshipController = _interopRequireWildcard(_relationshipController);
 
-var _userValidation = __webpack_require__(104);
+var _userValidation = __webpack_require__(105);
 
 var _userValidation2 = _interopRequireDefault(_userValidation);
 
-var _authService = __webpack_require__(26);
+var _authService = __webpack_require__(27);
 
 var _paramMiddleware = __webpack_require__(13);
 
@@ -7888,7 +7998,7 @@ router.get('/stats', (0, _expressValidation2.default)(_userValidation2.default.s
 exports.default = router;
 
 /***/ }),
-/* 104 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7920,109 +8030,6 @@ exports.default = {
 }; // eslint-disable-next-line no-unused-vars
 
 /***/ }),
-/* 105 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _validator = __webpack_require__(11);
-
-var _validator2 = _interopRequireDefault(_validator);
-
-var _voiceoverValidation = __webpack_require__(37);
-
-var myValid = _interopRequireWildcard(_voiceoverValidation);
-
-var _mongoose = __webpack_require__(3);
-
-var _mongoose2 = _interopRequireDefault(_mongoose);
-
-var _mongoosePaginate = __webpack_require__(7);
-
-var _mongoosePaginate2 = _interopRequireDefault(_mongoosePaginate);
-
-var _mongooseAutopopulate = __webpack_require__(6);
-
-var _mongooseAutopopulate2 = _interopRequireDefault(_mongooseAutopopulate);
-
-var _mongooseUniqueValidator = __webpack_require__(8);
-
-var _mongooseUniqueValidator2 = _interopRequireDefault(_mongooseUniqueValidator);
-
-var _pluginService = __webpack_require__(10);
-
-var pluginService = _interopRequireWildcard(_pluginService);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const ObjectId = _mongoose2.default.Schema.Types.ObjectId; /* eslint-disable no-unused-vars */
-/**
- * @typedef voiceovers
- * @property {string} _id
- * @property {string} voiceoverName
- */
-
-let voiceoverSchema = new _mongoose.Schema({
-	requestId: {
-		type: String,
-		required: [true, 'Request ID is required!'],
-		unique: true,
-		trim: true
-	},
-	embedUrl: {
-		type: String,
-		trim: true
-	},
-	fileFormat: {
-		type: String,
-		trim: true
-	},
-	status: {
-		type: String,
-		enum: ['pending', 'done'],
-		default: 'pending',
-		trim: true
-	},
-	movie: {
-		type: ObjectId,
-		ref: 'Movie',
-		required: [true, 'Movie is required!'],
-		trim: true
-	},
-	uploader: {
-		type: ObjectId,
-		ref: 'User',
-		required: [true, 'Uploader is required!'],
-		trim: true
-	},
-	name: {
-		type: String,
-		trim: true,
-		default: 'Giọng'
-	}
-}, {
-	timestamps: true
-});
-
-voiceoverSchema.plugin(_mongooseUniqueValidator2.default, {
-	message: '{VALUE} already taken!'
-});
-
-voiceoverSchema.plugin(_mongoosePaginate2.default);
-voiceoverSchema.plugin(_mongooseAutopopulate2.default);
-voiceoverSchema.plugin(pluginService.logPost, { schemaName: 'Voiceover' });
-voiceoverSchema.plugin(pluginService.setSlugUrl, { schemaName: 'Voiceover' });
-
-exports.default = _mongoose2.default.model('Voiceover', voiceoverSchema);
-
-/***/ }),
 /* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8047,7 +8054,7 @@ var _voiceoverController = __webpack_require__(36);
 
 var voiceoverController = _interopRequireWildcard(_voiceoverController);
 
-var _voiceoverValidation = __webpack_require__(37);
+var _voiceoverValidation = __webpack_require__(38);
 
 var _voiceoverValidation2 = _interopRequireDefault(_voiceoverValidation);
 
@@ -8061,7 +8068,7 @@ var ownMiddleware = _interopRequireWildcard(_ownMiddleware);
 
 var _roleMiddleware = __webpack_require__(9);
 
-var _synthesisService = __webpack_require__(38);
+var _synthesisService = __webpack_require__(39);
 
 var synthesisService = _interopRequireWildcard(_synthesisService);
 
